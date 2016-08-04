@@ -11,8 +11,11 @@ namespace EdgarEz\SiteBuilderBundle\Command;
 
 class Validators
 {
-    public static function validateRootLocationID($rootLocationID)
+    public static function validateLocationID($locationID)
     {
-        return $rootLocationID;
+        if (preg_match('/[^0-9]/', $locationID))
+            return false;
+
+        return $locationID;
     }
 }
