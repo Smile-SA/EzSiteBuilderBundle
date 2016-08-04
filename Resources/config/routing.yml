@@ -1,0 +1,3 @@
+edgar_ez_site_builder_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: EdgarEzSiteBuilderBundle:Default:index }
