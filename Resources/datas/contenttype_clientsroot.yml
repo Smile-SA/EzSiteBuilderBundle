@@ -1,0 +1,12 @@
+contentTypeGroup: SiteBuilder
+contentTypeIdentifier: edgar_ez_sb_clientsroot
+contentTypeName: Clients root
+contentTypeMainLanguage: eng-GB
+contentTypeNameSchema: title
+isContainer: true
+fields:
+    title:
+        identifier: title
+        mainLanguage: eng-GB
+        type: ezstring
+        name: Title

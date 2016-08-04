@@ -1,0 +1,6 @@
+contentTypeIdentifier: edgar_ez_sb_modelsroot
+languageCode: eng-GB
+fields:
+    title:
+        identifier: title
+        value: Models root
