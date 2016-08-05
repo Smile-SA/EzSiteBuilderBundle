@@ -1,0 +1,9 @@
+contentTypeIdentifier: user_group
+languageCode: eng-GB
+fields:
+    name:
+        identifier: name
+        value: SiteBuilder users
+    description:
+        identifier: description
+        value: SiteBuilder users

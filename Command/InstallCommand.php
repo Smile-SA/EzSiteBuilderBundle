@@ -43,6 +43,12 @@ class InstallCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->createContentStructure($input, $output);
+        $this->createUserStructure($input, $output);
+    }
+
+    protected function createContentStructure(InputInterface $input, OutputInterface $output)
+    {
         /** @var $repository Repository */
         $repository = $this->getContainer()->get('ezpublish.api.repository');
 
@@ -117,6 +123,59 @@ class InstallCommand extends ContainerAwareCommand
                 $contentDefinition['parentLocationID'] = $parentLocationID;
                 $content->add($contentDefinition);
                 $output->writeln('<info>Content created</info>');
+            }
+        }
+    }
+
+    protected function createUserStructure(InputInterface $input, OutputInterface $output)
+    {
+        /** @var $repository Repository */
+        $repository = $this->getContainer()->get('ezpublish.api.repository');
+
+        /** @var $locationService LocationService */
+        $locationService = $repository->getLocationService();
+
+        /** @var $questionHelper QuestionHelper */
+        $questionHelper = $this->getHelper('question');
+
+        $question = new Question('Root User Location ID where SiteBuilder user structure will be initialized: ');
+        $question->setValidator(
+            array(
+                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'validateLocationID'
+            )
+        );
+
+        $userGroupParenttLocationID = false;
+        while (!$userGroupParenttLocationID) {
+            $userGroupParenttLocationID = $questionHelper->ask($input, $output, $question);
+
+            try {
+                $locationService->loadLocation($userGroupParenttLocationID);
+                if (!$userGroupParenttLocationID || empty($userGroupParenttLocationID)) {
+                    $output->writeln("<error>User Parent Location ID is not valid</error>");
+                }
+            } catch (NotFoundException $e) {
+                $output->writeln("<error>No user location found with id $userGroupParenttLocationID</error>");
+                $userGroupParenttLocationID = false;
+            }
+        }
+
+        $content = $this->getContainer()->get('edgar_ez_tools.content.service');
+
+        $userGroupDefinition = Yaml::parse(file_get_contents(__DIR__. '/../Resources/datas/usergrouproot.yml'));
+        $userGroupDefinition['parentLocationID'] = $userGroupParenttLocationID;
+        /** @var $userGroup \eZ\Publish\API\Repository\Values\Content\Content */
+        $userGroup = $content->add($userGroupDefinition);
+        $output->writeln('<info>User group root created</info>');
+
+        $userGroupDefinitions = glob(__DIR__. '/../Resources/datas/usergroup_*.yml');
+        if (is_array($userGroupDefinitions) && count($userGroupDefinitions) > 0) {
+            foreach ($userGroupDefinitions as $userGroupDefinition) {
+                $userGroupDefinition = Yaml::parse(file_get_contents($userGroupDefinition));
+                $userGroupDefinition['parentLocationID'] = $userGroup->contentInfo->mainLocationId;
+                $content->add($userGroupDefinition);
+                $output->writeln('<info>User group created</info>');
             }
         }
     }
