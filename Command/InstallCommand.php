@@ -12,7 +12,6 @@ namespace EdgarEz\SiteBuilderBundle\Command;
 use EdgarEz\ToolsBundle\Service\Content;
 use EdgarEz\ToolsBundle\Service\ContentType;
 use EdgarEz\ToolsBundle\Service\ContentTypeGroup;
-use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Configuration\ConfigResolver;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
@@ -44,10 +43,6 @@ class InstallCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /** @var $configResolver ConfigResolver */
-        $configResolver = $this->getContainer()->get('ezpublish.config.resolver');
-        $adminID = $configResolver->getParameter('adminid', 'edgar_ez_tools');
-
         /** @var $repository Repository */
         $repository = $this->getContainer()->get('ezpublish.api.repository');
 
@@ -84,9 +79,9 @@ class InstallCommand extends ContainerAwareCommand
          * Create site builder content type groups :
          * - SiteBuilder
          */
-        $contentTypeGroupService = new ContentTypeGroup($repository);
-        $contentTypeGroupService->setAdminID($adminID);
-        $contentTypeGroup = $contentTypeGroupService->add('SiteBuilder');
+        /** @var $contentTypeGroupService ContentTypeGroup */
+        $contentTypeGroup = $this->getContainer()->get('edgar_ez_tools.contenttypegroup.service');
+        $contentTypeGroup = $contentTypeGroup->add('SiteBuilder');
         $output->writeln('<info>ContentTypeGroup SiteBuilder created</info>');
 
         /**
@@ -96,8 +91,8 @@ class InstallCommand extends ContainerAwareCommand
          * - Clients root
          * - Client
          */
-        $contentType = new ContentType($repository);
-        $contentType->setAdminID($adminID);
+        /** @var $contentType ContentType */
+        $contentType = $this->getContainer()->get('edgar_ez_tools.contenttype.service');
         $contentTypeDefinitions = glob(__DIR__. '/../Resources/datas/contenttype_*.yml');
         if (is_array($contentTypeDefinitions) && count($contentTypeDefinitions) > 0) {
             foreach ($contentTypeDefinitions as $contentTypeDefinition) {
@@ -113,8 +108,8 @@ class InstallCommand extends ContainerAwareCommand
          * - Models root
          * - Clients root
          */
-        $content = new Content($repository);
-        $content->setAdminID($adminID);
+        /** @var $content Content */
+        $content = $this->getContainer()->get('edgar_ez_tools.content.service');
         $contentDefinitions = glob(__DIR__. '/../Resources/datas/content_*.yml');
         if (is_array($contentDefinitions) && count($contentDefinitions) > 0) {
             foreach ($contentDefinitions as $contentDefinition) {
