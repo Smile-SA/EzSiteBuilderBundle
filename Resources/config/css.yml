@@ -1,0 +1,5 @@
+system:
+    default:
+        css:
+            files:
+                - %edgar_ez_sb.css_dir%/platform.css

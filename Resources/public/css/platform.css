@@ -1,0 +1,15 @@
+.ez-contenttype-icon.ez-contenttype-icon-edgar_ez_sb_client:before {
+    content: "user";
+}
+
+.ez-contenttype-icon.ez-contenttype-icon-edgar_ez_sb_clientsroot:before {
+    content: "users";
+}
+
+.ez-contenttype-icon.ez-contenttype-icon-edgar_ez_sb_model:before {
+    content: "file-empty";
+}
+
+.ez-contenttype-icon.ez-contenttype-icon-edgar_ez_sb_modelsroot:before {
+    content: "copy";
+}
