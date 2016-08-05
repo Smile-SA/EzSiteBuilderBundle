@@ -94,8 +94,8 @@ class InstallCommand extends ContainerAwareCommand
          * Create site builder content types :
          * - Models root
          * - Model
-         * - Clients root
-         * - Client
+         * - Customers root
+         * - Customer
          */
         /** @var $contentType ContentType */
         $contentType = $this->getContainer()->get('edgar_ez_tools.contenttype.service');
@@ -112,7 +112,7 @@ class InstallCommand extends ContainerAwareCommand
         /**
          * Create contents:
          * - Models root
-         * - Clients root
+         * - Customers root
          */
         /** @var $content Content */
         $content = $this->getContainer()->get('edgar_ez_tools.content.service');

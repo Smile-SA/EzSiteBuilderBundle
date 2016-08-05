@@ -1,6 +1,6 @@
 contentTypeGroup: SiteBuilder
-contentTypeIdentifier: edgar_ez_sb_client
-contentTypeName: Client
+contentTypeIdentifier: edgar_ez_sb_customersroot
+contentTypeName: Customers root
 contentTypeMainLanguage: eng-GB
 contentTypeNameSchema: title
 isContainer: true
