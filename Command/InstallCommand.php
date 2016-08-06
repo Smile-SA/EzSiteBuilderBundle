@@ -169,11 +169,12 @@ class InstallCommand extends ContainerAwareCommand
         $userGroup = $content->add($userGroupDefinition);
         $output->writeln('<info>User group root created</info>');
 
+        $userGroupParenttLocationID = $userGroup->contentInfo->mainLocationId;
         $userGroupDefinitions = glob(__DIR__. '/../Resources/datas/usergroup_*.yml');
         if (is_array($userGroupDefinitions) && count($userGroupDefinitions) > 0) {
             foreach ($userGroupDefinitions as $userGroupDefinition) {
                 $userGroupDefinition = Yaml::parse(file_get_contents($userGroupDefinition));
-                $userGroupDefinition['parentLocationID'] = $userGroup->contentInfo->mainLocationId;
+                $userGroupDefinition['parentLocationID'] = $userGroupParenttLocationID;
                 $content->add($userGroupDefinition);
                 $output->writeln('<info>User group created</info>');
             }
