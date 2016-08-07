@@ -11,19 +11,29 @@ namespace EdgarEz\SiteBuilderBundle\Command;
 
 use EdgarEz\ToolsBundle\Service\Content;
 use EdgarEz\ToolsBundle\Service\ContentType;
+use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\ToolsBundle\Service\ContentTypeGroup;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Sensio\Bundle\GeneratorBundle\Manipulator\KernelManipulator;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Yaml\Yaml;
 
-class InstallCommand extends ContainerAwareCommand
+class InstallCommand extends BaseContainerAwareCommand
 {
+    protected $modelsLocationID;
+    protected $customersLocationID;
+    protected $userCreatorsLocationID;
+    protected $userEditorsLocationID;
+    protected $vendorName;
+    protected $dir;
+
     /**
      * Configure SiteBuilder installation command
      */
@@ -45,6 +55,34 @@ class InstallCommand extends ContainerAwareCommand
     {
         $this->createContentStructure($input, $output);
         $this->createUserStructure($input, $output);
+        $this->createProjectBundle($input, $output);
+
+        /** @var $generator ProjectGenerator */
+        $generator = $this->getGenerator();
+        $generator->generate(
+            $this->modelsLocationID,
+            $this->customersLocationID,
+            $this->userCreatorsLocationID,
+            $this->userEditorsLocationID,
+            $this->vendorName,
+            $this->dir
+        );
+
+        $questionHelper = $this->getQuestionHelper();
+
+        $errors = array();
+        $runner = $questionHelper->getRunner($output, $errors);
+        $namespace = $this->vendorName . '\\' . ProjectGenerator::PROJECT . '\\' . ProjectGenerator::BUNDLE;
+        $bundle = $this->vendorName . ProjectGenerator::PROJECT . ProjectGenerator::BUNDLE;
+        // register the bundle in the Kernel class
+        $runner($this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle));
+
+        // summary
+        $output->writeln(array(
+            '',
+            $this->getHelper('formatter')->formatBlock('SiteBuilder Contents and Structure generated', 'bg=blue;fg=white', true),
+            ''
+        ));
     }
 
     protected function createContentStructure(InputInterface $input, OutputInterface $output)
@@ -114,6 +152,8 @@ class InstallCommand extends ContainerAwareCommand
          * - Models root
          * - Customers root
          */
+        /** @var $contents \eZ\Publish\API\Repository\Values\Content\Content[] */
+        $contents = array();
         /** @var $content Content */
         $content = $this->getContainer()->get('edgar_ez_tools.content.service');
         $contentDefinitions = glob(__DIR__. '/../Resources/datas/content_*.yml');
@@ -121,8 +161,23 @@ class InstallCommand extends ContainerAwareCommand
             foreach ($contentDefinitions as $contentDefinition) {
                 $contentDefinition = Yaml::parse(file_get_contents($contentDefinition));
                 $contentDefinition['parentLocationID'] = $parentLocationID;
-                $content->add($contentDefinition);
+                $contents[] = $content->add($contentDefinition);
                 $output->writeln('<info>Content created</info>');
+            }
+        }
+
+        foreach ($contents as $content) {
+            /** @var $contentType \eZ\Publish\API\Repository\Values\ContentType\ContentType */
+            $contentType = $repository->getContentTypeService()->loadContentType($content->contentInfo->contentTypeId);
+            switch ($contentType->identifier) {
+                case 'edgar_ez_sb_modelsroot':
+                    $this->modelsLocationID = $content->contentInfo->mainLocationId;
+                    break;
+                case 'edgar_ez_sb_customersroot':
+                    $this->customersLocationID = $content->contentInfo->mainLocationId;
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -169,15 +224,127 @@ class InstallCommand extends ContainerAwareCommand
         $userGroup = $content->add($userGroupDefinition);
         $output->writeln('<info>User group root created</info>');
 
+        /** @var $contents \eZ\Publish\API\Repository\Values\Content\Content[] */
+        $contents = array();
         $userGroupParenttLocationID = $userGroup->contentInfo->mainLocationId;
         $userGroupDefinitions = glob(__DIR__. '/../Resources/datas/usergroup_*.yml');
         if (is_array($userGroupDefinitions) && count($userGroupDefinitions) > 0) {
             foreach ($userGroupDefinitions as $userGroupDefinition) {
                 $userGroupDefinition = Yaml::parse(file_get_contents($userGroupDefinition));
                 $userGroupDefinition['parentLocationID'] = $userGroupParenttLocationID;
-                $content->add($userGroupDefinition);
+                $contents[] = $content->add($userGroupDefinition);
                 $output->writeln('<info>User group created</info>');
             }
         }
+
+        foreach ($contents as $content) {
+            /** @var $contentType \eZ\Publish\API\Repository\Values\ContentType\ContentType */
+            $contentType = $repository->getContentTypeService()->loadContentType($content->contentInfo->contentTypeId);
+            switch ($contentType->identifier) {
+                case 'user_group':
+                    if ($content->contentInfo->name == 'Creators') {
+                        $this->userCreatorsLocationID = $content->contentInfo->mainLocationId;
+                    } else {
+                        $this->userEditorsLocationID = $content->contentInfo->mainLocationId;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    protected function checkAutoloader(OutputInterface $output, $namespace, $bundle, $dir)
+    {
+        $output->write('Checking that the Project SiteBuilder bundle is autoloaded: ');
+        if (!class_exists($namespace . '\\' . $bundle)) {
+            return array(
+                '- Edit the <comment>composer.json</comment> file and register the bundle',
+                '  namespace in the "autoload" section:',
+                '',
+            );
+        }
+    }
+
+    protected function updateKernel(QuestionHelper $questionHelper, InputInterface $input, OutputInterface $output, KernelInterface $kernel, $namespace, $bundle)
+    {
+        $auto = true;
+        if ($input->isInteractive()) {
+            $question = new ConfirmationQuestion($questionHelper->getQuestion('Confirm automatic update of your Kernel', 'yes', '?'), true);
+            $auto = $questionHelper->ask($input, $output, $question);
+        }
+
+        $output->write('Enabling the bundle inside the Kernel: ');
+        $manip = new KernelManipulator($kernel);
+        try {
+            $ret = $auto ? $manip->addBundle($namespace . '\\' . $bundle) : false;
+
+            if (!$ret) {
+                $reflected = new \ReflectionObject($kernel);
+
+                return array(
+                    sprintf('- Edit <comment>%s</comment>', $reflected->getFilename()),
+                    '  and add the following bundle in the <comment>AppKernel::registerBundles()</comment> method:',
+                    '',
+                    sprintf('    <comment>new %s(),</comment>', $namespace . '\\' . $bundle),
+                    '',
+                );
+            }
+        } catch (\RuntimeException $e) {
+            return array(
+                sprintf('Bundle <comment>%s</comment> is already defined in <comment>AppKernel::registerBundles()</comment>.', $namespace . '\\' . $bundle),
+                '',
+            );
+        }
+    }
+
+    protected function createProjectBundle(InputInterface $input, OutputInterface $output)
+    {
+        $questionHelper = $this->getQuestionHelper();
+
+        $vendorName = false;
+        while (!$vendorName) {
+            $question = new Question($questionHelper->getQuestion('Project Vendor name used to construct namespace', null));
+            $question->setValidator(
+                array(
+                    'EdgarEz\SiteBuilderBundle\Command\Validators',
+                    'validateVendorName'
+                )
+            );
+            $vendorName = $questionHelper->ask($input, $output, $question);
+        }
+
+        $this->vendorName = $vendorName;
+
+        $dir = false;
+        while (!$dir) {
+            $dir = dirname($this->getContainer()->getParameter('kernel.root_dir')).'/src';
+
+            $output->writeln(array(
+                '',
+                'The bundle can be generated anywhere. The suggested default directory uses',
+                'the standard conventions.',
+                '',
+            ));
+
+            $question = new Question($questionHelper->getQuestion('Target directory', $dir), $dir);
+            $question->setValidator(
+                array(
+                    'EdgarEz\SiteBuilderBundle\Command\Validators',
+                    'validateTargetDir'
+                )
+            );
+            $dir = $questionHelper->ask($input, $output, $question);
+        }
+
+        $this->dir = $dir;
+    }
+
+    protected function createGenerator()
+    {
+        return new ProjectGenerator(
+            $this->getContainer()->get('filesystem'),
+            $this->getContainer()->get('kernel')
+        );
     }
 }

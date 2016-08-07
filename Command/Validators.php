@@ -36,4 +36,10 @@ class Validators
 
         return $modelName;
     }
+
+    public static function validateTargetDir($dir)
+    {
+        // add trailing / if necessary
+        return '/' === substr($dir, -1, 1) ? $dir : $dir.'/';
+    }
 }
