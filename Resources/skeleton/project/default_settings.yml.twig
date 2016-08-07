@@ -1,0 +1,7 @@
+parameters:
+{% block parameters %}
+    {{ extension_alias }}.default.models_location_id: {{ settings.modelsLocationID }}
+    {{ extension_alias }}.default.customers_location_id: {{ settings.customersLocationID }}
+    {{ extension_alias }}.default.user_creators_location_id: {{ settings.userCreatorsLocationID }}
+    {{ extension_alias }}.default.user_editors_location_id: {{ settings.userEditorsLocationID }}
+{% endblock parameters %}
