@@ -1,0 +1,19 @@
+<?php
+
+namespace {{ namespace }};
+
+{% block use_statements %}
+use Symfony\Component\HttpKernel\Bundle\Bundle;
+{% endblock use_statements %}
+
+{% block class_definition %}
+class {{ bundle_basename }}Bundle extends Bundle
+{% endblock class_definition %}
+{
+{% block class_body %}
+    public function getParent()
+    {
+        return '{{ parent_model_bundle }}';
+    }
+{% endblock class_body %}
+}
