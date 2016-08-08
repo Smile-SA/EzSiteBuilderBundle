@@ -1,23 +1,30 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: emdro
- * Date: 05/08/2016
- * Time: 12:56
- */
-
 namespace EdgarEz\SiteBuilderBundle\Command;
 
-
 use EdgarEz\SiteBuilderBundle\Generator\ModelGenerator;
-use Sensio\Bundle\GeneratorBundle\Command\Validators;
+use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
+use EdgarEz\ToolsBundle\Service\Content;
+use eZ\Publish\API\Repository\LocationService;
+use eZ\Publish\API\Repository\Repository;
+use eZ\Publish\API\Repository\URLAliasService;
+use Sensio\Bundle\GeneratorBundle\Command\Helper\QuestionHelper;
+use Sensio\Bundle\GeneratorBundle\Manipulator\KernelManipulator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Yaml\Yaml;
 
 class ModelCommand extends BaseContainerAwareCommand
 {
+    protected $vendorName;
+    protected $modelName;
+    protected $modelLocationID;
+    protected $dir;
+    protected $excludeUriPrefixes;
+
     /**
      * Configure Model generator command
      */
@@ -37,42 +44,43 @@ class ModelCommand extends BaseContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $namespace = $this->getBundleNamespace($input, $output);
-
-        $namespace = Validators::validateBundleNamespace($namespace, true);
-        $bundle = strtr($namespace, array('\\' => ''));
-        $bundle = Validators::validateBundleName($bundle);
-        $dir = Validators::validateTargetDir($this->getDir($input, $output, $bundle, $namespace), $bundle, $namespace);
-
-        $output->writeln(array(
-            '',
-            'Bundle namespace is <info>' . $namespace . '</info>',
-            'Bundle name is <info>' . $bundle . '</info>',
-            'Bundle directory is <info>' . $dir . '</info>',
-            '',
-        ));
-
-        $questionHelper = $this->getQuestionHelper();
-
-        $question = new ConfirmationQuestion($questionHelper->getQuestion('Do you want to purchase model generation', 'yes', '?'), true);
-        if (!$questionHelper->ask($input, $output, $question)) {
-            return;
-        }
+        $this->createModelContent($input, $output);
+        $this->createModelBundle($input, $output);
 
         /** @var $generator ModelGenerator */
         $generator = $this->getGenerator();
-        // $generator->generate($bundle, $namespace, $dir);
+        $generator->generate(
+            $this->vendorName,
+            $this->modelName,
+            $this->modelLocationID,
+            $this->excludeUriPrefixes,
+            $this->dir
+        );
 
-        $output->writeln('Generating the bundle code: <info>OK</info>');
+        $questionHelper = $this->getQuestionHelper();
+
+        $errors = array();
+        $runner = $questionHelper->getRunner($output, $errors);
+        $namespace = $this->vendorName . '\\' . ProjectGenerator::PROJECT . '\\' . ProjectGenerator::MODELS . '\\' . $this->modelName . 'Bundle';
+        $bundle = $this->vendorName . ProjectGenerator::PROJECT . ProjectGenerator::MODELS . $this->modelName . 'Bundle';
+        // register the bundle in the Kernel class
+        $runner($this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle));
+
+        // summary
+        $output->writeln(array(
+            '',
+            $this->getHelper('formatter')->formatBlock('New model conent and bundle generated', 'bg=blue;fg=white', true),
+            ''
+        ));
     }
 
-    protected function getBundleNamespace(InputInterface $input, OutputInterface $output)
+    protected function createModelContent(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
 
         $vendorName = false;
         while (!$vendorName) {
-            $question = new Question($questionHelper->getQuestion('Model Vendor name used to construct namespace', null));
+            $question = new Question($questionHelper->getQuestion('Project Vendor name used to construct namespace', null));
             $question->setValidator(
                 array(
                     'EdgarEz\SiteBuilderBundle\Command\Validators',
@@ -82,9 +90,11 @@ class ModelCommand extends BaseContainerAwareCommand
             $vendorName = $questionHelper->ask($input, $output, $question);
         }
 
+        $this->vendorName = $vendorName;
+
         $modelName = false;
         while (!$modelName) {
-            $question = new Question($questionHelper->getQuestion('Model name', null));
+            $question = new Question($questionHelper->getQuestion('Modelr name used to construct namespace', null));
             $question->setValidator(
                 array(
                     'EdgarEz\SiteBuilderBundle\Command\Validators',
@@ -94,11 +104,66 @@ class ModelCommand extends BaseContainerAwareCommand
             $modelName = $questionHelper->ask($input, $output, $question);
         }
 
-        $namespace = $vendorName . '\\Models\\' . $modelName . 'Bundle';
-        return $namespace;
+        $this->modelName = $modelName;
+
+        $basename = $this->vendorName . ProjectGenerator::PROJECT . ProjectGenerator::MAIN ;
+
+        /** @var $content Content */
+        $content = $this->getContainer()->get('edgar_ez_tools.content.service');
+        $contentDefinition = Yaml::parse(file_get_contents(__DIR__ . '/../Resources/datas/modelcontent.yml'));
+        $contentDefinition['parentLocationID'] = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.models_location_id');
+        $contentDefinition['fields']['title']['value'] = $this->modelName;
+        $contentAdded = $content->add($contentDefinition);
+
+        /** @var $repository Repository */
+        $repository = $this->getContainer()->get('ezpublish.api.repository');
+
+        /** @var $urlAliasService URLAliasService */
+        $urlAliasService = $repository->getURLAliasService();
+
+        /** @var $locationService LocationService */
+        $locationService = $repository->getLocationService();
+
+        $contentLocation = $locationService->loadLocation($contentAdded->contentInfo->mainLocationId);
+        $contentPath = $urlAliasService->reverseLookup($contentLocation, $contentAdded->contentInfo->mainLanguageCode)->path;
+        $this->excludeUriPrefixes = trim($contentPath, '/') . '/';
+
+        $this->modelLocationID = $contentAdded->contentInfo->mainLocationId;
     }
 
-    protected function getDir(InputInterface $input, OutputInterface $output, $bundle, $namespace)
+    protected function updateKernel(QuestionHelper $questionHelper, InputInterface $input, OutputInterface $output, KernelInterface $kernel, $namespace, $bundle)
+    {
+        $auto = true;
+        if ($input->isInteractive()) {
+            $question = new ConfirmationQuestion($questionHelper->getQuestion('Confirm automatic update of your Kernel', 'yes', '?'), true);
+            $auto = $questionHelper->ask($input, $output, $question);
+        }
+
+        $output->write('Enabling the bundle inside the Kernel: ');
+        $manip = new KernelManipulator($kernel);
+        try {
+            $ret = $auto ? $manip->addBundle($namespace . '\\' . $bundle) : false;
+
+            if (!$ret) {
+                $reflected = new \ReflectionObject($kernel);
+
+                return array(
+                    sprintf('- Edit <comment>%s</comment>', $reflected->getFilename()),
+                    '  and add the following bundle in the <comment>AppKernel::registerBundles()</comment> method:',
+                    '',
+                    sprintf('    <comment>new %s(),</comment>', $namespace . '\\' . $bundle),
+                    '',
+                );
+            }
+        } catch (\RuntimeException $e) {
+            return array(
+                sprintf('Bundle <comment>%s</comment> is already defined in <comment>AppKernel::registerBundles()</comment>.', $namespace . '\\' . $bundle),
+                '',
+            );
+        }
+    }
+
+    protected function createModelBundle(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
 
@@ -114,17 +179,23 @@ class ModelCommand extends BaseContainerAwareCommand
             ));
 
             $question = new Question($questionHelper->getQuestion('Target directory', $dir), $dir);
-            $question->setValidator(function ($dir) use ($bundle, $namespace) {
-                return Validators::validateTargetDir($dir, $bundle, $namespace);
-            });
+            $question->setValidator(
+                array(
+                    'EdgarEz\SiteBuilderBundle\Command\Validators',
+                    'validateTargetDir'
+                )
+            );
             $dir = $questionHelper->ask($input, $output, $question);
         }
 
-        return $dir;
+        $this->dir = $dir;
     }
 
     protected function createGenerator()
     {
-        return new ModelGenerator($this->getContainer()->get('filesystem'));
+        return new ModelGenerator(
+            $this->getContainer()->get('filesystem'),
+            $this->getContainer()->get('kernel')
+        );
     }
 }

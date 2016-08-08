@@ -16,6 +16,7 @@ use Symfony\Component\HttpKernel\Kernel;
 
 class ProjectGenerator extends Generator
 {
+    const MAIN = 'Project';
     const BUNDLE = 'ProjectBundle';
     const PROJECT = 'SiteBuilder';
     const MODELS = 'Models';
