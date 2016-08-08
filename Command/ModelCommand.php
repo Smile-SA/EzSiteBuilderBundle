@@ -1,4 +1,5 @@
 <?php
+
 namespace EdgarEz\SiteBuilderBundle\Command;
 
 use EdgarEz\SiteBuilderBundle\Generator\ModelGenerator;
@@ -17,12 +18,35 @@ use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Class ModelCommand
+ * @package EdgarEz\SiteBuilderBundle\Command
+ */
 class ModelCommand extends BaseContainerAwareCommand
 {
+    /**
+     * @var $vendorName string model bundle vendor name used to construct namespace
+     */
     protected $vendorName;
+
+    /**
+     * @var $modelName string model bundle name used to construct namespace
+     */
     protected $modelName;
+
+    /**
+     * @var $modelLocationID int root location ID for model content
+     */
     protected $modelLocationID;
+
+    /**
+     * @var $dir string system directory where model bundle would be generated
+     */
     protected $dir;
+
+    /**
+     * @var $excludeUriPrefixes string ezplatform settings for model bundle siteaccess configuration
+     */
     protected $excludeUriPrefixes;
 
     /**
@@ -38,9 +62,9 @@ class ModelCommand extends BaseContainerAwareCommand
     /**
      * Execute Model generator command
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
+     * @param InputInterface $input input console
+     * @param OutputInterface $output output console
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -74,6 +98,12 @@ class ModelCommand extends BaseContainerAwareCommand
         ));
     }
 
+    /**
+     * Create model content
+     *
+     * @param InputInterface $input input console
+     * @param OutputInterface $output output console
+     */
     protected function createModelContent(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
@@ -131,6 +161,51 @@ class ModelCommand extends BaseContainerAwareCommand
         $this->modelLocationID = $contentAdded->contentInfo->mainLocationId;
     }
 
+    /**
+     * Create model bundle
+     *
+     * @param InputInterface $input input console
+     * @param OutputInterface $output output console
+     */
+    protected function createModelBundle(InputInterface $input, OutputInterface $output)
+    {
+        $questionHelper = $this->getQuestionHelper();
+
+        $dir = false;
+        while (!$dir) {
+            $dir = dirname($this->getContainer()->getParameter('kernel.root_dir')).'/src';
+
+            $output->writeln(array(
+                '',
+                'The bundle can be generated anywhere. The suggested default directory uses',
+                'the standard conventions.',
+                '',
+            ));
+
+            $question = new Question($questionHelper->getQuestion('Target directory', $dir), $dir);
+            $question->setValidator(
+                array(
+                    'EdgarEz\SiteBuilderBundle\Command\Validators',
+                    'validateTargetDir'
+                )
+            );
+            $dir = $questionHelper->ask($input, $output, $question);
+        }
+
+        $this->dir = $dir;
+    }
+
+    /**
+     * Update AppKernel.php adding new sitebuilder project bundle
+     *
+     * @param QuestionHelper $questionHelper question Helper
+     * @param InputInterface $input input console
+     * @param OutputInterface $output output console
+     * @param KernelInterface $kernel symfony Kernel
+     * @param $namespace string project namespace
+     * @param $bundle string project bundle name
+     * @return array message to display at console output
+     */
     protected function updateKernel(QuestionHelper $questionHelper, InputInterface $input, OutputInterface $output, KernelInterface $kernel, $namespace, $bundle)
     {
         $auto = true;
@@ -163,34 +238,11 @@ class ModelCommand extends BaseContainerAwareCommand
         }
     }
 
-    protected function createModelBundle(InputInterface $input, OutputInterface $output)
-    {
-        $questionHelper = $this->getQuestionHelper();
-
-        $dir = false;
-        while (!$dir) {
-            $dir = dirname($this->getContainer()->getParameter('kernel.root_dir')).'/src';
-
-            $output->writeln(array(
-                '',
-                'The bundle can be generated anywhere. The suggested default directory uses',
-                'the standard conventions.',
-                '',
-            ));
-
-            $question = new Question($questionHelper->getQuestion('Target directory', $dir), $dir);
-            $question->setValidator(
-                array(
-                    'EdgarEz\SiteBuilderBundle\Command\Validators',
-                    'validateTargetDir'
-                )
-            );
-            $dir = $questionHelper->ask($input, $output, $question);
-        }
-
-        $this->dir = $dir;
-    }
-
+    /**
+     * Initialize model generator tool
+     *
+     * @return ModelGenerator model generator tool
+     */
     protected function createGenerator()
     {
         return new ModelGenerator(

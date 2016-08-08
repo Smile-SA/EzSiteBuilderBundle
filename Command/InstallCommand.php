@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: emdro
- * Date: 02/08/2016
- * Time: 14:36
- */
 
 namespace EdgarEz\SiteBuilderBundle\Command;
-
 
 use EdgarEz\ToolsBundle\Service\Content;
 use EdgarEz\ToolsBundle\Service\ContentType;
@@ -25,13 +18,43 @@ use Symfony\Component\Console\Question\Question;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Class InstallCommand
+ *
+ * Command used to install Spbuilder prerquisites
+ *
+ * @package EdgarEz\SiteBuilderBundle\Command
+ */
 class InstallCommand extends BaseContainerAwareCommand
 {
+    /**
+     * @var $modelsLocationID int root location ID for models content
+     */
     protected $modelsLocationID;
+
+    /**
+     * @var $customersLocationID int root location ID for customers site content
+     */
     protected $customersLocationID;
+
+    /**
+     * @var $userCreatorsLocationID int root locationID for creator users
+     */
     protected $userCreatorsLocationID;
+
+    /**
+     * @var $userEditorsLocationID int root locationID for editors users
+     */
     protected $userEditorsLocationID;
+
+    /**
+     * @var $vendorName string namespace vendor name where project sitebuilder will be generated
+     */
     protected $vendorName;
+
+    /**
+     * @var $dir string system directory where bundle would be generated
+     */
     protected $dir;
 
     /**
@@ -47,9 +70,9 @@ class InstallCommand extends BaseContainerAwareCommand
     /**
      * Execute SiteBuilder installation command
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
+     * @param InputInterface $input console input
+     * @param OutputInterface $output console output
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -74,10 +97,8 @@ class InstallCommand extends BaseContainerAwareCommand
         $runner = $questionHelper->getRunner($output, $errors);
         $namespace = $this->vendorName . '\\' . ProjectGenerator::PROJECT . '\\' . ProjectGenerator::BUNDLE;
         $bundle = $this->vendorName . ProjectGenerator::PROJECT . ProjectGenerator::BUNDLE;
-        // register the bundle in the Kernel class
         $runner($this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle));
 
-        // summary
         $output->writeln(array(
             '',
             $this->getHelper('formatter')->formatBlock('SiteBuilder Contents and Structure generated', 'bg=blue;fg=white', true),
@@ -85,6 +106,12 @@ class InstallCommand extends BaseContainerAwareCommand
         ));
     }
 
+    /**
+     * Create content types and structure for sitebuilder installation
+     *
+     * @param InputInterface $input input console
+     * @param OutputInterface $output output console
+     */
     protected function createContentStructure(InputInterface $input, OutputInterface $output)
     {
         /** @var $repository Repository */
@@ -96,6 +123,7 @@ class InstallCommand extends BaseContainerAwareCommand
         /** @var $questionHelper QuestionHelper */
         $questionHelper = $this->getHelper('question');
 
+        // Get content root location ID
         $question = new Question('Root Location ID where SiteBuilder content structure will be initialized: ');
         $question->setValidator(
             array(
@@ -182,6 +210,12 @@ class InstallCommand extends BaseContainerAwareCommand
         }
     }
 
+    /**
+     * Create user content structure for sitebuilder installation
+     *
+     * @param InputInterface $input input console
+     * @param OutputInterface $output outpput console
+     */
     protected function createUserStructure(InputInterface $input, OutputInterface $output)
     {
         /** @var $repository Repository */
@@ -193,6 +227,7 @@ class InstallCommand extends BaseContainerAwareCommand
         /** @var $questionHelper QuestionHelper */
         $questionHelper = $this->getHelper('question');
 
+        // Get user root location ID
         $question = new Question('Root User Location ID where SiteBuilder user structure will be initialized: ');
         $question->setValidator(
             array(
@@ -254,50 +289,12 @@ class InstallCommand extends BaseContainerAwareCommand
         }
     }
 
-    protected function checkAutoloader(OutputInterface $output, $namespace, $bundle, $dir)
-    {
-        $output->write('Checking that the Project SiteBuilder bundle is autoloaded: ');
-        if (!class_exists($namespace . '\\' . $bundle)) {
-            return array(
-                '- Edit the <comment>composer.json</comment> file and register the bundle',
-                '  namespace in the "autoload" section:',
-                '',
-            );
-        }
-    }
-
-    protected function updateKernel(QuestionHelper $questionHelper, InputInterface $input, OutputInterface $output, KernelInterface $kernel, $namespace, $bundle)
-    {
-        $auto = true;
-        if ($input->isInteractive()) {
-            $question = new ConfirmationQuestion($questionHelper->getQuestion('Confirm automatic update of your Kernel', 'yes', '?'), true);
-            $auto = $questionHelper->ask($input, $output, $question);
-        }
-
-        $output->write('Enabling the bundle inside the Kernel: ');
-        $manip = new KernelManipulator($kernel);
-        try {
-            $ret = $auto ? $manip->addBundle($namespace . '\\' . $bundle) : false;
-
-            if (!$ret) {
-                $reflected = new \ReflectionObject($kernel);
-
-                return array(
-                    sprintf('- Edit <comment>%s</comment>', $reflected->getFilename()),
-                    '  and add the following bundle in the <comment>AppKernel::registerBundles()</comment> method:',
-                    '',
-                    sprintf('    <comment>new %s(),</comment>', $namespace . '\\' . $bundle),
-                    '',
-                );
-            }
-        } catch (\RuntimeException $e) {
-            return array(
-                sprintf('Bundle <comment>%s</comment> is already defined in <comment>AppKernel::registerBundles()</comment>.', $namespace . '\\' . $bundle),
-                '',
-            );
-        }
-    }
-
+    /**
+     * Create sitebuilder porject bundle
+     *
+     * @param InputInterface $input input console
+     * @param OutputInterface $output output console
+     */
     protected function createProjectBundle(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
@@ -340,6 +337,54 @@ class InstallCommand extends BaseContainerAwareCommand
         $this->dir = $dir;
     }
 
+    /**
+     * Update AppKernel.php adding new sitebuilder project bundle
+     *
+     * @param QuestionHelper $questionHelper question Helper
+     * @param InputInterface $input input console
+     * @param OutputInterface $output output console
+     * @param KernelInterface $kernel symfony Kernel
+     * @param $namespace string project namespace
+     * @param $bundle string project bundle name
+     * @return array message to display at console output
+     */
+    protected function updateKernel(QuestionHelper $questionHelper, InputInterface $input, OutputInterface $output, KernelInterface $kernel, $namespace, $bundle)
+    {
+        $auto = true;
+        if ($input->isInteractive()) {
+            $question = new ConfirmationQuestion($questionHelper->getQuestion('Confirm automatic update of your Kernel', 'yes', '?'), true);
+            $auto = $questionHelper->ask($input, $output, $question);
+        }
+
+        $output->write('Enabling the bundle inside the Kernel: ');
+        $manip = new KernelManipulator($kernel);
+        try {
+            $ret = $auto ? $manip->addBundle($namespace . '\\' . $bundle) : false;
+
+            if (!$ret) {
+                $reflected = new \ReflectionObject($kernel);
+
+                return array(
+                    sprintf('- Edit <comment>%s</comment>', $reflected->getFilename()),
+                    '  and add the following bundle in the <comment>AppKernel::registerBundles()</comment> method:',
+                    '',
+                    sprintf('    <comment>new %s(),</comment>', $namespace . '\\' . $bundle),
+                    '',
+                );
+            }
+        } catch (\RuntimeException $e) {
+            return array(
+                sprintf('Bundle <comment>%s</comment> is already defined in <comment>AppKernel::registerBundles()</comment>.', $namespace . '\\' . $bundle),
+                '',
+            );
+        }
+    }
+
+    /**
+     * Initialize project generator tool
+     *
+     * @return ProjectGenerator project generator tool
+     */
     protected function createGenerator()
     {
         return new ProjectGenerator(
