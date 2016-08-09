@@ -1,9 +1,0 @@
-contentTypeIdentifier: edgar_ez_sb_sitesroot
-languageCode: eng-GB
-fields:
-    title:
-        identifier: title
-        value: Sites
-    max_sites_count:
-        identifier: max_sites_count
-        value : -1

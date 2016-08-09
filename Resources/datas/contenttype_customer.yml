@@ -1,6 +1,6 @@
 contentTypeGroup: SiteBuilder
-contentTypeIdentifier: edgar_ez_sb_sitesroot
-contentTypeName: Sites
+contentTypeIdentifier: edgar_ez_sb_customer
+contentTypeName: Customer
 contentTypeMainLanguage: eng-GB
 contentTypeNameSchema: title
 isContainer: true
@@ -10,8 +10,8 @@ fields:
         mainLanguage: eng-GB
         type: ezstring
         name: Title
-    max_sites_count:
-        identifier: max_sites_count
+    max_site_count:
+        identifier: max_site_count
         mainLanguage: eng-GB
         type: ezinteger
         name: Max site count

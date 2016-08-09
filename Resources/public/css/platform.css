@@ -1,9 +1,9 @@
-.ez-contenttype-icon.ez-contenttype-icon-edgar_ez_sb_site:before {
-    content: "home";
+.ez-contenttype-icon.ez-contenttype-icon-edgar_ez_sb_customer:before {
+    content: "user";
 }
 
-.ez-contenttype-icon.ez-contenttype-icon-edgar_ez_sb_sitesroot:before {
-    content: "earth";
+.ez-contenttype-icon.ez-contenttype-icon-edgar_ez_sb_customersroot:before {
+    content: "users";
 }
 
 .ez-contenttype-icon.ez-contenttype-icon-edgar_ez_sb_model:before {

@@ -46,7 +46,7 @@ class ProjectGenerator extends Generator
      * Generate SiteBuilder project bundle
      *
      * @param int $modelsLocationID models content location ID
-     * @param int $sitesLocationID sites content location ID
+     * @param int $customersLocationID sites content location ID
      * @param int $userCreatorsLocationID user creators group content location ID
      * @param int $userEditorsLocationID user editors group content location ID
      * @param string $vendorName project vendor name
@@ -54,7 +54,7 @@ class ProjectGenerator extends Generator
      */
     public function generate(
         $modelsLocationID,
-        $sitesLocationID,
+        $customersLocationID,
         $userCreatorsLocationID,
         $userEditorsLocationID,
         $vendorName,
@@ -86,7 +86,7 @@ class ProjectGenerator extends Generator
             'extension_alias' => Container::underscore($basename),
             'settings' => array(
                 'modelsLocationID' => $modelsLocationID,
-                'sitesLocationID' => $sitesLocationID,
+                'customersLocationID' => $customersLocationID,
                 'userCreatorsLocationID' => $userCreatorsLocationID,
                 'userEditorsLocationID' => $userEditorsLocationID,
                 'namespace' => $namespace
