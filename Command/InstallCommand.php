@@ -28,32 +28,32 @@ use Symfony\Component\Yaml\Yaml;
 class InstallCommand extends BaseContainerAwareCommand
 {
     /**
-     * @var $modelsLocationID int root location ID for models content
+     * @var int $modelsLocationID root location ID for models content
      */
     protected $modelsLocationID;
 
     /**
-     * @var $customersLocationID int root location ID for customers site content
+     * @var int $customersLocationID root location ID for customers site content
      */
     protected $customersLocationID;
 
     /**
-     * @var $userCreatorsLocationID int root locationID for creator users
+     * @var int $userCreatorsLocationID root locationID for creator users
      */
     protected $userCreatorsLocationID;
 
     /**
-     * @var $userEditorsLocationID int root locationID for editors users
+     * @var int $userEditorsLocationID root locationID for editors users
      */
     protected $userEditorsLocationID;
 
     /**
-     * @var $vendorName string namespace vendor name where project sitebuilder will be generated
+     * @var string $vendorName namespace vendor name where project sitebuilder will be generated
      */
     protected $vendorName;
 
     /**
-     * @var $dir string system directory where bundle would be generated
+     * @var string $dir system directory where bundle would be generated
      */
     protected $dir;
 
@@ -80,7 +80,7 @@ class InstallCommand extends BaseContainerAwareCommand
         $this->createUserStructure($input, $output);
         $this->createProjectBundle($input, $output);
 
-        /** @var $generator ProjectGenerator */
+        /** @var ProjectGenerator $generator */
         $generator = $this->getGenerator();
         $generator->generate(
             $this->modelsLocationID,
@@ -114,13 +114,13 @@ class InstallCommand extends BaseContainerAwareCommand
      */
     protected function createContentStructure(InputInterface $input, OutputInterface $output)
     {
-        /** @var $repository Repository */
+        /** @var Repository $repository */
         $repository = $this->getContainer()->get('ezpublish.api.repository');
 
-        /** @var $locationService LocationService */
+        /** @var LocationService $locationService */
         $locationService = $repository->getLocationService();
 
-        /** @var $questionHelper QuestionHelper */
+        /** @var QuestionHelper $questionHelper */
         $questionHelper = $this->getHelper('question');
 
         // Get content root location ID
@@ -151,7 +151,7 @@ class InstallCommand extends BaseContainerAwareCommand
          * Create site builder content type groups :
          * - SiteBuilder
          */
-        /** @var $contentTypeGroupService ContentTypeGroup */
+        /** @var ContentTypeGroup $contentTypeGroupService */
         $contentTypeGroup = $this->getContainer()->get('edgar_ez_tools.contenttypegroup.service');
         $contentTypeGroup = $contentTypeGroup->add('SiteBuilder');
         $output->writeln('<info>ContentTypeGroup SiteBuilder created</info>');
@@ -163,7 +163,7 @@ class InstallCommand extends BaseContainerAwareCommand
          * - Customers root
          * - Customer
          */
-        /** @var $contentType ContentType */
+        /** @var ContentType $contentType */
         $contentType = $this->getContainer()->get('edgar_ez_tools.contenttype.service');
         $contentTypeDefinitions = glob(__DIR__. '/../Resources/datas/contenttype_*.yml');
         if (is_array($contentTypeDefinitions) && count($contentTypeDefinitions) > 0) {
@@ -180,9 +180,9 @@ class InstallCommand extends BaseContainerAwareCommand
          * - Models root
          * - Customers root
          */
-        /** @var $contents \eZ\Publish\API\Repository\Values\Content\Content[] */
+        /** @var \eZ\Publish\API\Repository\Values\Content\Content[] $contents */
         $contents = array();
-        /** @var $content Content */
+        /** @var Content $content */
         $content = $this->getContainer()->get('edgar_ez_tools.content.service');
         $contentDefinitions = glob(__DIR__. '/../Resources/datas/content_*.yml');
         if (is_array($contentDefinitions) && count($contentDefinitions) > 0) {
@@ -195,7 +195,7 @@ class InstallCommand extends BaseContainerAwareCommand
         }
 
         foreach ($contents as $content) {
-            /** @var $contentType \eZ\Publish\API\Repository\Values\ContentType\ContentType */
+            /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentType $contentType */
             $contentType = $repository->getContentTypeService()->loadContentType($content->contentInfo->contentTypeId);
             switch ($contentType->identifier) {
                 case 'edgar_ez_sb_modelsroot':
@@ -218,13 +218,13 @@ class InstallCommand extends BaseContainerAwareCommand
      */
     protected function createUserStructure(InputInterface $input, OutputInterface $output)
     {
-        /** @var $repository Repository */
+        /** @var Repository $repository */
         $repository = $this->getContainer()->get('ezpublish.api.repository');
 
-        /** @var $locationService LocationService */
+        /** @var LocationService $locationService */
         $locationService = $repository->getLocationService();
 
-        /** @var $questionHelper QuestionHelper */
+        /** @var QuestionHelper $questionHelper */
         $questionHelper = $this->getHelper('question');
 
         // Get user root location ID
@@ -255,11 +255,11 @@ class InstallCommand extends BaseContainerAwareCommand
 
         $userGroupDefinition = Yaml::parse(file_get_contents(__DIR__. '/../Resources/datas/usergrouproot.yml'));
         $userGroupDefinition['parentLocationID'] = $userGroupParenttLocationID;
-        /** @var $userGroup \eZ\Publish\API\Repository\Values\Content\Content */
+        /** @var \eZ\Publish\API\Repository\Values\Content\Content $userGroup */
         $userGroup = $content->add($userGroupDefinition);
         $output->writeln('<info>User group root created</info>');
 
-        /** @var $contents \eZ\Publish\API\Repository\Values\Content\Content[] */
+        /** @var \eZ\Publish\API\Repository\Values\Content\Content[] $contents */
         $contents = array();
         $userGroupParenttLocationID = $userGroup->contentInfo->mainLocationId;
         $userGroupDefinitions = glob(__DIR__. '/../Resources/datas/usergroup_*.yml');
@@ -273,7 +273,7 @@ class InstallCommand extends BaseContainerAwareCommand
         }
 
         foreach ($contents as $content) {
-            /** @var $contentType \eZ\Publish\API\Repository\Values\ContentType\ContentType */
+            /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentType $contentType */
             $contentType = $repository->getContentTypeService()->loadContentType($content->contentInfo->contentTypeId);
             switch ($contentType->identifier) {
                 case 'user_group':
@@ -345,7 +345,7 @@ class InstallCommand extends BaseContainerAwareCommand
      * @param OutputInterface $output output console
      * @param KernelInterface $kernel symfony Kernel
      * @param $namespace string project namespace
-     * @param $bundle string project bundle name
+     * @param string $bundle project bundle name
      * @return array message to display at console output
      */
     protected function updateKernel(QuestionHelper $questionHelper, InputInterface $input, OutputInterface $output, KernelInterface $kernel, $namespace, $bundle)

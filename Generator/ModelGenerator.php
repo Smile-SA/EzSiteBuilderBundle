@@ -8,19 +8,43 @@ use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**
- * Generates a Model bundle.
+ * Class ModelGenerator
+ *
+ * @package EdgarEz\SiteBuilderBundle\Generator
  */
 class ModelGenerator extends Generator
 {
+    /**
+     * @var Filesystem $filesystem
+     */
     private $filesystem;
+
+    /**
+     * @var Kernel $kernel
+     */
     private $kernel;
 
+    /**
+     * ModelGenerator constructor.
+     *
+     * @param Filesystem $filesystem
+     * @param Kernel     $kernel
+     */
     public function __construct(Filesystem $filesystem, Kernel $kernel)
     {
         $this->filesystem = $filesystem;
         $this->kernel = $kernel;
     }
 
+    /**
+     * Generate Model bundle
+     *
+     * @param string $vendorName bundle vendor name
+     * @param string $modelName bundle model name
+     * @param int $modelLocationID model content location ID registered in settings ezplatform.yml
+     * @param string $excludeUriPrefixes
+     * @param string $targetDir
+     */
     public function generate($vendorName, $modelName, $modelLocationID, $excludeUriPrefixes, $targetDir)
     {
         $namespace = $vendorName . '\\' . ProjectGenerator::PROJECT . '\\' . ProjectGenerator::MODELS . '\\' . $modelName . 'Bundle';

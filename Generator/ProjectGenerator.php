@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Emmanuel
- * Date: 07/08/2016
- * Time: 13:12
- */
 
 namespace EdgarEz\SiteBuilderBundle\Generator;
 
@@ -14,6 +8,11 @@ use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
 
+/**
+ * Class ProjectGenerator
+ *
+ * @package EdgarEz\SiteBuilderBundle\Generator
+ */
 class ProjectGenerator extends Generator
 {
     const MAIN = 'Project';
@@ -21,15 +20,38 @@ class ProjectGenerator extends Generator
     const PROJECT = 'SiteBuilder';
     const MODELS = 'Models';
 
+    /**
+     * @var Filesystem $filesystem
+     */
     private $filesystem;
+
+    /**
+     * @var Kernel $kernel
+     */
     private $kernel;
 
+    /**
+     * ProjectGenerator constructor.
+     *
+     * @param Filesystem $filesystem
+     * @param Kernel     $kernel
+     */
     public function __construct(Filesystem $filesystem, Kernel $kernel)
     {
         $this->filesystem = $filesystem;
         $this->kernel = $kernel;
     }
 
+    /**
+     * Generate SiteBuilder project bundle
+     *
+     * @param int $modelsLocationID models content location ID
+     * @param int $customersLocationID customer sites content location ID
+     * @param int $userCreatorsLocationID user creators group content location ID
+     * @param int $userEditorsLocationID user editors group content location ID
+     * @param string $vendorName project vendor name
+     * @param string $targetDir filesystem directory where bundle would be generated
+     */
     public function generate(
         $modelsLocationID,
         $customersLocationID,

@@ -29,6 +29,11 @@ class EdgarEzSiteBuilderExtension extends Extension implements PrependExtensionI
         $loader->load('services.yml');
     }
 
+    /**
+     * Prepend settings
+     *
+     * @param ContainerBuilder $container
+     */
     public function prepend(ContainerBuilder $container)
     {
         $container->prependExtensionConfig('assetic', array('bundles' => array('EdgarEzSiteBuilderBundle')));
@@ -37,6 +42,11 @@ class EdgarEzSiteBuilderExtension extends Extension implements PrependExtensionI
         $this->prependCss($container);
     }
 
+    /**
+     * Prepend ezplatform yui interface plugin
+     *
+     * @param ContainerBuilder $container
+     */
     private function prependYui(ContainerBuilder $container)
     {
         $container->setParameter(
@@ -49,6 +59,11 @@ class EdgarEzSiteBuilderExtension extends Extension implements PrependExtensionI
         $container->addResource(new FileResource($yuiConfigFile));
     }
 
+    /**
+     * Prepend ezplatform css interface plugin
+     *
+     * @param ContainerBuilder $container
+     */
     private function prependCss(ContainerBuilder $container)
     {
         $container->setParameter(

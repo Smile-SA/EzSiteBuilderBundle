@@ -12,7 +12,7 @@ class Validators
     /**
      * Validate location id input
      *
-     * @param $locationID int ezplatform location id
+     * @param int $locationID ezplatform location id
      * @return bool|int false if not int, locationID if correct
      */
     public static function validateLocationID($locationID)
@@ -26,7 +26,7 @@ class Validators
     /**
      * Validation string vendor name
      *
-     * @param $vendorName string vendor name
+     * @param string $vendorName vendor name
      * @return mixed exception if not valid, vendorName if correct
      */
     public static function validateVendorName($vendorName)
@@ -41,7 +41,7 @@ class Validators
     /**
      * Validate string model name
      *
-     * @param $modelName string model name
+     * @param string $modelName model name
      * @return mixed exception if not valid, modelName if valid
      */
     public static function validateModelName($modelName)
@@ -56,7 +56,7 @@ class Validators
     /**
      * validate system path
      *
-     * @param $dir string system path where undle would be generated
+     * @param string $dir system path where undle would be generated
      * @return string
      */
     public static function validateTargetDir($dir)
