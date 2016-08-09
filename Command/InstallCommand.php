@@ -95,8 +95,8 @@ class InstallCommand extends BaseContainerAwareCommand
 
         $errors = array();
         $runner = $questionHelper->getRunner($output, $errors);
-        $namespace = $this->vendorName . '\\' . ProjectGenerator::PROJECT . '\\' . ProjectGenerator::BUNDLE;
-        $bundle = $this->vendorName . ProjectGenerator::PROJECT . ProjectGenerator::BUNDLE;
+        $namespace = $this->vendorName . '\\' . ProjectGenerator::BUNDLE;
+        $bundle = $this->vendorName . ProjectGenerator::BUNDLE;
         $runner($this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle));
 
         $output->writeln(array(

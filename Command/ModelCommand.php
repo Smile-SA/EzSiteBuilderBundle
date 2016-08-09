@@ -85,8 +85,8 @@ class ModelCommand extends BaseContainerAwareCommand
 
         $errors = array();
         $runner = $questionHelper->getRunner($output, $errors);
-        $namespace = $this->vendorName . '\\' . ProjectGenerator::PROJECT . '\\' . ProjectGenerator::MODELS . '\\' . $this->modelName . 'Bundle';
-        $bundle = $this->vendorName . ProjectGenerator::PROJECT . ProjectGenerator::MODELS . $this->modelName . 'Bundle';
+        $namespace = $this->vendorName . '\\' . ProjectGenerator::MODELS . '\\' . $this->modelName . 'Bundle';
+        $bundle = $this->vendorName . ProjectGenerator::MODELS . $this->modelName . 'Bundle';
         $runner($this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle));
 
         $output->writeln(array(
@@ -134,7 +134,7 @@ class ModelCommand extends BaseContainerAwareCommand
 
         $this->modelName = $modelName;
 
-        $basename = $this->vendorName . ProjectGenerator::PROJECT . ProjectGenerator::MAIN ;
+        $basename = $this->vendorName . ProjectGenerator::MAIN ;
 
         /** @var Content $content */
         $content = $this->getContainer()->get('edgar_ez_tools.content.service');

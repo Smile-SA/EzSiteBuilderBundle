@@ -65,8 +65,8 @@ class CustomerCommand extends BaseContainerAwareCommand
 
         $errors = array();
         $runner = $questionHelper->getRunner($output, $errors);
-        $namespace = $this->vendorName . '\\' . ProjectGenerator::PROJECT . '\\' . $this->customerName . '\\' . CustomerGenerator::BUNDLE ;
-        $bundle = $this->vendorName . ProjectGenerator::PROJECT . $this->customerName . CustomerGenerator::BUNDLE;
+        $namespace = $this->vendorName . '\\' . $this->customerName . '\\' . CustomerGenerator::BUNDLE ;
+        $bundle = $this->vendorName . $this->customerName . CustomerGenerator::BUNDLE;
         $runner($this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle));
 
         $output->writeln(array(
@@ -114,7 +114,7 @@ class CustomerCommand extends BaseContainerAwareCommand
 
         $this->customerName = $customerName;
 
-        $basename = $this->vendorName . ProjectGenerator::PROJECT . ProjectGenerator::MAIN;
+        $basename = $this->vendorName . ProjectGenerator::MAIN;
 
         /** @var Content $content */
         $content = $this->getContainer()->get('edgar_ez_tools.content.service');

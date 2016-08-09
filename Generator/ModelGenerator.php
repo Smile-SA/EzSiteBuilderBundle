@@ -47,7 +47,7 @@ class ModelGenerator extends Generator
      */
     public function generate($vendorName, $modelName, $modelLocationID, $excludeUriPrefixes, $targetDir)
     {
-        $namespace = $vendorName . '\\' . ProjectGenerator::PROJECT . '\\' . ProjectGenerator::MODELS . '\\' . $modelName . 'Bundle';
+        $namespace = $vendorName . '\\' . ProjectGenerator::MODELS . '\\' . $modelName . 'Bundle';
 
         $dir = $targetDir . '/' . strtr($namespace, '\\', '/');
         if (file_exists($dir)) {
@@ -63,7 +63,7 @@ class ModelGenerator extends Generator
             }
         }
 
-        $basename = substr($vendorName . ProjectGenerator::PROJECT . ProjectGenerator::MODELS . $modelName . 'Bundle', 0, -6);
+        $basename = substr($vendorName . ProjectGenerator::MODELS . $modelName . 'Bundle', 0, -6);
         $parameters = array(
             'namespace' => $namespace,
             'bundle'    => $modelName . 'Bundle',

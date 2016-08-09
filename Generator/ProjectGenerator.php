@@ -17,7 +17,6 @@ class ProjectGenerator extends Generator
 {
     const MAIN = 'Project';
     const BUNDLE = 'ProjectBundle';
-    const PROJECT = 'SiteBuilder';
     const MODELS = 'Models';
 
     /**
@@ -61,7 +60,7 @@ class ProjectGenerator extends Generator
         $targetDir
     )
     {
-        $namespace = $vendorName . '\\' . self::PROJECT . '\\' . self::BUNDLE;
+        $namespace = $vendorName . '\\' . self::BUNDLE;
 
         $dir = $targetDir . '/' . strtr($namespace, '\\', '/');
         if (file_exists($dir)) {
@@ -77,7 +76,7 @@ class ProjectGenerator extends Generator
             }
         }
 
-        $basename = substr($vendorName . self::PROJECT . self::BUNDLE, 0, -6);
+        $basename = substr($vendorName . self::BUNDLE, 0, -6);
         $parameters = array(
             'namespace' => $namespace,
             'bundle'    => self::BUNDLE,
@@ -99,6 +98,6 @@ class ProjectGenerator extends Generator
         $this->renderFile('project/Configuration.php.twig', $dir . '/DependencyInjection/Configuration.php', $parameters);
         $this->renderFile('project/default_settings.yml.twig', $dir . '/Resources/config/default_settings.yml', $parameters);
 
-        $this->filesystem->mkdir($targetDir . '/' . $vendorName . '/' . self::PROJECT . '/' . self::MODELS);
+        $this->filesystem->mkdir($targetDir . '/' . $vendorName . '/' . self::MODELS);
     }
 }
