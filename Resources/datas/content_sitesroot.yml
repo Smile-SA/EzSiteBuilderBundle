@@ -4,3 +4,6 @@ fields:
     title:
         identifier: title
         value: Sites
+    max_sites_count:
+        identifier: max_sites_count
+        value : -1
