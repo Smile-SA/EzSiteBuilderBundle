@@ -1,6 +1,6 @@
-contentTypeIdentifier: edgar_ez_sb_modelsroot
+contentTypeIdentifier: edgar_ez_sb_sitesroot
 languageCode: eng-GB
 fields:
     title:
         identifier: title
-        value: Models
+        value: Sites

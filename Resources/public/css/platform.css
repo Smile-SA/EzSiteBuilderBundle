@@ -1,8 +1,8 @@
-.ez-contenttype-icon.ez-contenttype-icon-edgar_ez_sb_customer:before {
+.ez-contenttype-icon.ez-contenttype-icon-edgar_ez_sb_site:before {
     content: "user";
 }
 
-.ez-contenttype-icon.ez-contenttype-icon-edgar_ez_sb_customersroot:before {
+.ez-contenttype-icon.ez-contenttype-icon-edgar_ez_sb_sitesroot:before {
     content: "users";
 }
 

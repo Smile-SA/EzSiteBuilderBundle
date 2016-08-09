@@ -33,9 +33,9 @@ class InstallCommand extends BaseContainerAwareCommand
     protected $modelsLocationID;
 
     /**
-     * @var int $customersLocationID root location ID for customers site content
+     * @var int $sitesLocationID root location ID for sites content
      */
-    protected $customersLocationID;
+    protected $sitesLocationID;
 
     /**
      * @var int $userCreatorsLocationID root locationID for creator users
@@ -84,7 +84,7 @@ class InstallCommand extends BaseContainerAwareCommand
         $generator = $this->getGenerator();
         $generator->generate(
             $this->modelsLocationID,
-            $this->customersLocationID,
+            $this->sitesLocationID,
             $this->userCreatorsLocationID,
             $this->userEditorsLocationID,
             $this->vendorName,
@@ -160,8 +160,8 @@ class InstallCommand extends BaseContainerAwareCommand
          * Create site builder content types :
          * - Models root
          * - Model
-         * - Customers root
-         * - Customer
+         * - Sites root
+         * - Site
          */
         /** @var ContentType $contentType */
         $contentType = $this->getContainer()->get('edgar_ez_tools.contenttype.service');
@@ -178,7 +178,7 @@ class InstallCommand extends BaseContainerAwareCommand
         /**
          * Create contents:
          * - Models root
-         * - Customers root
+         * - Sites root
          */
         /** @var \eZ\Publish\API\Repository\Values\Content\Content[] $contents */
         $contents = array();
@@ -201,8 +201,8 @@ class InstallCommand extends BaseContainerAwareCommand
                 case 'edgar_ez_sb_modelsroot':
                     $this->modelsLocationID = $content->contentInfo->mainLocationId;
                     break;
-                case 'edgar_ez_sb_customersroot':
-                    $this->customersLocationID = $content->contentInfo->mainLocationId;
+                case 'edgar_ez_sb_sitesroot':
+                    $this->sitesLocationID = $content->contentInfo->mainLocationId;
                     break;
                 default:
                     break;
