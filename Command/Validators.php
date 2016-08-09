@@ -3,12 +3,18 @@
 namespace EdgarEz\SiteBuilderBundle\Command;
 
 /**
- * Class Validators used to validate console input
+ * Class Validators
  *
  * @package EdgarEz\SiteBuilderBundle\Command
  */
 class Validators
 {
+    /**
+     * Validate location id input
+     *
+     * @param $locationID int ezplatform location id
+     * @return bool|int false if not int, locationID if correct
+     */
     public static function validateLocationID($locationID)
     {
         if (preg_match('/[^0-9]/', $locationID))
@@ -17,6 +23,12 @@ class Validators
         return $locationID;
     }
 
+    /**
+     * Validation string vendor name
+     *
+     * @param $vendorName string vendor name
+     * @return mixed exception if not valid, vendorName if correct
+     */
     public static function validateVendorName($vendorName)
     {
         if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $vendorName)) {
@@ -26,6 +38,12 @@ class Validators
         return $vendorName;
     }
 
+    /**
+     * Validate string model name
+     *
+     * @param $modelName string model name
+     * @return mixed exception if not valid, modelName if valid
+     */
     public static function validateModelName($modelName)
     {
         if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $modelName)) {
@@ -35,6 +53,12 @@ class Validators
         return $modelName;
     }
 
+    /**
+     * validate system path
+     *
+     * @param $dir string system path where undle would be generated
+     * @return string
+     */
     public static function validateTargetDir($dir)
     {
         // add trailing / if necessary
