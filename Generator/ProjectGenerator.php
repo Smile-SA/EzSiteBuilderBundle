@@ -18,6 +18,7 @@ class ProjectGenerator extends Generator
     const MAIN = 'Project';
     const BUNDLE = 'ProjectBundle';
     const MODELS = 'Models';
+    const CUSTOMERS = 'Customers';
 
     /**
      * @var Filesystem $filesystem
@@ -99,5 +100,6 @@ class ProjectGenerator extends Generator
         $this->renderFile('project/default_settings.yml.twig', $dir . '/Resources/config/default_settings.yml', $parameters);
 
         $this->filesystem->mkdir($targetDir . '/' . $vendorName . '/' . self::MODELS);
+        $this->filesystem->mkdir($targetDir . '/' . $vendorName . '/' . self::CUSTOMERS);
     }
 }

@@ -65,8 +65,8 @@ class CustomerCommand extends BaseContainerAwareCommand
 
         $errors = array();
         $runner = $questionHelper->getRunner($output, $errors);
-        $namespace = $this->vendorName . '\\' . $this->customerName . '\\' . CustomerGenerator::BUNDLE ;
-        $bundle = $this->vendorName . $this->customerName . CustomerGenerator::BUNDLE;
+        $namespace = $this->vendorName . '\\' . ProjectGenerator::CUSTOMERS . '\\' . $this->customerName . '\\' . CustomerGenerator::BUNDLE ;
+        $bundle = $this->vendorName . ProjectGenerator::CUSTOMERS . $this->customerName . CustomerGenerator::BUNDLE;
         $runner($this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle));
 
         $output->writeln(array(

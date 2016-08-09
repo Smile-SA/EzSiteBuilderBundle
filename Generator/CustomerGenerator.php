@@ -48,7 +48,7 @@ class CustomerGenerator extends Generator
      */
     public function generate($customerLocationID, $vendorName, $customerName, $targetDir)
     {
-        $namespace = $vendorName . '\\' . $customerName . '\\' . self::BUNDLE;
+        $namespace = $vendorName . '\\' . ProjectGenerator::CUSTOMERS . '\\' . $customerName . '\\' . self::BUNDLE;
 
         $dir = $targetDir . '/' . strtr($namespace, '\\', '/');
         if (file_exists($dir)) {
@@ -64,7 +64,7 @@ class CustomerGenerator extends Generator
             }
         }
 
-        $basename = substr($vendorName . $customerName . self::BUNDLE, 0, -6);
+        $basename = substr($vendorName . ProjectGenerator::CUSTOMERS . $customerName . self::BUNDLE, 0, -6);
         $parameters = array(
             'namespace' => $namespace,
             'bundle'    => self::BUNDLE,
@@ -82,6 +82,6 @@ class CustomerGenerator extends Generator
         $this->renderFile('customer/Configuration.php.twig', $dir . '/DependencyInjection/Configuration.php', $parameters);
         $this->renderFile('customer/default_settings.yml.twig', $dir . '/Resources/config/default_settings.yml', $parameters);
 
-        $this->filesystem->mkdir($targetDir . '/' . $vendorName . '/' . $customerName . '/' . self::SITES);
+        $this->filesystem->mkdir($targetDir . '/' . $vendorName . '/' . ProjectGenerator::CUSTOMERS . '/' . $customerName . '/' . self::SITES);
     }
 }
