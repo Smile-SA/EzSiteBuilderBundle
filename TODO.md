@@ -13,7 +13,7 @@
 
 ## Customer bundle generation 
 
-* generate customers in Customers folder from
+* <s>generate customers in Customers folder from</s>
 * create sitebuilder user creator customer group
 * create sitebuilder user editor customer group
 * create sitebuilder user creator for this customer
@@ -37,6 +37,5 @@
 ** list only customer sites
 ** activate site
 ** deactivate site
-
 
 
