@@ -13,7 +13,7 @@ class {{ bundle_basename }}Bundle extends Bundle
 {% block class_body %}
     public function getParent()
     {
-        return '{{ parent_model_bundle }}';
+        return '{{ parent_model_bundle }}Bundle';
     }
 {% endblock class_body %}
 }
