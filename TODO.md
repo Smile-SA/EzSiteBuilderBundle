@@ -15,8 +15,8 @@
 ## Customer bundle generation 
 
 * <s>generate customers in Customers folder from</s>
-* create sitebuilder user creator customer group
-* create sitebuilder user editor customer group
+* <s>create sitebuilder user creator customer group</s>
+* <s>create sitebuilder user editor customer group</s>
 * create sitebuilder user creator for this customer
 * create sitebuilder user editor for this customer
 * manager roles and policies
