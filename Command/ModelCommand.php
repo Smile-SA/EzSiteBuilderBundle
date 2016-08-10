@@ -64,6 +64,9 @@ class ModelCommand extends BaseContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $questionHelper = $this->getQuestionHelper();
+        $questionHelper->writeSection($output, 'SiteBuilder model initialization');
+
         $this->createModelContent($input, $output);
         $this->createModelBundle($input, $output);
 
@@ -77,17 +80,13 @@ class ModelCommand extends BaseContainerAwareCommand
             $this->dir
         );
 
-        $questionHelper = $this->getQuestionHelper();
-
-        $errors = array();
-        $runner = $questionHelper->getRunner($output, $errors);
         $namespace = $this->vendorName . '\\' . ProjectGenerator::MODELS . '\\' . $this->modelName . 'Bundle';
         $bundle = $this->vendorName . ProjectGenerator::MODELS . $this->modelName . 'Bundle';
-        $runner($this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle));
+        $this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle);
 
         $output->writeln(array(
             '',
-            $this->getHelper('formatter')->formatBlock('New model conent and bundle generated', 'bg=blue;fg=white', true),
+            $this->getHelper('formatter')->formatBlock('New model content and bundle generated', 'bg=blue;fg=white', true),
             ''
         ));
     }
@@ -103,28 +102,30 @@ class ModelCommand extends BaseContainerAwareCommand
         $questionHelper = $this->getQuestionHelper();
 
         $vendorName = false;
+        $question = new Question($questionHelper->getQuestion('Project Vendor name used to construct namespace', null));
+        $question->setValidator(
+            array(
+                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'validateVendorName'
+            )
+        );
+
         while (!$vendorName) {
-            $question = new Question($questionHelper->getQuestion('Project Vendor name used to construct namespace', null));
-            $question->setValidator(
-                array(
-                    'EdgarEz\SiteBuilderBundle\Command\Validators',
-                    'validateVendorName'
-                )
-            );
             $vendorName = $questionHelper->ask($input, $output, $question);
         }
 
         $this->vendorName = $vendorName;
 
         $modelName = false;
+        $question = new Question($questionHelper->getQuestion('Model name used to construct namespace', null));
+        $question->setValidator(
+            array(
+                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'validateModelName'
+            )
+        );
+
         while (!$modelName) {
-            $question = new Question($questionHelper->getQuestion('Modelr name used to construct namespace', null));
-            $question->setValidator(
-                array(
-                    'EdgarEz\SiteBuilderBundle\Command\Validators',
-                    'validateModelName'
-                )
-            );
             $modelName = $questionHelper->ask($input, $output, $question);
         }
 

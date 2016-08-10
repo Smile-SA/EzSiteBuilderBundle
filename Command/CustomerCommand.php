@@ -45,6 +45,9 @@ class CustomerCommand extends BaseContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $questionHelper = $this->getQuestionHelper();
+        $questionHelper->writeSection($output, 'SiteBuilder Customer initialization');
+
         $this->createContentStructure($input, $output);
         $this->createCustomerBundle($input, $output);
 
@@ -57,13 +60,9 @@ class CustomerCommand extends BaseContainerAwareCommand
             $this->dir
         );
 
-        $questionHelper = $this->getQuestionHelper();
-
-        $errors = array();
-        $runner = $questionHelper->getRunner($output, $errors);
         $namespace = $this->vendorName . '\\' . ProjectGenerator::CUSTOMERS . '\\' . $this->customerName . '\\' . CustomerGenerator::BUNDLE ;
         $bundle = $this->vendorName . ProjectGenerator::CUSTOMERS . $this->customerName . CustomerGenerator::BUNDLE;
-        $runner($this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle));
+        $this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle);
 
         $output->writeln(array(
             '',
@@ -83,28 +82,30 @@ class CustomerCommand extends BaseContainerAwareCommand
         $questionHelper = $this->getQuestionHelper();
 
         $vendorName = false;
+        $question = new Question($questionHelper->getQuestion('Customer Vendor name used to construct namespace', null));
+        $question->setValidator(
+            array(
+                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'validateVendorName'
+            )
+        );
+
         while (!$vendorName) {
-            $question = new Question($questionHelper->getQuestion('Customer Vendor name used to construct namespace', null));
-            $question->setValidator(
-                array(
-                    'EdgarEz\SiteBuilderBundle\Command\Validators',
-                    'validateVendorName'
-                )
-            );
             $vendorName = $questionHelper->ask($input, $output, $question);
         }
 
         $this->vendorName = $vendorName;
 
         $customerName = false;
+        $question = new Question($questionHelper->getQuestion('Customer name used to construct namespace', null));
+        $question->setValidator(
+            array(
+                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'validateVendorName'
+            )
+        );
+
         while (!$customerName) {
-            $question = new Question($questionHelper->getQuestion('Customer name used to construct namespace', null));
-            $question->setValidator(
-                array(
-                    'EdgarEz\SiteBuilderBundle\Command\Validators',
-                    'validateVendorName'
-                )
-            );
             $customerName = $questionHelper->ask($input, $output, $question);
         }
 

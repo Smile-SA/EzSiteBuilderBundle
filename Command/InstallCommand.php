@@ -73,6 +73,9 @@ class InstallCommand extends BaseContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $questionHelper = $this->getQuestionHelper();
+        $questionHelper->writeSection($output, 'Welcome to the SiteBuilder installation');
+
         $this->createContentStructure($input, $output);
         $this->createUserStructure($input, $output);
         $this->createProjectBundle($input, $output);
@@ -88,13 +91,9 @@ class InstallCommand extends BaseContainerAwareCommand
             $this->dir
         );
 
-        $questionHelper = $this->getQuestionHelper();
-
-        $errors = array();
-        $runner = $questionHelper->getRunner($output, $errors);
         $namespace = $this->vendorName . '\\' . ProjectGenerator::BUNDLE;
         $bundle = $this->vendorName . ProjectGenerator::BUNDLE;
-        $runner($this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle));
+        $this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle);
 
         $output->writeln(array(
             '',
@@ -111,17 +110,17 @@ class InstallCommand extends BaseContainerAwareCommand
      */
     protected function createContentStructure(InputInterface $input, OutputInterface $output)
     {
+        $questionHelper = $this->getQuestionHelper();
+
         /** @var Repository $repository */
         $repository = $this->getContainer()->get('ezpublish.api.repository');
 
         /** @var LocationService $locationService */
         $locationService = $repository->getLocationService();
 
-        /** @var QuestionHelper $questionHelper */
-        $questionHelper = $this->getHelper('question');
-
         // Get content root location ID
-        $question = new Question('Root Location ID where SiteBuilder content structure will be initialized: ');
+        $parentLocationID = false;
+        $question = new Question($questionHelper->getQuestion('Root Location ID where SiteBuilder content structure will be initialized', $parentLocationID));
         $question->setValidator(
             array(
                 'EdgarEz\SiteBuilderBundle\Command\Validators',
@@ -129,7 +128,6 @@ class InstallCommand extends BaseContainerAwareCommand
             )
         );
 
-        $parentLocationID = false;
         while (!$parentLocationID) {
             $parentLocationID = $questionHelper->ask($input, $output, $question);
 
@@ -151,7 +149,7 @@ class InstallCommand extends BaseContainerAwareCommand
         /** @var ContentTypeGroup $contentTypeGroupService */
         $contentTypeGroup = $this->getContainer()->get('edgar_ez_tools.contenttypegroup.service');
         $contentTypeGroup = $contentTypeGroup->add('SiteBuilder');
-        $output->writeln('<info>ContentTypeGroup SiteBuilder created</info>');
+        $output->writeln('ContentTypeGroup <info>SiteBuilder</info> created');
 
         /**
          * Create site builder content types :
@@ -168,7 +166,7 @@ class InstallCommand extends BaseContainerAwareCommand
                 $contentTypeDefinition = Yaml::parse(file_get_contents($contentTypeDefinition));
                 $contentTypeDefinition['contentTypeGroup'] = $contentTypeGroup;
                 $contentType->add($contentTypeDefinition);
-                $output->writeln('<info>ContentType ' . $contentTypeDefinition['contentTypeName'] . ' created</info>');
+                $output->writeln('ContentType <info>' . $contentTypeDefinition['contentTypeName'] . '</info> created</info>');
             }
         }
 
@@ -186,8 +184,9 @@ class InstallCommand extends BaseContainerAwareCommand
             foreach ($contentDefinitions as $contentDefinition) {
                 $contentDefinition = Yaml::parse(file_get_contents($contentDefinition));
                 $contentDefinition['parentLocationID'] = $parentLocationID;
-                $contents[] = $content->add($contentDefinition);
-                $output->writeln('<info>Content created</info>');
+                $contentAdded = $content->add($contentDefinition);
+                $contents[] = $contentAdded;
+                $output->writeln('Content <info>' . $contentAdded->contentInfo->name . '</info> created');
             }
         }
 
@@ -215,17 +214,17 @@ class InstallCommand extends BaseContainerAwareCommand
      */
     protected function createUserStructure(InputInterface $input, OutputInterface $output)
     {
+        $questionHelper = $this->getQuestionHelper();
+
         /** @var Repository $repository */
         $repository = $this->getContainer()->get('ezpublish.api.repository');
 
         /** @var LocationService $locationService */
         $locationService = $repository->getLocationService();
 
-        /** @var QuestionHelper $questionHelper */
-        $questionHelper = $this->getHelper('question');
-
         // Get user root location ID
-        $question = new Question('Root User Location ID where SiteBuilder user structure will be initialized: ');
+        $userGroupParenttLocationID = false;
+        $question = new Question($questionHelper->getQuestion('Root User Location ID where SiteBuilder user structure will be initialized: ', $userGroupParenttLocationID));
         $question->setValidator(
             array(
                 'EdgarEz\SiteBuilderBundle\Command\Validators',
@@ -233,7 +232,6 @@ class InstallCommand extends BaseContainerAwareCommand
             )
         );
 
-        $userGroupParenttLocationID = false;
         while (!$userGroupParenttLocationID) {
             $userGroupParenttLocationID = $questionHelper->ask($input, $output, $question);
 
@@ -254,7 +252,7 @@ class InstallCommand extends BaseContainerAwareCommand
         $userGroupDefinition['parentLocationID'] = $userGroupParenttLocationID;
         /** @var \eZ\Publish\API\Repository\Values\Content\Content $userGroup */
         $userGroup = $content->add($userGroupDefinition);
-        $output->writeln('<info>User group root created</info>');
+        $output->writeln('User group root created');
 
         /** @var \eZ\Publish\API\Repository\Values\Content\Content[] $contents */
         $contents = array();
@@ -264,8 +262,10 @@ class InstallCommand extends BaseContainerAwareCommand
             foreach ($userGroupDefinitions as $userGroupDefinition) {
                 $userGroupDefinition = Yaml::parse(file_get_contents($userGroupDefinition));
                 $userGroupDefinition['parentLocationID'] = $userGroupParenttLocationID;
-                $contents[] = $content->add($userGroupDefinition);
-                $output->writeln('<info>User group created</info>');
+                /** @var \eZ\Publish\Core\REST\Client\Values\Content\Content $contentAdded */
+                $contentAdded = $content->add($userGroupDefinition);
+                $contents[] = $contentAdded;
+                $output->writeln('User group <info>' . $contentAdded->contentInfo->name . '</info> created');
             }
         }
 
@@ -297,14 +297,15 @@ class InstallCommand extends BaseContainerAwareCommand
         $questionHelper = $this->getQuestionHelper();
 
         $vendorName = false;
+        $question = new Question($questionHelper->getQuestion('Project Vendor name used to construct namespace', null));
+        $question->setValidator(
+            array(
+                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'validateVendorName'
+            )
+        );
+
         while (!$vendorName) {
-            $question = new Question($questionHelper->getQuestion('Project Vendor name used to construct namespace', null));
-            $question->setValidator(
-                array(
-                    'EdgarEz\SiteBuilderBundle\Command\Validators',
-                    'validateVendorName'
-                )
-            );
             $vendorName = $questionHelper->ask($input, $output, $question);
         }
 
