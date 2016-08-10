@@ -6,6 +6,7 @@
 * throw exception for question validator methods
 * <s>standardize questions</s>
 * manager _<env>.yml settings
+* remove sitebuilder user group administrator
 * user guide
 
 ## Installation
