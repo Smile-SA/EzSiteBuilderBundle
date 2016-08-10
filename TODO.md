@@ -4,7 +4,7 @@
 
 * manage content type and content language
 * throw exception for question validator methods
-* standardize questions
+* <s>standardize questions</s>
 * manager _<env>.yml settings
 * user guide
 
