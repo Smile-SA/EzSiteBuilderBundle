@@ -23,8 +23,8 @@
 
 ## Site generator
 
-* copy model to customer subtree
-* create customer site bundle inherited model
+* <s>copy model to customer subtree</s>
+* <s>create customer site bundle inherited model</s>
 
 ## eZPlatform  SiteBuilder interface
 
