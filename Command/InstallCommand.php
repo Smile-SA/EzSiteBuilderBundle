@@ -10,6 +10,7 @@ use EdgarEz\ToolsBundle\Service\Role;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
+use eZ\Publish\API\Repository\Values\User\Limitation\SubtreeLimitation;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -44,6 +45,12 @@ class InstallCommand extends BaseContainerAwareCommand
      * @var int $userEditorsLocationID root locationID for editors users
      */
     protected $userEditorsLocationID;
+
+    /** @var int $roleCreatorID sitebuilder user role creator ID */
+    protected $roleCreatorID;
+
+    /** @var int $roleEditorID sitebuilder user role editor ID */
+    protected $roleEditorID;
 
     /**
      * @var string $vendorName namespace vendor name where project sitebuilder will be generated
@@ -89,6 +96,8 @@ class InstallCommand extends BaseContainerAwareCommand
             $this->customersLocationID,
             $this->userCreatorsLocationID,
             $this->userEditorsLocationID,
+            $this->roleCreatorID,
+            $this->roleEditorID,
             $this->vendorName,
             $this->dir
         );
@@ -297,10 +306,21 @@ class InstallCommand extends BaseContainerAwareCommand
         /** @var Role $roleService */
         $roleService = $this->getContainer()->get('edgar_ez_tools.role.service');
 
-        $roleService->add('SiteBuilder user creator');
+        /** @var \eZ\Publish\API\Repository\Values\User\Role $roleCreator */
+        $roleCreator = $roleService->add('SiteBuilder user creator');
+        $this->roleCreatorID = $roleCreator->id;
         $output->writeln('Add user creator role');
-        $roleService->add('SiteBuilder user editor');
+        $roleService->addPolicy($roleCreator->id, 'content', 'read');
+        $roleService->addPolicy($roleCreator->id, 'content', 'create');
+        $roleService->addPolicy($roleCreator->id, 'content', 'edit');
+
+        /** @var \eZ\Publish\API\Repository\Values\User\Role $roleEditor */
+        $roleEditor = $roleService->add('SiteBuilder user editor');
+        $this->roleEditorID = $roleEditor->id;
         $output->writeln('Add user editor role');
+        $roleService->addPolicy($roleEditor->id, 'content', 'read');
+        $roleService->addPolicy($roleEditor->id, 'content', 'create');
+        $roleService->addPolicy($roleEditor->id, 'content', 'edit');
     }
 
     /**

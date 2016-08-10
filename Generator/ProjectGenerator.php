@@ -57,6 +57,8 @@ class ProjectGenerator extends Generator
         $customersLocationID,
         $userCreatorsLocationID,
         $userEditorsLocationID,
+        $roleCreatorID,
+        $roleEditorID,
         $vendorName,
         $targetDir
     )
@@ -89,6 +91,8 @@ class ProjectGenerator extends Generator
                 'customersLocationID' => $customersLocationID,
                 'userCreatorsLocationID' => $userCreatorsLocationID,
                 'userEditorsLocationID' => $userEditorsLocationID,
+                'roleCreatorID' => $roleCreatorID,
+                'roleEditorID' => $roleEditorID,
                 'namespace' => $namespace
             )
         );

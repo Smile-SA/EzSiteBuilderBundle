@@ -5,8 +5,10 @@ namespace EdgarEz\SiteBuilderBundle\Command;
 use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\ToolsBundle\Service\Content;
+use EdgarEz\ToolsBundle\Service\Role;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
+use eZ\Publish\API\Repository\Values\User\Limitation\SubtreeLimitation;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
@@ -201,6 +203,17 @@ class CustomerCommand extends BaseContainerAwareCommand
         $output->writeln('User group <info>' . $contentAdded->contentInfo->name . ' editors</info> created');
 
         $this->customerUserEditorsGroupLocationID = $contentAdded->contentInfo->mainLocationId;
+
+        // Manager policy limitation to the rôles
+        $basename = $this->vendorName . ProjectGenerator::MAIN;
+        $roleCreatorID = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.user_creator_role_id');
+        $roleEditorID = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.user_editor_role_id');
+
+        $subtreeLimitation = new SubtreeLimitation(array($this->customerLocationID));
+        /** @var Role $roleService */
+        $roleService = $this->getContainer()->get('edgar_ez_tools.role.service');
+        $roleService->addLimitation($roleCreatorID, $subtreeLimitation);
+        $roleService->addLimitation($roleEditorID, $subtreeLimitation);
     }
 
     /**

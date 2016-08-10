@@ -12,7 +12,6 @@
 ## Installation
 
 * <s>add user creator/editor role</s>
-* assign roles to user group
 * initialize sitebuilder user creator and user editor policies
 
 ## Customer bundle generation 
