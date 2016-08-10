@@ -5,6 +5,8 @@ namespace EdgarEz\SiteBuilderBundle\Command;
 use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\ToolsBundle\Service\Content;
+use eZ\Publish\API\Repository\LocationService;
+use eZ\Publish\API\Repository\Repository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
@@ -17,6 +19,16 @@ class CustomerCommand extends BaseContainerAwareCommand
      * @var int $customerLocationID customer content location ID
      */
     protected $customerLocationID;
+
+    /**
+     * @var int $customerUserCreatorsGroupLocationID customer user creators group location ID
+     */
+    protected $customerUserCreatorsGroupLocationID;
+
+    /**
+     * @var int $customerUserEditorsGroupLocationID customer user editors group location ID
+     */
+    protected $customerUserEditorsGroupLocationID;
 
     /**
      * @var string $vendorName namespace vendor name where project sitebuilder will be generated
@@ -50,11 +62,14 @@ class CustomerCommand extends BaseContainerAwareCommand
 
         $this->createContentStructure($input, $output);
         $this->createCustomerBundle($input, $output);
+        $this->createUserGroups($input, $output);
 
         /** @var CustomerGenerator $generator */
         $generator = $this->getGenerator();
         $generator->generate(
             $this->customerLocationID,
+            $this->customerUserCreatorsGroupLocationID,
+            $this->customerUserEditorsGroupLocationID,
             $this->vendorName,
             $this->customerName,
             $this->dir
@@ -155,6 +170,37 @@ class CustomerCommand extends BaseContainerAwareCommand
         }
 
         $this->dir = $dir;
+    }
+
+    /**
+     * Create customer user groups (creator and editor)
+     *
+     * @param InputInterface  $input input console
+     * @param OutputInterface $output output console
+     */
+    protected function createUserGroups(InputInterface $input, OutputInterface $output)
+    {
+        $basename = $this->vendorName . ProjectGenerator::MAIN ;
+
+        $content = $this->getContainer()->get('edgar_ez_tools.content.service');
+
+        $userGroupDefinition = Yaml::parse(file_get_contents(__DIR__. '/../Resources/datas/customerusergroup_creators.yml'));
+        $userGroupDefinition['parentLocationID'] = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.user_creators_location_id');
+        $userGroupDefinition['fields']['name']['value'] = $this->customerName;
+        /** @var \eZ\Publish\Core\REST\Client\Values\Content\Content $contentAdded */
+        $contentAdded = $content->add($userGroupDefinition);
+        $output->writeln('User group <info>' . $contentAdded->contentInfo->name . ' creators</info> created');
+
+        $this->customerUserCreatorsGroupLocationID = $contentAdded->contentInfo->mainLocationId;
+
+        $userGroupDefinition = Yaml::parse(file_get_contents(__DIR__. '/../Resources/datas/customerusergroup_editors.yml'));
+        $userGroupDefinition['parentLocationID'] = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.user_editors_location_id');
+        $userGroupDefinition['fields']['name']['value'] = $this->customerName;
+        /** @var \eZ\Publish\Core\REST\Client\Values\Content\Content $contentAdded */
+        $contentAdded = $content->add($userGroupDefinition);
+        $output->writeln('User group <info>' . $contentAdded->contentInfo->name . ' editors</info> created');
+
+        $this->customerUserEditorsGroupLocationID = $contentAdded->contentInfo->mainLocationId;
     }
 
     /**

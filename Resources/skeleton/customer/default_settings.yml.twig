@@ -1,4 +1,6 @@
 parameters:
 {% block parameters %}
     {{ extension_alias }}.default.customer_location_id: {{ settings.customerLocationID }}
+    {{ extension_alias }}.default.customer_user_creators_group_location_id: {{ settings.customerUserCreatorsGroupLocationID }}
+    {{ extension_alias }}.default.customer_user_editors_group_location_id: {{ settings.customerUserEditorsGroupLocationID }}
 {% endblock parameters %}
