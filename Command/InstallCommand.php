@@ -6,6 +6,7 @@ use EdgarEz\ToolsBundle\Service\Content;
 use EdgarEz\ToolsBundle\Service\ContentType;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\ToolsBundle\Service\ContentTypeGroup;
+use EdgarEz\ToolsBundle\Service\Role;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
@@ -78,6 +79,7 @@ class InstallCommand extends BaseContainerAwareCommand
 
         $this->createContentStructure($input, $output);
         $this->createUserStructure($input, $output);
+        $this->createRoles($input, $output);
         $this->createProjectBundle($input, $output);
 
         /** @var ProjectGenerator $generator */
@@ -284,6 +286,21 @@ class InstallCommand extends BaseContainerAwareCommand
                     break;
             }
         }
+    }
+
+    /**
+     * @param InputInterface  $input input console
+     * @param OutputInterface $output output console
+     */
+    protected function createRoles(InputInterface $input, OutputInterface $output)
+    {
+        /** @var Role $roleService */
+        $roleService = $this->getContainer()->get('edgar_ez_tools.role.service');
+
+        $roleService->add('SiteBuilder user creator');
+        $output->writeln('Add user creator role');
+        $roleService->add('SiteBuilder user editor');
+        $output->writeln('Add user editor role');
     }
 
     /**
