@@ -5,7 +5,7 @@
 * manage content type and content language
 * throw exception for question validator methods
 * <s>standardize questions</s>
-* manager _<env>.yml settings
+* manage _dev.yml, _prod.yml ... settings
 * <s>remove sitebuilder user group administrator</s>
 * user guide
 
