@@ -4,6 +4,9 @@
 
 * manage content/contentType language
 * throw exception for question validator methods
+* catch exceptions
+* move $vendorName, $dir ... to BaseContainerAwareCommand
+* manage questions and content actions because no rollback (question/validation first)
 * <s>standardize questions</s>
 * manage _dev.yml, _prod.yml ... settings
 * <s>remove sitebuilder user group administrator</s>
@@ -13,6 +16,9 @@
 
 * <s>add user creator/editor role</s>
 * <s>create media content structure</s>
+* override default_settings adminID
+* override default_settings host
+* override default_settings system admin mail
 
 ## Customer bundle generation 
 
