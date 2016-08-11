@@ -75,6 +75,7 @@ class ModelCommand extends BaseContainerAwareCommand
             $this->modelLocationID,
             $this->mediaModelLocationID,
             $this->excludeUriPrefixes,
+            $this->getContainer()->getParameter('edgar_ez_site_builder.default.host'),
             $this->dir
         );
 

@@ -26,6 +26,7 @@ class EdgarEzSiteBuilderExtension extends Extension implements PrependExtensionI
         $config = $this->processConfiguration($configuration, $configs);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('default_settings.yml');
         $loader->load('services.yml');
     }
 
@@ -50,7 +51,7 @@ class EdgarEzSiteBuilderExtension extends Extension implements PrependExtensionI
     private function prependYui(ContainerBuilder $container)
     {
         $container->setParameter(
-            'edgar_ez_sb.public_dir',
+            'edgar_ez_site_builder.public_dir',
             'bundles/edgarezsitebuilder'
         );
         $yuiConfigFile = __DIR__ . '/../Resources/config/yui.yml';
@@ -67,7 +68,7 @@ class EdgarEzSiteBuilderExtension extends Extension implements PrependExtensionI
     private function prependCss(ContainerBuilder $container)
     {
         $container->setParameter(
-            'edgar_ez_sb.css_dir',
+            'edgar_ez_site_builder.css_dir',
             'bundles/edgarezsitebuilder/css'
         );
         $cssConfigFile = __DIR__ . '/../Resources/config/css.yml';

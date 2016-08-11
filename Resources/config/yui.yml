@@ -5,5 +5,5 @@ system:
                 edgarezsb-navigationplugin:
                     requires: ['ez-pluginregistry', 'ez-viewservicebaseplugin', 'ez-navigationitemview']
                     dependencyOf: ['ez-navigationhubviewservice']
-                    path: %edgar_ez_sb.public_dir%/js/views/services/plugins/edgarezsb-navigationplugin.js
+                    path: %edgar_ez_site_builder.public_dir%/js/views/services/plugins/edgarezsb-navigationplugin.js
 

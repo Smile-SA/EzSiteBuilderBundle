@@ -2,15 +2,15 @@
 
 namespace EdgarEz\SiteBuilderBundle\DependencyInjection;
 
+use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Configuration\SiteAccessAware\Configuration as SiteAccessConfiguration;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
-use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
  * This is the class that validates and merges configuration from your app/config files
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html#cookbook-bundles-extension-config-class}
  */
-class Configuration implements ConfigurationInterface
+class Configuration extends SiteAccessConfiguration
 {
     /**
      * {@inheritdoc}
@@ -18,11 +18,12 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('edgar_ez_sb');
+        $rootNode = $treeBuilder->root('edgar_ez_site_builder');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+        $systemNode = $this->generateScopeBaseNode($rootNode);
+        $systemNode
+            ->scalarNode('host')->isRequired()->end()
+            ->scalarNode('sysadminemail')->isRequired()->end();
 
         return $treeBuilder;
     }

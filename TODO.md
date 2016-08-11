@@ -30,13 +30,13 @@
 * <s>assign role to user groups with subtree limitation</s>
 * create one sitebuilder user creator for this customer
 * create one sitebuilder user editor for this customer
-* ask host for siteaccess
 
 ## Site generator
 
 * <s>copy model to customer subtree</s>
 * <s>create customer site bundle inherited model</s>
 * <s>copy model media content structure to customer media content subtree</s>
+* ask host for siteaccess
 * add new siteaccess to user/login policies for creator/editor roles for this customer
 * manage siteaccess matching
 * manage multilanguage site

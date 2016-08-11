@@ -51,6 +51,7 @@ class ModelGenerator extends Generator
         $modelLocationID,
         $mediaModelLocationID,
         $excludeUriPrefixes,
+        $host,
         $targetDir
     )
     {
@@ -82,7 +83,7 @@ class ModelGenerator extends Generator
             'modelLocationID' => $modelLocationID,
             'mediaModelLocationID' => $mediaModelLocationID,
             'siteaccess' => Container::underscore($vendorName . $modelName),
-            'host' => 'ezplatform.lxc',
+            'host' => $host,
             'exclude_uri_prefixes' => $excludeUriPrefixes
         );
 
