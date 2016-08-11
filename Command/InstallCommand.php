@@ -6,12 +6,9 @@ use EdgarEz\ToolsBundle\Service\Content;
 use EdgarEz\ToolsBundle\Service\ContentType;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\ToolsBundle\Service\ContentTypeGroup;
-use EdgarEz\ToolsBundle\Service\Role;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
-use eZ\Publish\API\Repository\Values\User\Limitation\SubtreeLimitation;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
@@ -57,16 +54,6 @@ class InstallCommand extends BaseContainerAwareCommand
     protected $userEditorsLocationID;
 
     /**
-     * @var string $vendorName namespace vendor name where project sitebuilder will be generated
-     */
-    protected $vendorName;
-
-    /**
-     * @var string $dir system directory where bundle would be generated
-     */
-    protected $dir;
-
-    /**
      * Configure SiteBuilder installation command
      */
     protected function configure()
@@ -88,10 +75,11 @@ class InstallCommand extends BaseContainerAwareCommand
         $questionHelper = $this->getQuestionHelper();
         $questionHelper->writeSection($output, 'Welcome to the SiteBuilder installation');
 
+        $this->init($input, $output);
+
         $this->createContentStructure($input, $output);
         $this->createMediaContentStructure($input, $output);
         $this->createUserStructure($input, $output);
-        $this->createProjectBundle($input, $output);
 
         /** @var ProjectGenerator $generator */
         $generator = $this->getGenerator();
@@ -393,55 +381,6 @@ class InstallCommand extends BaseContainerAwareCommand
                     break;
             }
         }
-    }
-
-    /**
-     * Create sitebuilder porject bundle
-     *
-     * @param InputInterface $input input console
-     * @param OutputInterface $output output console
-     */
-    protected function createProjectBundle(InputInterface $input, OutputInterface $output)
-    {
-        $questionHelper = $this->getQuestionHelper();
-
-        $vendorName = false;
-        $question = new Question($questionHelper->getQuestion('Project Vendor name used to construct namespace', null));
-        $question->setValidator(
-            array(
-                'EdgarEz\SiteBuilderBundle\Command\Validators',
-                'validateVendorName'
-            )
-        );
-
-        while (!$vendorName) {
-            $vendorName = $questionHelper->ask($input, $output, $question);
-        }
-
-        $this->vendorName = $vendorName;
-
-        $dir = false;
-        while (!$dir) {
-            $dir = dirname($this->getContainer()->getParameter('kernel.root_dir')).'/src';
-
-            $output->writeln(array(
-                '',
-                'The bundle can be generated anywhere. The suggested default directory uses',
-                'the standard conventions.',
-                '',
-            ));
-
-            $question = new Question($questionHelper->getQuestion('Target directory', $dir), $dir);
-            $question->setValidator(
-                array(
-                    'EdgarEz\SiteBuilderBundle\Command\Validators',
-                    'validateTargetDir'
-                )
-            );
-            $dir = $questionHelper->ask($input, $output, $question);
-        }
-
-        $this->dir = $dir;
     }
 
     /**

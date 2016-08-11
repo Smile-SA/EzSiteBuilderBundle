@@ -5,7 +5,7 @@
 * manage content/contentType language
 * throw exception for question validator methods
 * catch exceptions
-* move $vendorName, $dir ... to BaseContainerAwareCommand
+* <s>move $vendorName, $dir ... to BaseContainerAwareCommand</s>
 * manage questions and content actions because no rollback (question/validation first)
 * <s>standardize questions</s>
 * manage _dev.yml, _prod.yml ... settings

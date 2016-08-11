@@ -8,6 +8,7 @@ use Sensio\Bundle\GeneratorBundle\Manipulator\KernelManipulator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
@@ -19,6 +20,16 @@ use Symfony\Component\HttpKernel\KernelInterface;
  */
 abstract class BaseContainerAwareCommand extends GeneratorCommand
 {
+    /**
+     * @var string $vendorName namespace vendor name where project sitebuilder will be generated
+     */
+    protected $vendorName;
+
+    /**
+     * @var string $dir system directory where bundle would be generated
+     */
+    protected $dir;
+
     /**
      * Get questionHelper
      *
@@ -75,5 +86,59 @@ abstract class BaseContainerAwareCommand extends GeneratorCommand
                 '',
             );
         }
+    }
+
+    protected function getVendorName(InputInterface $input, OutputInterface $output)
+    {
+        $questionHelper = $this->getQuestionHelper();
+
+        $vendorName = false;
+        $question = new Question($questionHelper->getQuestion('Vendor name used to construct namespace', null));
+        $question->setValidator(
+            array(
+                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'validateVendorName'
+            )
+        );
+
+        while (!$vendorName) {
+            $vendorName = $questionHelper->ask($input, $output, $question);
+        }
+
+        $this->vendorName = $vendorName;
+    }
+
+    protected function getDir(InputInterface $input, OutputInterface $output)
+    {
+        $questionHelper = $this->getQuestionHelper();
+
+        $dir = false;
+        while (!$dir) {
+            $dir = dirname($this->getContainer()->getParameter('kernel.root_dir')).'/src';
+
+            $output->writeln(array(
+                '',
+                'The bundle can be generated anywhere. The suggested default directory uses',
+                'the standard conventions.',
+                '',
+            ));
+
+            $question = new Question($questionHelper->getQuestion('Target directory', $dir), $dir);
+            $question->setValidator(
+                array(
+                    'EdgarEz\SiteBuilderBundle\Command\Validators',
+                    'validateTargetDir'
+                )
+            );
+            $dir = $questionHelper->ask($input, $output, $question);
+        }
+
+        $this->dir = $dir;
+    }
+
+    protected function init(InputInterface $input, OutputInterface $output)
+    {
+        $this->getVendorName($input, $output);
+        $this->getDir($input, $output);
     }
 }

@@ -6,7 +6,6 @@ use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\ToolsBundle\Service\Content;
 use EdgarEz\ToolsBundle\Service\Role;
-use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\RoleService;
 use eZ\Publish\API\Repository\Values\User\Limitation\SubtreeLimitation;
@@ -45,19 +44,9 @@ class CustomerCommand extends BaseContainerAwareCommand
     protected $customerRoleEditorID;
 
     /**
-     * @var string $vendorName namespace vendor name where project sitebuilder will be generated
-     */
-    protected $vendorName;
-
-    /**
      * @var string $customerName customer name
      */
     protected $customerName;
-
-    /**
-     * @var string $dir system directory where bundle would be generated
-     */
-    protected $dir;
 
     /**
      * Configure Customer generator command
@@ -74,9 +63,10 @@ class CustomerCommand extends BaseContainerAwareCommand
         $questionHelper = $this->getQuestionHelper();
         $questionHelper->writeSection($output, 'SiteBuilder Customer initialization');
 
+        $this->init($input, $output);
+
         $this->createContentStructure($input, $output);
         $this->createMediaContentStructure($input, $output);
-        $this->createCustomerBundle($input, $output);
         $this->createUserGroups($input, $output);
         $this->createRoles($input, $output);
 
@@ -115,21 +105,6 @@ class CustomerCommand extends BaseContainerAwareCommand
     {
         $questionHelper = $this->getQuestionHelper();
 
-        $vendorName = false;
-        $question = new Question($questionHelper->getQuestion('Customer Vendor name used to construct namespace', null));
-        $question->setValidator(
-            array(
-                'EdgarEz\SiteBuilderBundle\Command\Validators',
-                'validateVendorName'
-            )
-        );
-
-        while (!$vendorName) {
-            $vendorName = $questionHelper->ask($input, $output, $question);
-        }
-
-        $this->vendorName = $vendorName;
-
         $customerName = false;
         $question = new Question($questionHelper->getQuestion('Customer name used to construct namespace', null));
         $question->setValidator(
@@ -165,8 +140,6 @@ class CustomerCommand extends BaseContainerAwareCommand
      */
     protected function createMediaContentStructure(InputInterface $input, OutputInterface $output)
     {
-        $questionHelper = $this->getQuestionHelper();
-
         $basename = $this->vendorName . ProjectGenerator::MAIN;
 
         /** @var Content $content */
@@ -180,40 +153,6 @@ class CustomerCommand extends BaseContainerAwareCommand
     }
 
     /**
-     * Generate customer bundle
-     *
-     * @param InputInterface  $input input console
-     * @param OutputInterface $output output console
-     */
-    protected function createCustomerBundle(InputInterface $input, OutputInterface $output)
-    {
-        $questionHelper = $this->getQuestionHelper();
-
-        $dir = false;
-        while (!$dir) {
-            $dir = dirname($this->getContainer()->getParameter('kernel.root_dir')).'/src';
-
-            $output->writeln(array(
-                '',
-                'The bundle can be generated anywhere. The suggested default directory uses',
-                'the standard conventions.',
-                '',
-            ));
-
-            $question = new Question($questionHelper->getQuestion('Target directory', $dir), $dir);
-            $question->setValidator(
-                array(
-                    'EdgarEz\SiteBuilderBundle\Command\Validators',
-                    'validateTargetDir'
-                )
-            );
-            $dir = $questionHelper->ask($input, $output, $question);
-        }
-
-        $this->dir = $dir;
-    }
-
-    /**
      * Create customer user groups (creator and editor)
      *
      * @param InputInterface  $input input console
@@ -221,7 +160,7 @@ class CustomerCommand extends BaseContainerAwareCommand
      */
     protected function createUserGroups(InputInterface $input, OutputInterface $output)
     {
-        $basename = $this->vendorName . ProjectGenerator::MAIN ;
+        $basename = $this->vendorName . ProjectGenerator::MAIN;
 
         $content = $this->getContainer()->get('edgar_ez_tools.content.service');
 

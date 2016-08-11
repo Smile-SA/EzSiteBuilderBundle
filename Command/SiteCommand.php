@@ -29,11 +29,6 @@ class SiteCommand extends BaseContainerAwareCommand
     protected $siteLocationID;
 
     /**
-     * @var string $vendorName namespace vendor name where project sitebuilder will be generated
-     */
-    protected $vendorName;
-
-    /**
      * @var string $customerName customer name
      */
     protected $customerName;
@@ -62,11 +57,6 @@ class SiteCommand extends BaseContainerAwareCommand
     protected $excludeUriPrefixes;
 
     /**
-     * @var string $dir system directory where bundle would be generated
-     */
-    protected $dir;
-
-    /**
      * Configure Customer generator command
      */
     protected function configure()
@@ -87,9 +77,10 @@ class SiteCommand extends BaseContainerAwareCommand
         $questionHelper = $this->getQuestionHelper();
         $questionHelper->writeSection($output, 'SiteBuilder Site initialization');
 
+        $this->init($input, $output);
+
         $this->createSiteContent($input, $output);
         $this->createMediaSiteContent($input, $output);
-        $this->createSiteBundle($input, $output);
 
         /** @var SiteGenerator $generator */
         $generator = $this->getGenerator();
@@ -123,21 +114,6 @@ class SiteCommand extends BaseContainerAwareCommand
     protected function createSiteContent(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
-
-        $vendorName = false;
-        $question = new Question($questionHelper->getQuestion('Project Vendor name used to construct namespace', null));
-        $question->setValidator(
-            array(
-                'EdgarEz\SiteBuilderBundle\Command\Validators',
-                'validateVendorName'
-            )
-        );
-
-        while (!$vendorName) {
-            $vendorName = $questionHelper->ask($input, $output, $question);
-        }
-
-        $this->vendorName = $vendorName;
 
         $siteName = false;
         $question = new Question($questionHelper->getQuestion('Site name you want to create', null));
@@ -308,40 +284,6 @@ class SiteCommand extends BaseContainerAwareCommand
         } catch (InvalidArgumentException $e) {
             $output->writeln("<error>Invalid argument [$mediaModelLocationID] or [$mediaCustomerLocationID]</error>");
         }
-    }
-
-    /**
-     * Retrieve informations to generate new Customer site bundle
-     *
-     * @param InputInterface  $input input console
-     * @param OutputInterface $output output console
-     */
-    protected function createSiteBundle(InputInterface $input, OutputInterface $output)
-    {
-        $questionHelper = $this->getQuestionHelper();
-
-        $dir = false;
-        while (!$dir) {
-            $dir = dirname($this->getContainer()->getParameter('kernel.root_dir')).'/src';
-
-            $output->writeln(array(
-                '',
-                'The bundle can be generated anywhere. The suggested default directory uses',
-                'the standard conventions.',
-                '',
-            ));
-
-            $question = new Question($questionHelper->getQuestion('Target directory', $dir), $dir);
-            $question->setValidator(
-                array(
-                    'EdgarEz\SiteBuilderBundle\Command\Validators',
-                    'validateTargetDir'
-                )
-            );
-            $dir = $questionHelper->ask($input, $output, $question);
-        }
-
-        $this->dir = $dir;
     }
 
     /**

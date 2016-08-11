@@ -21,11 +21,6 @@ use Symfony\Component\Yaml\Yaml;
 class ModelCommand extends BaseContainerAwareCommand
 {
     /**
-     * @var string $vendorName model bundle vendor name used to construct namespace
-     */
-    protected $vendorName;
-
-    /**
      * @var string $modelName model bundle name used to construct namespace
      */
     protected $modelName;
@@ -39,11 +34,6 @@ class ModelCommand extends BaseContainerAwareCommand
      * @var int $mediaModelLocationID media root location ID for model content
      */
     protected $mediaModelLocationID;
-
-    /**
-     * @var string $dir system directory where model bundle would be generated
-     */
-    protected $dir;
 
     /**
      * @var string $excludeUriPrefixes ezplatform settings for model bundle siteaccess configuration
@@ -72,9 +62,10 @@ class ModelCommand extends BaseContainerAwareCommand
         $questionHelper = $this->getQuestionHelper();
         $questionHelper->writeSection($output, 'SiteBuilder model initialization');
 
+        $this->init($input, $output);
+
         $this->createModelContent($input, $output);
         $this->createMediaModelContent($input, $output);
-        $this->createModelBundle($input, $output);
 
         /** @var ModelGenerator $generator */
         $generator = $this->getGenerator();
@@ -107,21 +98,6 @@ class ModelCommand extends BaseContainerAwareCommand
     protected function createModelContent(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
-
-        $vendorName = false;
-        $question = new Question($questionHelper->getQuestion('Project Vendor name used to construct namespace', null));
-        $question->setValidator(
-            array(
-                'EdgarEz\SiteBuilderBundle\Command\Validators',
-                'validateVendorName'
-            )
-        );
-
-        while (!$vendorName) {
-            $vendorName = $questionHelper->ask($input, $output, $question);
-        }
-
-        $this->vendorName = $vendorName;
 
         $modelName = false;
         $question = new Question($questionHelper->getQuestion('Model name used to construct namespace', null));
@@ -181,40 +157,6 @@ class ModelCommand extends BaseContainerAwareCommand
         $contentAdded = $content->add($contentDefinition);
 
         $this->mediaModelLocationID = $contentAdded->contentInfo->mainLocationId;
-    }
-
-    /**
-     * Create model bundle
-     *
-     * @param InputInterface $input input console
-     * @param OutputInterface $output output console
-     */
-    protected function createModelBundle(InputInterface $input, OutputInterface $output)
-    {
-        $questionHelper = $this->getQuestionHelper();
-
-        $dir = false;
-        while (!$dir) {
-            $dir = dirname($this->getContainer()->getParameter('kernel.root_dir')).'/src';
-
-            $output->writeln(array(
-                '',
-                'The bundle can be generated anywhere. The suggested default directory uses',
-                'the standard conventions.',
-                '',
-            ));
-
-            $question = new Question($questionHelper->getQuestion('Target directory', $dir), $dir);
-            $question->setValidator(
-                array(
-                    'EdgarEz\SiteBuilderBundle\Command\Validators',
-                    'validateTargetDir'
-                )
-            );
-            $dir = $questionHelper->ask($input, $output, $question);
-        }
-
-        $this->dir = $dir;
     }
 
     /**
