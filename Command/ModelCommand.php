@@ -36,6 +36,11 @@ class ModelCommand extends BaseContainerAwareCommand
     protected $modelLocationID;
 
     /**
+     * @var int $mediaModelLocationID media root location ID for model content
+     */
+    protected $mediaModelLocationID;
+
+    /**
      * @var string $dir system directory where model bundle would be generated
      */
     protected $dir;
@@ -68,6 +73,7 @@ class ModelCommand extends BaseContainerAwareCommand
         $questionHelper->writeSection($output, 'SiteBuilder model initialization');
 
         $this->createModelContent($input, $output);
+        $this->createMediaModelContent($input, $output);
         $this->createModelBundle($input, $output);
 
         /** @var ModelGenerator $generator */
@@ -76,6 +82,7 @@ class ModelCommand extends BaseContainerAwareCommand
             $this->vendorName,
             $this->modelName,
             $this->modelLocationID,
+            $this->mediaModelLocationID,
             $this->excludeUriPrefixes,
             $this->dir
         );
@@ -154,6 +161,26 @@ class ModelCommand extends BaseContainerAwareCommand
         $this->excludeUriPrefixes = trim($contentPath, '/') . '/';
 
         $this->modelLocationID = $contentAdded->contentInfo->mainLocationId;
+    }
+
+    /**
+     * Create media model content
+     *
+     * @param InputInterface $input input console
+     * @param OutputInterface $output output console
+     */
+    protected function createMediaModelContent(InputInterface $input, OutputInterface $output)
+    {
+        $basename = $this->vendorName . ProjectGenerator::MAIN ;
+
+        /** @var Content $content */
+        $content = $this->getContainer()->get('edgar_ez_tools.content.service');
+        $contentDefinition = Yaml::parse(file_get_contents(__DIR__ . '/../Resources/datas/mediamodelcontent.yml'));
+        $contentDefinition['parentLocationID'] = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.media_models_location_id');
+        $contentDefinition['fields']['title']['value'] = $this->modelName;
+        $contentAdded = $content->add($contentDefinition);
+
+        $this->mediaModelLocationID = $contentAdded->contentInfo->mainLocationId;
     }
 
     /**

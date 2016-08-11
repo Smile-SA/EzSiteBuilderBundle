@@ -24,6 +24,11 @@ class CustomerCommand extends BaseContainerAwareCommand
     protected $customerLocationID;
 
     /**
+     * @var int $mediaCustomerLocationID media customer content location ID
+     */
+    protected $mediaCustomerLocationID;
+
+    /**
      * @var int $customerUserCreatorsGroupLocationID customer user creators group location ID
      */
     protected $customerUserCreatorsGroupLocationID;
@@ -70,6 +75,7 @@ class CustomerCommand extends BaseContainerAwareCommand
         $questionHelper->writeSection($output, 'SiteBuilder Customer initialization');
 
         $this->createContentStructure($input, $output);
+        $this->createMediaContentStructure($input, $output);
         $this->createCustomerBundle($input, $output);
         $this->createUserGroups($input, $output);
         $this->createRoles($input, $output);
@@ -78,6 +84,7 @@ class CustomerCommand extends BaseContainerAwareCommand
         $generator = $this->getGenerator();
         $generator->generate(
             $this->customerLocationID,
+            $this->mediaCustomerLocationID,
             $this->customerUserCreatorsGroupLocationID,
             $this->customerUserEditorsGroupLocationID,
             $this->customerRoleCreatorID,
@@ -148,6 +155,28 @@ class CustomerCommand extends BaseContainerAwareCommand
         $contentAdded = $content->add($contentDefinition);
 
         $this->customerLocationID = $contentAdded->contentInfo->mainLocationId;
+    }
+
+    /**
+     * Create media customer root content
+     *
+     * @param InputInterface $input input console
+     * @param OutputInterface $output output console
+     */
+    protected function createMediaContentStructure(InputInterface $input, OutputInterface $output)
+    {
+        $questionHelper = $this->getQuestionHelper();
+
+        $basename = $this->vendorName . ProjectGenerator::MAIN;
+
+        /** @var Content $content */
+        $content = $this->getContainer()->get('edgar_ez_tools.content.service');
+        $contentDefinition = Yaml::parse(file_get_contents(__DIR__ . '/../Resources/datas/mediacustomercontent.yml'));
+        $contentDefinition['parentLocationID'] = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.media_customers_location_id');
+        $contentDefinition['fields']['title']['value'] = $this->customerName;
+        $contentAdded = $content->add($contentDefinition);
+
+        $this->mediaCustomerLocationID = $contentAdded->contentInfo->mainLocationId;
     }
 
     /**
@@ -245,16 +274,20 @@ class CustomerCommand extends BaseContainerAwareCommand
         $repository = $this->getContainer()->get('ezpublish.api.repository');
         $locationService = $repository->getLocationService();
         $userService = $repository->getUserService();
-        $contentService = $repository->getContentService();
 
         $contentLocation = $locationService->loadLocation($this->customerLocationID);
+        $mediaContentLocation = $locationService->loadLocation($this->mediaCustomerLocationID);
+
         $userGroupCreatorLocation = $locationService->loadLocation($this->customerUserCreatorsGroupLocationID);
         $userGroupCreator = $userService->loadUserGroup($userGroupCreatorLocation->contentId);
         $userGroupEditorLocation = $locationService->loadLocation($this->customerUserEditorsGroupLocationID);
         $userGroupEditor = $userService->loadUserGroup($userGroupEditorLocation->contentId);
         $subtreeLimitation = new SubtreeLimitation(
             array(
-                'limitationValues' => array('/' . implode('/', $contentLocation->path) . '/')
+                'limitationValues' => array(
+                    '/' . implode('/', $contentLocation->path) . '/',
+                    '/' . implode('/', $mediaContentLocation->path) . '/'
+                )
             )
         );
 

@@ -1,0 +1,6 @@
+contentTypeIdentifier: edgar_ez_sb_mediamodel
+languageCode: eng-GB
+fields:
+    title:
+        identifier: title
+        value:

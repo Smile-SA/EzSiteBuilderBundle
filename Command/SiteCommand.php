@@ -39,9 +39,19 @@ class SiteCommand extends BaseContainerAwareCommand
     protected $customerName;
 
     /**
+     * @var string $mediaCustomerName media customer name
+     */
+    protected $mediaCustomerName;
+
+    /**
      * @var string $modelName model name
      */
     protected $modelName;
+
+    /**
+     * @var string $mediaModelName media model name
+     */
+    protected $mediaModelName;
 
     /** @var string $siteName site name */
     protected $siteName;
@@ -78,6 +88,7 @@ class SiteCommand extends BaseContainerAwareCommand
         $questionHelper->writeSection($output, 'SiteBuilder Site initialization');
 
         $this->createSiteContent($input, $output);
+        $this->createMediaSiteContent($input, $output);
         $this->createSiteBundle($input, $output);
 
         /** @var SiteGenerator $generator */
@@ -153,7 +164,7 @@ class SiteCommand extends BaseContainerAwareCommand
 
         // Get customer content root location ID
         $customerLocationID = false;
-        $question = new Question($questionHelper->getQuestion('Customer location ID yout where site content would be generated', $customerLocationID));
+        $question = new Question($questionHelper->getQuestion('Customer location ID where your site content would be generated', $customerLocationID));
         $question->setValidator(
             array(
                 'EdgarEz\SiteBuilderBundle\Command\Validators',
@@ -177,7 +188,7 @@ class SiteCommand extends BaseContainerAwareCommand
 
         // Get model content root location ID
         $modelLocationID = false;
-        $question = new Question($questionHelper->getQuestion('Model location ID yout want to use to generate ste content', $modelLocationID));
+        $question = new Question($questionHelper->getQuestion('Model location ID you want to use to generate ste content', $modelLocationID));
         $question->setValidator(
             array(
                 'EdgarEz\SiteBuilderBundle\Command\Validators',
@@ -217,6 +228,85 @@ class SiteCommand extends BaseContainerAwareCommand
             $this->excludeUriPrefixes = trim($contentPath, '/') . '/';
         } catch (InvalidArgumentException $e) {
             $output->writeln("<error>Invalid argument [$modelLocationID] or [$customerLocationID]</error>");
+        }
+    }
+
+    /**
+     * Choose and copy Media Model content structure to customer media content tree
+     *
+     * @param InputInterface  $input input console
+     * @param OutputInterface $output output console
+     */
+    protected function createMediaSiteContent(InputInterface $input, OutputInterface $output)
+    {
+        $questionHelper = $this->getQuestionHelper();
+
+        /** @var Repository $repository */
+        $repository = $this->getContainer()->get('ezpublish.api.repository');
+
+        /** @var LocationService $locationService */
+        $locationService = $repository->getLocationService();
+
+        // Get customer media content root location ID
+        $mediaCustomerLocationID = false;
+        $question = new Question($questionHelper->getQuestion('Customer media location ID where your site media content would be generated', $mediaCustomerLocationID));
+        $question->setValidator(
+            array(
+                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'validateLocationID'
+            )
+        );
+
+        while (!$mediaCustomerLocationID) {
+            $mediaCustomerLocationID = $questionHelper->ask($input, $output, $question);
+
+            try {
+                $locationService->loadLocation($mediaCustomerLocationID);
+                if (!$mediaCustomerLocationID || empty($mediaCustomerLocationID)) {
+                    $output->writeln("<error>Customer Location ID is not valid</error>");
+                }
+            } catch (NotFoundException $e) {
+                $output->writeln("<error>No location found with id $mediaCustomerLocationID</error>");
+                $mediaCustomerLocationID = false;
+            }
+        }
+
+        // Get model content root location ID
+        $mediaModelLocationID = false;
+        $question = new Question($questionHelper->getQuestion('Model location ID yout want to use to generate ste content', $mediaModelLocationID));
+        $question->setValidator(
+            array(
+                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'validateLocationID'
+            )
+        );
+
+        while (!$mediaModelLocationID) {
+            $mediaModelLocationID = $questionHelper->ask($input, $output, $question);
+
+            try {
+                $locationService->loadLocation($mediaModelLocationID);
+                if (!$mediaModelLocationID || empty($mediaModelLocationID)) {
+                    $output->writeln("<error>Model Location ID is not valid</error>");
+                }
+            } catch (NotFoundException $e) {
+                $output->writeln("<error>No location found with id $mediaModelLocationID</error>");
+                $mediaModelLocationID = false;
+            }
+        }
+
+        $mediaCustomerLocation = $locationService->loadLocation($mediaCustomerLocationID);
+        $this->mediaCustomerName = $mediaCustomerLocation->getContentInfo()->name;
+        $mediaModelLocation = $locationService->loadLocation($mediaModelLocationID);
+        $this->mediaModelName = $mediaModelLocation->getContentInfo()->name;
+
+        try {
+            // Copy model content subtree to customer tree
+            /** @var Content $content */
+            $content = $this->getContainer()->get('edgar_ez_tools.content.service');
+            $content->copySubtree($mediaModelLocationID, $mediaCustomerLocationID, $this->siteName);
+        } catch (InvalidArgumentException $e) {
+            $output->writeln("<error>Invalid argument [$mediaModelLocationID] or [$mediaCustomerLocationID]</error>");
         }
     }
 

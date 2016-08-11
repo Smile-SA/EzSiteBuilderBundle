@@ -37,6 +37,16 @@ class InstallCommand extends BaseContainerAwareCommand
     protected $customersLocationID;
 
     /**
+     * @var int $mediaModelsLocationID media root location ID for models content
+     */
+    protected $mediaModelsLocationID;
+
+    /**
+     * @var int $mediaCustomersLocationID media root location ID for customers site content
+     */
+    protected $mediaCustomersLocationID;
+
+    /**
      * @var int $userCreatorsLocationID root locationID for creator users
      */
     protected $userCreatorsLocationID;
@@ -79,6 +89,7 @@ class InstallCommand extends BaseContainerAwareCommand
         $questionHelper->writeSection($output, 'Welcome to the SiteBuilder installation');
 
         $this->createContentStructure($input, $output);
+        $this->createMediaContentStructure($input, $output);
         $this->createUserStructure($input, $output);
         $this->createProjectBundle($input, $output);
 
@@ -87,6 +98,8 @@ class InstallCommand extends BaseContainerAwareCommand
         $generator->generate(
             $this->modelsLocationID,
             $this->customersLocationID,
+            $this->mediaModelsLocationID,
+            $this->mediaCustomersLocationID,
             $this->userCreatorsLocationID,
             $this->userEditorsLocationID,
             $this->vendorName,
@@ -201,6 +214,100 @@ class InstallCommand extends BaseContainerAwareCommand
                     break;
                 case 'edgar_ez_sb_customersroot':
                     $this->customersLocationID = $content->contentInfo->mainLocationId;
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    /**
+     * Create media content structure for sitebuilder installation
+     *
+     * @param InputInterface $input input console
+     * @param OutputInterface $output output console
+     */
+    protected function createMediaContentStructure(InputInterface $input, OutputInterface $output)
+    {
+        $questionHelper = $this->getQuestionHelper();
+
+        /** @var Repository $repository */
+        $repository = $this->getContainer()->get('ezpublish.api.repository');
+
+        /** @var LocationService $locationService */
+        $locationService = $repository->getLocationService();
+
+        // Get content root location ID
+        $parentLocationID = false;
+        $question = new Question($questionHelper->getQuestion('Root Location ID where SiteBuilder media content structure will be initialized', $parentLocationID));
+        $question->setValidator(
+            array(
+                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'validateLocationID'
+            )
+        );
+
+        while (!$parentLocationID) {
+            $parentLocationID = $questionHelper->ask($input, $output, $question);
+
+            try {
+                $locationService->loadLocation($parentLocationID);
+                if (!$parentLocationID || empty($parentLocationID)) {
+                    $output->writeln("<error>Parent Location ID is not valid</error>");
+                }
+            } catch (NotFoundException $e) {
+                $output->writeln("<error>No location found with id $parentLocationID</error>");
+                $parentLocationID = false;
+            }
+        }
+
+        /**
+         * Create site builder media content types :
+         * - Media customers
+         * - Media models
+         */
+        /** @var ContentType $contentType */
+        $contentType = $this->getContainer()->get('edgar_ez_tools.contenttype.service');
+        $contentTypeGroup = $repository->getContentTypeService()->loadContentTypeGroupByIdentifier('SiteBuilder');
+        $contentTypeDefinitions = glob(__DIR__. '/../Resources/datas/mediacontenttype_*.yml');
+        if (is_array($contentTypeDefinitions) && count($contentTypeDefinitions) > 0) {
+            foreach ($contentTypeDefinitions as $contentTypeDefinition) {
+                $contentTypeDefinition = Yaml::parse(file_get_contents($contentTypeDefinition));
+                $contentTypeDefinition['contentTypeGroup'] = $contentTypeGroup;
+                $contentType->add($contentTypeDefinition);
+                $output->writeln('ContentType <info>' . $contentTypeDefinition['contentTypeName'] . '</info> created</info>');
+            }
+        }
+
+        /**
+         * Create contents:
+         * - Models root
+         * - Customers root
+         */
+        /** @var \eZ\Publish\API\Repository\Values\Content\Content[] $contents */
+        $contents = array();
+        /** @var Content $content */
+        $content = $this->getContainer()->get('edgar_ez_tools.content.service');
+        $contentDefinitions = glob(__DIR__. '/../Resources/datas/mediacontent_*.yml');
+        if (is_array($contentDefinitions) && count($contentDefinitions) > 0) {
+            foreach ($contentDefinitions as $contentDefinition) {
+                $contentDefinition = Yaml::parse(file_get_contents($contentDefinition));
+                $contentDefinition['parentLocationID'] = $parentLocationID;
+                $contentAdded = $content->add($contentDefinition);
+                $contents[] = $contentAdded;
+                $output->writeln('Media content <info>' . $contentAdded->contentInfo->name . '</info> created');
+            }
+        }
+
+        foreach ($contents as $content) {
+            /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentType $contentType */
+            $contentType = $repository->getContentTypeService()->loadContentType($content->contentInfo->contentTypeId);
+            switch ($contentType->identifier) {
+                case 'edgar_ez_sb_mediamodelsroot':
+                    $this->mediaModelsLocationID = $content->contentInfo->mainLocationId;
+                    break;
+                case 'edgar_ez_sb_mediacustomersroot':
+                    $this->mediaCustomersLocationID = $content->contentInfo->mainLocationId;
                     break;
                 default:
                     break;

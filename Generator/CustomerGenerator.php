@@ -48,6 +48,7 @@ class CustomerGenerator extends Generator
      */
     public function generate(
         $customerLocationID,
+        $mediaCustomerLocationID,
         $customerUserCreatorsGroupLocationID,
         $customerUserEditorsGroupLocationID,
         $customerRoleCreatorID,
@@ -82,6 +83,7 @@ class CustomerGenerator extends Generator
             'extension_alias' => Container::underscore($basename),
             'settings' => array(
                 'customerLocationID' => $customerLocationID,
+                'mediaCustomerLocationID' => $mediaCustomerLocationID,
                 'customerUserCreatorsGroupLocationID' => $customerUserCreatorsGroupLocationID,
                 'customerUserEditorsGroupLocationID' => $customerUserEditorsGroupLocationID,
                 'customerRoleCreatorID' => $customerRoleCreatorID,

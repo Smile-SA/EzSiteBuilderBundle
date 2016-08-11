@@ -45,7 +45,14 @@ class ModelGenerator extends Generator
      * @param string $excludeUriPrefixes
      * @param string $targetDir
      */
-    public function generate($vendorName, $modelName, $modelLocationID, $excludeUriPrefixes, $targetDir)
+    public function generate(
+        $vendorName,
+        $modelName,
+        $modelLocationID,
+        $mediaModelLocationID,
+        $excludeUriPrefixes,
+        $targetDir
+    )
     {
         $namespace = $vendorName . '\\' . ProjectGenerator::MODELS . '\\' . $modelName . 'Bundle';
 
@@ -73,6 +80,7 @@ class ModelGenerator extends Generator
             'vendor_name' => $vendorName,
             'model_name' => $modelName,
             'modelLocationID' => $modelLocationID,
+            'mediaModelLocationID' => $mediaModelLocationID,
             'siteaccess' => Container::underscore($vendorName . $modelName),
             'host' => 'ezplatform.lxc',
             'exclude_uri_prefixes' => $excludeUriPrefixes

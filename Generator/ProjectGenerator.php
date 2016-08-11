@@ -55,6 +55,8 @@ class ProjectGenerator extends Generator
     public function generate(
         $modelsLocationID,
         $customersLocationID,
+        $mediaModelsLocationID,
+        $mediaCustomersLocationID,
         $userCreatorsLocationID,
         $userEditorsLocationID,
         $vendorName,
@@ -87,6 +89,8 @@ class ProjectGenerator extends Generator
             'settings' => array(
                 'modelsLocationID' => $modelsLocationID,
                 'customersLocationID' => $customersLocationID,
+                'mediaModelsLocationID' => $mediaModelsLocationID,
+                'mediaCustomersLocationID' => $mediaCustomersLocationID,
                 'userCreatorsLocationID' => $userCreatorsLocationID,
                 'userEditorsLocationID' => $userEditorsLocationID,
                 'namespace' => $namespace
