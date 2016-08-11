@@ -8,6 +8,7 @@ use EdgarEz\ToolsBundle\Service\Content;
 use EdgarEz\ToolsBundle\Service\Role;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
+use eZ\Publish\API\Repository\RoleService;
 use eZ\Publish\API\Repository\Values\User\Limitation\SubtreeLimitation;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -31,6 +32,12 @@ class CustomerCommand extends BaseContainerAwareCommand
      * @var int $customerUserEditorsGroupLocationID customer user editors group location ID
      */
     protected $customerUserEditorsGroupLocationID;
+
+    /** @var int $customerRoleCreatorID creator role ID */
+    protected $customerRoleCreatorID;
+
+    /** @var int $customerRoleEditorID editor role ID */
+    protected $customerRoleEditorID;
 
     /**
      * @var string $vendorName namespace vendor name where project sitebuilder will be generated
@@ -65,6 +72,7 @@ class CustomerCommand extends BaseContainerAwareCommand
         $this->createContentStructure($input, $output);
         $this->createCustomerBundle($input, $output);
         $this->createUserGroups($input, $output);
+        $this->createRoles($input, $output);
 
         /** @var CustomerGenerator $generator */
         $generator = $this->getGenerator();
@@ -72,6 +80,8 @@ class CustomerCommand extends BaseContainerAwareCommand
             $this->customerLocationID,
             $this->customerUserCreatorsGroupLocationID,
             $this->customerUserEditorsGroupLocationID,
+            $this->customerRoleCreatorID,
+            $this->customerRoleEditorID,
             $this->vendorName,
             $this->customerName,
             $this->dir
@@ -203,17 +213,66 @@ class CustomerCommand extends BaseContainerAwareCommand
         $output->writeln('User group <info>' . $contentAdded->contentInfo->name . ' editors</info> created');
 
         $this->customerUserEditorsGroupLocationID = $contentAdded->contentInfo->mainLocationId;
+    }
 
-        // Manager policy limitation to the rôles
-        $basename = $this->vendorName . ProjectGenerator::MAIN;
-        $roleCreatorID = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.user_creator_role_id');
-        $roleEditorID = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.user_editor_role_id');
-
-        $subtreeLimitation = new SubtreeLimitation(array($this->customerLocationID));
+    /**
+     * @param InputInterface  $input input console
+     * @param OutputInterface $output output console
+     */
+    protected function createRoles(InputInterface $input, OutputInterface $output)
+    {
         /** @var Role $roleService */
         $roleService = $this->getContainer()->get('edgar_ez_tools.role.service');
-        $roleService->addLimitation($roleCreatorID, $subtreeLimitation);
-        $roleService->addLimitation($roleEditorID, $subtreeLimitation);
+
+        /** @var \eZ\Publish\API\Repository\Values\User\Role $roleCreator */
+        $roleCreator = $roleService->add('SiteBuilder ' . $this->customerName . ' creator');
+        $this->customerRoleCreatorID = $roleCreator->id;
+        $output->writeln('Add user creator role');
+        $roleService->addPolicy($roleCreator->id, 'content', 'read');
+        $roleService->addPolicy($roleCreator->id, 'content', 'create');
+        $roleService->addPolicy($roleCreator->id, 'content', 'edit');
+
+        /** @var \eZ\Publish\API\Repository\Values\User\Role $roleEditor */
+        $roleEditor = $roleService->add('SiteBuilder ' . $this->customerName . ' editor');
+        $this->customerRoleEditorID = $roleEditor->id;
+        $output->writeln('Add user editor role');
+        $roleService->addPolicy($roleEditor->id, 'content', 'read');
+        $roleService->addPolicy($roleEditor->id, 'content', 'create');
+        $roleService->addPolicy($roleEditor->id, 'content', 'edit');
+
+        // Manager policy limitation to the rôles
+        /** @var Repository $repository */
+        $repository = $this->getContainer()->get('ezpublish.api.repository');
+        $locationService = $repository->getLocationService();
+        $userService = $repository->getUserService();
+        $contentService = $repository->getContentService();
+
+        $contentLocation = $locationService->loadLocation($this->customerLocationID);
+        $userGroupCreatorLocation = $locationService->loadLocation($this->customerUserCreatorsGroupLocationID);
+        $userGroupCreator = $userService->loadUserGroup($userGroupCreatorLocation->contentId);
+        $userGroupEditorLocation = $locationService->loadLocation($this->customerUserEditorsGroupLocationID);
+        $userGroupEditor = $userService->loadUserGroup($userGroupEditorLocation->contentId);
+        $subtreeLimitation = new SubtreeLimitation(
+            array(
+                'limitationValues' => array('/' . implode('/', $contentLocation->path) . '/')
+            )
+        );
+
+        $repository->setCurrentUser($repository->getUserService()->loadUser(14));
+
+        /** @var RoleService $roleService */
+        $roleService = $repository->getRoleService();
+        $roleService->assignRoleToUserGroup(
+            $roleCreator,
+            $userGroupCreator,
+            $subtreeLimitation
+        );
+
+        $roleService->assignRoleToUserGroup(
+            $roleEditor,
+            $userGroupEditor,
+            $subtreeLimitation
+        );
     }
 
     /**

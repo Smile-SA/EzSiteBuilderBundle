@@ -46,7 +46,16 @@ class CustomerGenerator extends Generator
      * @param string $vendorName project vendor name
      * @param string $targetDir filesystem directory where bundle would be generated
      */
-    public function generate($customerLocationID, $customerUserCreatorsGroupLocationID, $customerUserEditorsGroupLocationID, $vendorName, $customerName, $targetDir)
+    public function generate(
+        $customerLocationID,
+        $customerUserCreatorsGroupLocationID,
+        $customerUserEditorsGroupLocationID,
+        $customerRoleCreatorID,
+        $customerRoleEditorID,
+        $vendorName,
+        $customerName,
+        $targetDir
+    )
     {
         $namespace = $vendorName . '\\' . ProjectGenerator::CUSTOMERS . '\\' . $customerName . '\\' . self::BUNDLE;
 
@@ -74,7 +83,9 @@ class CustomerGenerator extends Generator
             'settings' => array(
                 'customerLocationID' => $customerLocationID,
                 'customerUserCreatorsGroupLocationID' => $customerUserCreatorsGroupLocationID,
-                'customerUserEditorsGroupLocationID' => $customerUserEditorsGroupLocationID
+                'customerUserEditorsGroupLocationID' => $customerUserEditorsGroupLocationID,
+                'customerRoleCreatorID' => $customerRoleCreatorID,
+                'customerRoleEditorID' => $customerRoleEditorID
             )
         );
 
