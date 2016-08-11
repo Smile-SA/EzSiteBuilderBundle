@@ -16,9 +16,9 @@
 
 * <s>add user creator/editor role</s>
 * <s>create media content structure</s>
-* override default_settings adminID
-* override default_settings host
-* override default_settings system admin mail
+* <s>override default_settings adminID</s>
+* <s>override default_settings host</s>
+* <s>override default_settings system admin mail</s>
 
 ## Customer bundle generation 
 

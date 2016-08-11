@@ -1,3 +1,0 @@
-parameters:
-    edgar_ez_site_builder.default.host: domain.tld
-    edgar_ez_site_builder.default.sysadminemail: nospam@ez.no
