@@ -12,16 +12,16 @@
 ## Installation
 
 * <s>add user creator/editor role</s>
-* create media content structure
+* <s>create media content structure</s>
 
 ## Customer bundle generation 
 
 * <s>generate customers in Customers folder from</s>
 * <s>create sitebuilder user creator customer group</s>
 * <s>create sitebuilder user editor customer group</s>
-* create customer media content structure
-* create user creator/editor role
-* assign role to user groups with subtree limitation
+* <s>create customer media content structure</s>
+* <s>create user creator/editor role</s>
+* <s>assign role to user groups with subtree limitation</s>
 * create one sitebuilder user creator for this customer
 * create one sitebuilder user editor for this customer
 
@@ -29,7 +29,7 @@
 
 * <s>copy model to customer subtree</s>
 * <s>create customer site bundle inherited model</s>
-* copy model media content structure to customer media content subtree
+* <s>copy model media content structure to customer media content subtree</s>
 
 ## eZPlatform  SiteBuilder interface
 
