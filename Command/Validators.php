@@ -2,6 +2,8 @@
 
 namespace EdgarEz\SiteBuilderBundle\Command;
 
+use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
+
 /**
  * Class Validators
  *
@@ -63,5 +65,32 @@ class Validators
     {
         // add trailing / if necessary
         return '/' === substr($dir, -1, 1) ? $dir : $dir.'/';
+    }
+
+    public static function validateFirstName($firstName)
+    {
+        if (!preg_match('/^[ \'a-zA-Z0-9-]*$/', $firstName)) {
+            throw new \InvalidArgumentException('The first name contains invalid characters.');
+        }
+
+        return $firstName;
+    }
+
+    public static function validateLastName($lastName)
+    {
+        if (!preg_match('/^[ \'a-zA-Z0-9-]*$/', $lastName)) {
+            throw new \InvalidArgumentException('The last name contains invalid characters.');
+        }
+
+        return $lastName;
+    }
+
+    public static function validateEmail($email)
+    {
+        if (!\ezcMailTools::validateEmailAddress($email)) {
+            throw new InvalidArgumentException('email', $email, 'UserCreateStruct');
+        }
+
+        return $email;
     }
 }

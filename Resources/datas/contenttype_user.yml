@@ -1,0 +1,26 @@
+contentTypeGroup: SiteBuilder
+contentTypeIdentifier: edgar_ez_sb_user
+contentTypeName: User
+contentTypeMainLanguage: eng-GB
+contentTypeNameSchema: <last_name> <first_name>
+isContainer: false
+fields:
+    first_name:
+        identifier: first_name
+        mainLanguage: eng-GB
+        type: ezstring
+        name: First name
+    last_name:
+        identifier: last_name
+        mainLanguage: eng-GB
+        type: ezstring
+        name: Last name
+    user_account:
+        identifier: user_account
+        mainLanguage: eng-GB
+        type: ezuser
+        name: User account
+        isTranslatable: false
+        isSearchable: false
+
+

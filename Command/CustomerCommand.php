@@ -69,6 +69,7 @@ class CustomerCommand extends BaseContainerAwareCommand
         $this->createMediaContentStructure($input, $output);
         $this->createUserGroups($input, $output);
         $this->createRoles($input, $output);
+        $this->initializeUserCreator($input, $output);
 
         /** @var CustomerGenerator $generator */
         $generator = $this->getGenerator();
@@ -244,6 +245,86 @@ class CustomerCommand extends BaseContainerAwareCommand
             $roleEditor,
             $userGroupEditor,
             $subtreeLimitation
+        );
+    }
+
+    /**
+     * Initialize customer user creator
+     *
+     * @param InputInterface $input input console
+     * @param OutputInterface $output output console
+     */
+    protected function initializeUserCreator(InputInterface $input, OutputInterface $output)
+    {
+        $questionHelper = $this->getQuestionHelper();
+        $questionHelper->writeSection($output, 'Initialize customeruser creator account');
+
+        $userFirstName = false;
+        $question = new Question($questionHelper->getQuestion('First name', null));
+        $question->setValidator(
+            array(
+                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'validateFirstName'
+            )
+        );
+
+        while (!$userFirstName) {
+            $userFirstName = $questionHelper->ask($input, $output, $question);
+        }
+
+        $userLastName = false;
+        $question = new Question($questionHelper->getQuestion('Last name', null));
+        $question->setValidator(
+            array(
+                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'validateLastName'
+            )
+        );
+
+        while (!$userLastName) {
+            $userLastName = $questionHelper->ask($input, $output, $question);
+        }
+
+        $userEmail = false;
+        $question = new Question($questionHelper->getQuestion('User email', null));
+        $question->setValidator(
+            array(
+                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'validateEmail'
+            )
+        );
+
+        while (!$userEmail) {
+            $userEmail = $questionHelper->ask($input, $output, $question);
+        }
+
+        $userLogin = $userEmail;
+        $userPassword = substr(str_shuffle(strtolower(sha1(rand() . time() . $userLogin))),0, 8);;
+
+        /** @var Repository $repository */
+        $repository = $this->getContainer()->get('ezpublish.api.repository');
+
+        $userService = $repository->getUserService();
+        $contentTypeService = $repository->getContentTypeService();
+        $locationService = $repository->getLocationService();
+
+        $contentType = $contentTypeService->loadContentTypeByIdentifier('edgar_ez_sb_user');
+        $userCreateStruct = $userService->newUserCreateStruct($userLogin, $userEmail, $userPassword, 'eng-GB', $contentType);
+        $userCreateStruct->setField('first_name', $userFirstName);
+        $userCreateStruct->setField('last_name', $userLastName);
+
+        $userGroupCreatorLocation = $locationService->loadLocation($this->customerUserCreatorsGroupLocationID);
+        $userGroup = $userService->loadUserGroup($userGroupCreatorLocation->contentId);
+
+        $userService->createUser($userCreateStruct, array($userGroup));
+
+        $questionHelper->writeSection($output, array(
+                '',
+                'New user created: ',
+                'user login : ' . $userLogin,
+                'user password : ' . $userPassword,
+                ''
+            )
         );
     }
 
