@@ -28,8 +28,11 @@
 * <s>create customer media content structure</s>
 * <s>create user creator/editor role</s>
 * <s>assign role to user groups with subtree limitation</s>
-* create one sitebuilder user creator for this customer
-* create one sitebuilder user editor for this customer
+* <s>create one sitebuilder user creator for this customer</s>
+
+## Model generator
+
+* update user/login for each customer user group
 
 ## Site generator
 
