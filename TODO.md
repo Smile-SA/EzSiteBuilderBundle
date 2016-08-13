@@ -36,6 +36,7 @@
 
 ## Site generator
 
+* refactor siteaccess (ezplatfor.yml) configuratikon to ProjectBundle
 * <s>copy model to customer subtree</s>
 * <s>create customer site bundle inherited model</s>
 * <s>copy model media content structure to customer media content subtree</s>
