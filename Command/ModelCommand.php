@@ -4,15 +4,11 @@ namespace EdgarEz\SiteBuilderBundle\Command;
 
 use EdgarEz\SiteBuilderBundle\Generator\ModelGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
-use EdgarEz\ToolsBundle\Service\Content;
-use eZ\Publish\API\Repository\LocationService;
-use eZ\Publish\API\Repository\Repository;
-use eZ\Publish\API\Repository\URLAliasService;
+use EdgarEz\SiteBuilderBundle\Service\ModelService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class ModelCommand
@@ -117,27 +113,13 @@ class ModelCommand extends BaseContainerAwareCommand
 
         $basename = $this->vendorName . ProjectGenerator::MAIN ;
 
-        /** @var Content $content */
-        $content = $this->getContainer()->get('edgar_ez_tools.content.service');
-        $contentDefinition = Yaml::parse(file_get_contents(__DIR__ . '/../Resources/datas/modelcontent.yml'));
-        $contentDefinition['parentLocationID'] = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.models_location_id');
-        $contentDefinition['fields']['title']['value'] = $this->modelName;
-        $contentAdded = $content->add($contentDefinition);
+        /** @var ModelService $modelService */
+        $modelService = $this->getContainer()->get('edgar_ez_site_builder.model.service');
+        $modelsLocationID = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.models_location_id');
 
-        /** @var Repository $repository */
-        $repository = $this->getContainer()->get('ezpublish.api.repository');
-
-        /** @var URLAliasService $urlAliasService */
-        $urlAliasService = $repository->getURLAliasService();
-
-        /** @var LocationService $locationService */
-        $locationService = $repository->getLocationService();
-
-        $contentLocation = $locationService->loadLocation($contentAdded->contentInfo->mainLocationId);
-        $contentPath = $urlAliasService->reverseLookup($contentLocation, $contentAdded->contentInfo->mainLanguageCode)->path;
-        $this->excludeUriPrefixes = trim($contentPath, '/') . '/';
-
-        $this->modelLocationID = $contentAdded->contentInfo->mainLocationId;
+        $content = $modelService->createModelContent($modelsLocationID, $this->modelName);
+        $this->excludeUriPrefixes = $content['excludeUriPrefixes'];
+        $this->modelLocationID = $content['modelLocationID'];
     }
 
     /**
@@ -148,16 +130,13 @@ class ModelCommand extends BaseContainerAwareCommand
      */
     protected function createMediaModelContent(InputInterface $input, OutputInterface $output)
     {
-        $basename = $this->vendorName . ProjectGenerator::MAIN ;
+        $basename = $this->vendorName . ProjectGenerator::MAIN;
 
-        /** @var Content $content */
-        $content = $this->getContainer()->get('edgar_ez_tools.content.service');
-        $contentDefinition = Yaml::parse(file_get_contents(__DIR__ . '/../Resources/datas/mediamodelcontent.yml'));
-        $contentDefinition['parentLocationID'] = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.media_models_location_id');
-        $contentDefinition['fields']['title']['value'] = $this->modelName;
-        $contentAdded = $content->add($contentDefinition);
+        /** @var ModelService $modelService */
+        $modelService = $this->getContainer()->get('edgar_ez_site_builder.model.service');
+        $mediaModelsLocationID = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.media_models_location_id');
 
-        $this->mediaModelLocationID = $contentAdded->contentInfo->mainLocationId;
+        $this->mediaModelLocationID = $modelService->createMediaModelContent($mediaModelsLocationID, $this->modelName);
     }
 
     /**

@@ -44,7 +44,7 @@ class SiteGenerator extends Generator
      * @param string $siteName customer site name
      * @param string $targetDir filesystem directory where bundle would be generated
      */
-    public function generate($siteLocationID, $vendorName, $customerName, $modelName, $siteName, $excludeUriPrefixes, $targetDir)
+    public function generate($siteLocationID, $mediaSiteLocationID, $vendorName, $customerName, $modelName, $siteName, $excludeUriPrefixes, $targetDir)
     {
         $namespace = $vendorName . '\\' . ProjectGenerator::CUSTOMERS . '\\' . $customerName . '\\' . CustomerGenerator::SITES . '\\' . $siteName . 'Bundle';
 
@@ -74,6 +74,7 @@ class SiteGenerator extends Generator
             'model_name' => $modelName,
             'site_name' => $siteName,
             'siteLocationID' => $siteLocationID,
+            'mediaSiteLocationID' => $mediaSiteLocationID,
             'parent_model_bundle' => substr($vendorName . ProjectGenerator::MODELS . $modelName . 'Bundle', 0, -6),
             'siteaccess_model' => Container::underscore($vendorName . $modelName),
             'siteaccess' => Container::underscore($vendorName . $customerName . $siteName),

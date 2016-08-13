@@ -5,10 +5,8 @@ namespace EdgarEz\SiteBuilderBundle\Command;
 use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\SiteGenerator;
-use EdgarEz\ToolsBundle\Service\Content;
-use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
+use EdgarEz\SiteBuilderBundle\Service\SiteService;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
-use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\URLAliasService;
@@ -27,6 +25,11 @@ class SiteCommand extends BaseContainerAwareCommand
      * @var int $siteLocationID site root location ID
      */
     protected $siteLocationID;
+
+    /**
+     * @var int $mediaSiteLocationID media site root location ID
+     */
+    protected $mediaSiteLocationID;
 
     /**
      * @var string $customerName customer name
@@ -86,6 +89,7 @@ class SiteCommand extends BaseContainerAwareCommand
         $generator = $this->getGenerator();
         $generator->generate(
             $this->siteLocationID,
+            $this->mediaSiteLocationID,
             $this->vendorName,
             $this->customerName,
             $this->modelName,
@@ -135,8 +139,6 @@ class SiteCommand extends BaseContainerAwareCommand
 
         /** @var LocationService $locationService */
         $locationService = $repository->getLocationService();
-        /** @var URLAliasService $urlAliasService */
-        $urlAliasService = $repository->getURLAliasService();
 
         // Get customer content root location ID
         $customerLocationID = false;
@@ -191,20 +193,12 @@ class SiteCommand extends BaseContainerAwareCommand
         $modelLocation = $locationService->loadLocation($modelLocationID);
         $this->modelName = $modelLocation->getContentInfo()->name;
 
-        try {
-            // Copy model content subtree to customer tree
-            /** @var Content $content */
-            $content = $this->getContainer()->get('edgar_ez_tools.content.service');
-            $siteLocationID = $content->copySubtree($modelLocationID, $customerLocationID, $this->siteName);
+        /** @var SiteService $siteSerice */
+        $siteSerice = $this->getContainer()->get('edgar_ez_site_builder.site.service');
 
-            $this->siteLocationID = $siteLocationID;
-            $newLocation = $locationService->loadLocation($this->siteLocationID);
-
-            $contentPath = $urlAliasService->reverseLookup($newLocation, $newLocation->getContentInfo()->mainLanguageCode)->path;
-            $this->excludeUriPrefixes = trim($contentPath, '/') . '/';
-        } catch (InvalidArgumentException $e) {
-            $output->writeln("<error>Invalid argument [$modelLocationID] or [$customerLocationID]</error>");
-        }
+        $returnValue = $siteSerice->createSiteContent($customerLocationID, $modelLocationID, $this->siteName);
+        $this->siteLocationID = $returnValue['siteLocationID'];
+        $this->excludeUriPrefixes = $returnValue['excludeUriPrefixes'];
     }
 
     /**
@@ -276,14 +270,10 @@ class SiteCommand extends BaseContainerAwareCommand
         $mediaModelLocation = $locationService->loadLocation($mediaModelLocationID);
         $this->mediaModelName = $mediaModelLocation->getContentInfo()->name;
 
-        try {
-            // Copy model content subtree to customer tree
-            /** @var Content $content */
-            $content = $this->getContainer()->get('edgar_ez_tools.content.service');
-            $content->copySubtree($mediaModelLocationID, $mediaCustomerLocationID, $this->siteName);
-        } catch (InvalidArgumentException $e) {
-            $output->writeln("<error>Invalid argument [$mediaModelLocationID] or [$mediaCustomerLocationID]</error>");
-        }
+        /** @var SiteService $siteSerice */
+        $siteSerice = $this->getContainer()->get('edgar_ez_site_builder.site.service');
+
+        $this->mediaSiteLocationID = $siteSerice->createMediaSiteContent($mediaModelLocationID, $mediaCustomerLocationID, $this->siteName);
     }
 
     /**
