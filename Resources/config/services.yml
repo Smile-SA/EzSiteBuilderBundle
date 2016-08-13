@@ -1,4 +1,32 @@
+parameters:
+    edgar_ez_site_builder.install.service.class: EdgarEz\SiteBuilderBundle\Service\InstallService
+    edgar_ez_site_builder.customer.service.class: EdgarEz\SiteBuilderBundle\Service\CustomerService
+    edgar_ez_site_builder.model.service.class: EdgarEz\SiteBuilderBundle\Service\ModelService
+    edgar_ez_site_builder.site.service.class: EdgarEz\SiteBuilderBundle\Service\SiteService
+
 services:
-#    edgar_ez_site_builder.example:
-#        class: EdgarEz\SiteBuilderBundle\Example
-#        arguments: [@service_id, "plain_value", %parameter%]
+    edgar_ez_site_builder.install.service:
+        class: %edgar_ez_site_builder.install.service.class%
+        arguments:
+            - @ezpublish.api.service.content_type
+            - @edgar_ez_tools.contenttypegroup.service
+            - @edgar_ez_tools.contenttype.service
+            - @edgar_ez_tools.content.service
+
+    edgar_ez_site_builder.customer.service:
+        class: %edgar_ez_site_builder.customer.service.class%
+        arguments:
+            - @ezpublish.api.service.role
+            - @ezpublish.api.service.location
+            - @ezpublish.api.service.user
+            - @ezpublish.api.service.content_type
+            - @edgar_ez_tools.content.service
+            - @edgar_ez_tools.role.service
+
+    edgar_ez_site_builder.model.service:
+        class: %edgar_ez_site_builder.model.service.class%
+        arguments: [@ezpublish.api.repository]
+
+    edgar_ez_site_builder.site.service:
+        class: %edgar_ez_site_builder.site.service.class%
+        arguments: [@ezpublish.api.repository]

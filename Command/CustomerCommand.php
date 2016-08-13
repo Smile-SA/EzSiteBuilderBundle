@@ -4,16 +4,12 @@ namespace EdgarEz\SiteBuilderBundle\Command;
 
 use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
-use EdgarEz\ToolsBundle\Service\Content;
-use EdgarEz\ToolsBundle\Service\Role;
-use eZ\Publish\API\Repository\Repository;
-use eZ\Publish\API\Repository\RoleService;
-use eZ\Publish\API\Repository\Values\User\Limitation\SubtreeLimitation;
+use EdgarEz\SiteBuilderBundle\Service\CustomerService;
+use eZ\Publish\API\Repository\Values\User\Role;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\Yaml\Yaml;
 
 class CustomerCommand extends BaseContainerAwareCommand
 {
@@ -123,12 +119,12 @@ class CustomerCommand extends BaseContainerAwareCommand
 
         $basename = $this->vendorName . ProjectGenerator::MAIN;
 
-        /** @var Content $content */
-        $content = $this->getContainer()->get('edgar_ez_tools.content.service');
-        $contentDefinition = Yaml::parse(file_get_contents(__DIR__ . '/../Resources/datas/customercontent.yml'));
-        $contentDefinition['parentLocationID'] = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.customers_location_id');
-        $contentDefinition['fields']['title']['value'] = $this->customerName;
-        $contentAdded = $content->add($contentDefinition);
+        /** @var CustomerService $customerService */
+        $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
+
+        $parentLocationID = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.customers_location_id');
+        $contentAdded = $customerService->createContentStructure($parentLocationID, $this->customerName);
+        $output->writeln('Content Structure created');
 
         $this->customerLocationID = $contentAdded->contentInfo->mainLocationId;
     }
@@ -143,12 +139,12 @@ class CustomerCommand extends BaseContainerAwareCommand
     {
         $basename = $this->vendorName . ProjectGenerator::MAIN;
 
-        /** @var Content $content */
-        $content = $this->getContainer()->get('edgar_ez_tools.content.service');
-        $contentDefinition = Yaml::parse(file_get_contents(__DIR__ . '/../Resources/datas/mediacustomercontent.yml'));
-        $contentDefinition['parentLocationID'] = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.media_customers_location_id');
-        $contentDefinition['fields']['title']['value'] = $this->customerName;
-        $contentAdded = $content->add($contentDefinition);
+        /** @var CustomerService $customerService */
+        $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
+
+        $parentLocationID = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.media_customers_location_id');
+        $contentAdded = $customerService->createMediaContentStructure($parentLocationID, $this->customerName);
+        $output->writeln('Media Content Structure created');
 
         $this->mediaCustomerLocationID = $contentAdded->contentInfo->mainLocationId;
     }
@@ -163,25 +159,16 @@ class CustomerCommand extends BaseContainerAwareCommand
     {
         $basename = $this->vendorName . ProjectGenerator::MAIN;
 
-        $content = $this->getContainer()->get('edgar_ez_tools.content.service');
+        /** @var CustomerService $customerService */
+        $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
 
-        $userGroupDefinition = Yaml::parse(file_get_contents(__DIR__. '/../Resources/datas/customerusergroup_creators.yml'));
-        $userGroupDefinition['parentLocationID'] = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.user_creators_location_id');
-        $userGroupDefinition['fields']['name']['value'] = $this->customerName;
-        /** @var \eZ\Publish\Core\REST\Client\Values\Content\Content $contentAdded */
-        $contentAdded = $content->add($userGroupDefinition);
-        $output->writeln('User group <info>' . $contentAdded->contentInfo->name . ' creators</info> created');
+        $parentCreatorLocationID = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.user_creators_location_id');
+        $parentEditorLocationID = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.user_editors_location_id');
+        $contents = $customerService->createUserGroups($parentCreatorLocationID, $parentEditorLocationID, $this->customerName);
+        $output->writeln('User groups created');
 
-        $this->customerUserCreatorsGroupLocationID = $contentAdded->contentInfo->mainLocationId;
-
-        $userGroupDefinition = Yaml::parse(file_get_contents(__DIR__. '/../Resources/datas/customerusergroup_editors.yml'));
-        $userGroupDefinition['parentLocationID'] = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.user_editors_location_id');
-        $userGroupDefinition['fields']['name']['value'] = $this->customerName;
-        /** @var \eZ\Publish\Core\REST\Client\Values\Content\Content $contentAdded */
-        $contentAdded = $content->add($userGroupDefinition);
-        $output->writeln('User group <info>' . $contentAdded->contentInfo->name . ' editors</info> created');
-
-        $this->customerUserEditorsGroupLocationID = $contentAdded->contentInfo->mainLocationId;
+        $this->customerUserCreatorsGroupLocationID = $contents['customerUserCreatorsGroup']->contentInfo->mainLocationId;
+        $this->customerUserEditorsGroupLocationID = $contents['customerUserEditorsGroup']->contentInfo->mainLocationId;
     }
 
     /**
@@ -190,62 +177,21 @@ class CustomerCommand extends BaseContainerAwareCommand
      */
     protected function createRoles(InputInterface $input, OutputInterface $output)
     {
-        /** @var Role $roleService */
-        $roleService = $this->getContainer()->get('edgar_ez_tools.role.service');
+        /** @var CustomerService $customerService */
+        $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
 
-        /** @var \eZ\Publish\API\Repository\Values\User\Role $roleCreator */
-        $roleCreator = $roleService->add('SiteBuilder ' . $this->customerName . ' creator');
-        $this->customerRoleCreatorID = $roleCreator->id;
-        $output->writeln('Add user creator role');
-        $roleService->addPolicy($roleCreator->id, 'content', 'read');
-        $roleService->addPolicy($roleCreator->id, 'content', 'create');
-        $roleService->addPolicy($roleCreator->id, 'content', 'edit');
-
-        /** @var \eZ\Publish\API\Repository\Values\User\Role $roleEditor */
-        $roleEditor = $roleService->add('SiteBuilder ' . $this->customerName . ' editor');
-        $this->customerRoleEditorID = $roleEditor->id;
-        $output->writeln('Add user editor role');
-        $roleService->addPolicy($roleEditor->id, 'content', 'read');
-        $roleService->addPolicy($roleEditor->id, 'content', 'create');
-        $roleService->addPolicy($roleEditor->id, 'content', 'edit');
-
-        // Manager policy limitation to the rôles
-        /** @var Repository $repository */
-        $repository = $this->getContainer()->get('ezpublish.api.repository');
-        $locationService = $repository->getLocationService();
-        $userService = $repository->getUserService();
-
-        $contentLocation = $locationService->loadLocation($this->customerLocationID);
-        $mediaContentLocation = $locationService->loadLocation($this->mediaCustomerLocationID);
-
-        $userGroupCreatorLocation = $locationService->loadLocation($this->customerUserCreatorsGroupLocationID);
-        $userGroupCreator = $userService->loadUserGroup($userGroupCreatorLocation->contentId);
-        $userGroupEditorLocation = $locationService->loadLocation($this->customerUserEditorsGroupLocationID);
-        $userGroupEditor = $userService->loadUserGroup($userGroupEditorLocation->contentId);
-        $subtreeLimitation = new SubtreeLimitation(
-            array(
-                'limitationValues' => array(
-                    '/' . implode('/', $contentLocation->path) . '/',
-                    '/' . implode('/', $mediaContentLocation->path) . '/'
-                )
-            )
+        /** @var Role[] $roles */
+        $roles = $customerService->createRoles(
+            $this->customerName,
+            $this->customerLocationID,
+            $this->mediaCustomerLocationID,
+            $this->customerUserCreatorsGroupLocationID,
+            $this->customerUserEditorsGroupLocationID
         );
 
-        $repository->setCurrentUser($repository->getUserService()->loadUser(14));
-
-        /** @var RoleService $roleService */
-        $roleService = $repository->getRoleService();
-        $roleService->assignRoleToUserGroup(
-            $roleCreator,
-            $userGroupCreator,
-            $subtreeLimitation
-        );
-
-        $roleService->assignRoleToUserGroup(
-            $roleEditor,
-            $userGroupEditor,
-            $subtreeLimitation
-        );
+        $this->customerRoleCreatorID = $roles['roleCreator']->id;
+        $this->customerRoleEditorID = $roles['roleEditor']->id;
+        $output->writeln('Roles created');
     }
 
     /**
@@ -298,31 +244,18 @@ class CustomerCommand extends BaseContainerAwareCommand
             $userEmail = $questionHelper->ask($input, $output, $question);
         }
 
-        $userLogin = $userEmail;
-        $userPassword = substr(str_shuffle(strtolower(sha1(rand() . time() . $userLogin))),0, 8);;
+        /** @var CustomerService $customerService */
+        $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
+        $output->writeln('User creator initialized');
 
-        /** @var Repository $repository */
-        $repository = $this->getContainer()->get('ezpublish.api.repository');
+        $userPassword = $customerService->initializeUserCreator($userFirstName, $userLastName, $userEmail, $this->customerUserCreatorsGroupLocationID);
 
-        $userService = $repository->getUserService();
-        $contentTypeService = $repository->getContentTypeService();
-        $locationService = $repository->getLocationService();
-
-        $contentType = $contentTypeService->loadContentTypeByIdentifier('edgar_ez_sb_user');
-        $userCreateStruct = $userService->newUserCreateStruct($userLogin, $userEmail, $userPassword, 'eng-GB', $contentType);
-        $userCreateStruct->setField('first_name', $userFirstName);
-        $userCreateStruct->setField('last_name', $userLastName);
-
-        $userGroupCreatorLocation = $locationService->loadLocation($this->customerUserCreatorsGroupLocationID);
-        $userGroup = $userService->loadUserGroup($userGroupCreatorLocation->contentId);
-
-        $userService->createUser($userCreateStruct, array($userGroup));
-
-        $questionHelper->writeSection($output, array(
+        $questionHelper->writeSection(
+            $output,
+            array(
                 '',
-                'New user created: ',
-                'user login : ' . $userLogin,
-                'user password : ' . $userPassword,
+                'user login: ' . $userEmail,
+                'user password: ' . $userPassword ,
                 ''
             )
         );

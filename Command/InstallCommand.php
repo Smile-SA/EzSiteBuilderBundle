@@ -2,17 +2,15 @@
 
 namespace EdgarEz\SiteBuilderBundle\Command;
 
+use EdgarEz\SiteBuilderBundle\Service\InstallService;
 use EdgarEz\ToolsBundle\Service\Content;
-use EdgarEz\ToolsBundle\Service\ContentType;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
-use EdgarEz\ToolsBundle\Service\ContentTypeGroup;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class InstallCommand
@@ -52,6 +50,8 @@ class InstallCommand extends BaseContainerAwareCommand
      * @var int $userEditorsLocationID root locationID for editors users
      */
     protected $userEditorsLocationID;
+
+    protected $contentTypeGroup;
 
     /**
      * Configure SiteBuilder installation command
@@ -145,68 +145,15 @@ class InstallCommand extends BaseContainerAwareCommand
             }
         }
 
-        /**
-         * Create site builder content type groups :
-         * - SiteBuilder
-         */
-        /** @var ContentTypeGroup $contentTypeGroupService */
-        $contentTypeGroup = $this->getContainer()->get('edgar_ez_tools.contenttypegroup.service');
-        $contentTypeGroup = $contentTypeGroup->add('SiteBuilder');
-        $output->writeln('ContentTypeGroup <info>SiteBuilder</info> created');
+        /** @var InstallService $installService */
+        $installService = $this->getContainer()->get('edgar_ez_site_builder.install.service');
 
-        /**
-         * Create site builder content types :
-         * - Models root
-         * - Model
-         * - Customers root
-         * - Customer
-         */
-        /** @var ContentType $contentType */
-        $contentType = $this->getContainer()->get('edgar_ez_tools.contenttype.service');
-        $contentTypeDefinitions = glob(__DIR__. '/../Resources/datas/contenttype_*.yml');
-        if (is_array($contentTypeDefinitions) && count($contentTypeDefinitions) > 0) {
-            foreach ($contentTypeDefinitions as $contentTypeDefinition) {
-                $contentTypeDefinition = Yaml::parse(file_get_contents($contentTypeDefinition));
-                $contentTypeDefinition['contentTypeGroup'] = $contentTypeGroup;
-                $contentType->add($contentTypeDefinition);
-                $output->writeln('ContentType <info>' . $contentTypeDefinition['contentTypeName'] . '</info> created</info>');
-            }
-        }
+        $this->contentTypeGroup = $installService->createContentTypeGroup();
+        $installService->createContentTypes($this->contentTypeGroup);
+        $contents = $installService->createContents($parentLocationID);
 
-        /**
-         * Create contents:
-         * - Models root
-         * - Customers root
-         */
-        /** @var \eZ\Publish\API\Repository\Values\Content\Content[] $contents */
-        $contents = array();
-        /** @var Content $content */
-        $content = $this->getContainer()->get('edgar_ez_tools.content.service');
-        $contentDefinitions = glob(__DIR__. '/../Resources/datas/content_*.yml');
-        if (is_array($contentDefinitions) && count($contentDefinitions) > 0) {
-            foreach ($contentDefinitions as $contentDefinition) {
-                $contentDefinition = Yaml::parse(file_get_contents($contentDefinition));
-                $contentDefinition['parentLocationID'] = $parentLocationID;
-                $contentAdded = $content->add($contentDefinition);
-                $contents[] = $contentAdded;
-                $output->writeln('Content <info>' . $contentAdded->contentInfo->name . '</info> created');
-            }
-        }
-
-        foreach ($contents as $content) {
-            /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentType $contentType */
-            $contentType = $repository->getContentTypeService()->loadContentType($content->contentInfo->contentTypeId);
-            switch ($contentType->identifier) {
-                case 'edgar_ez_sb_modelsroot':
-                    $this->modelsLocationID = $content->contentInfo->mainLocationId;
-                    break;
-                case 'edgar_ez_sb_customersroot':
-                    $this->customersLocationID = $content->contentInfo->mainLocationId;
-                    break;
-                default:
-                    break;
-            }
-        }
+        $this->modelsLocationID = $contents['modelsLocationID'];
+        $this->customersLocationID = $contents['customersLocationID'];
     }
 
     /**
@@ -249,58 +196,14 @@ class InstallCommand extends BaseContainerAwareCommand
             }
         }
 
-        /**
-         * Create site builder media content types :
-         * - Media customers
-         * - Media models
-         */
-        /** @var ContentType $contentType */
-        $contentType = $this->getContainer()->get('edgar_ez_tools.contenttype.service');
-        $contentTypeGroup = $repository->getContentTypeService()->loadContentTypeGroupByIdentifier('SiteBuilder');
-        $contentTypeDefinitions = glob(__DIR__. '/../Resources/datas/mediacontenttype_*.yml');
-        if (is_array($contentTypeDefinitions) && count($contentTypeDefinitions) > 0) {
-            foreach ($contentTypeDefinitions as $contentTypeDefinition) {
-                $contentTypeDefinition = Yaml::parse(file_get_contents($contentTypeDefinition));
-                $contentTypeDefinition['contentTypeGroup'] = $contentTypeGroup;
-                $contentType->add($contentTypeDefinition);
-                $output->writeln('ContentType <info>' . $contentTypeDefinition['contentTypeName'] . '</info> created</info>');
-            }
-        }
+        /** @var InstallService $installService */
+        $installService = $this->getContainer()->get('edgar_ez_site_builder.install.service');
 
-        /**
-         * Create contents:
-         * - Models root
-         * - Customers root
-         */
-        /** @var \eZ\Publish\API\Repository\Values\Content\Content[] $contents */
-        $contents = array();
-        /** @var Content $content */
-        $content = $this->getContainer()->get('edgar_ez_tools.content.service');
-        $contentDefinitions = glob(__DIR__. '/../Resources/datas/mediacontent_*.yml');
-        if (is_array($contentDefinitions) && count($contentDefinitions) > 0) {
-            foreach ($contentDefinitions as $contentDefinition) {
-                $contentDefinition = Yaml::parse(file_get_contents($contentDefinition));
-                $contentDefinition['parentLocationID'] = $parentLocationID;
-                $contentAdded = $content->add($contentDefinition);
-                $contents[] = $contentAdded;
-                $output->writeln('Media content <info>' . $contentAdded->contentInfo->name . '</info> created');
-            }
-        }
+        $installService->createMediaContentTypes($this->contentTypeGroup);
+        $contents = $installService->createMediaContents($parentLocationID);
 
-        foreach ($contents as $content) {
-            /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentType $contentType */
-            $contentType = $repository->getContentTypeService()->loadContentType($content->contentInfo->contentTypeId);
-            switch ($contentType->identifier) {
-                case 'edgar_ez_sb_mediamodelsroot':
-                    $this->mediaModelsLocationID = $content->contentInfo->mainLocationId;
-                    break;
-                case 'edgar_ez_sb_mediacustomersroot':
-                    $this->mediaCustomersLocationID = $content->contentInfo->mainLocationId;
-                    break;
-                default:
-                    break;
-            }
-        }
+        $this->mediaModelsLocationID = $contents['modelsLocationID'];
+        $this->mediaCustomersLocationID = $contents['customersLocationID'];
     }
 
     /**
@@ -343,44 +246,14 @@ class InstallCommand extends BaseContainerAwareCommand
             }
         }
 
-        $content = $this->getContainer()->get('edgar_ez_tools.content.service');
+        /** @var InstallService $installService */
+        $installService = $this->getContainer()->get('edgar_ez_site_builder.install.service');
 
-        $userGroupDefinition = Yaml::parse(file_get_contents(__DIR__. '/../Resources/datas/usergrouproot.yml'));
-        $userGroupDefinition['parentLocationID'] = $userGroupParenttLocationID;
-        /** @var \eZ\Publish\API\Repository\Values\Content\Content $userGroup */
-        $userGroup = $content->add($userGroupDefinition);
-        $output->writeln('User group root created');
+        /** @var int[] $userGroups */
+        $userGroups = $installService->createUserGroups($userGroupParenttLocationID);
 
-        /** @var \eZ\Publish\API\Repository\Values\Content\Content[] $contents */
-        $contents = array();
-        $userGroupParenttLocationID = $userGroup->contentInfo->mainLocationId;
-        $userGroupDefinitions = glob(__DIR__. '/../Resources/datas/usergroup_*.yml');
-        if (is_array($userGroupDefinitions) && count($userGroupDefinitions) > 0) {
-            foreach ($userGroupDefinitions as $userGroupDefinition) {
-                $userGroupDefinition = Yaml::parse(file_get_contents($userGroupDefinition));
-                $userGroupDefinition['parentLocationID'] = $userGroupParenttLocationID;
-                /** @var \eZ\Publish\Core\REST\Client\Values\Content\Content $contentAdded */
-                $contentAdded = $content->add($userGroupDefinition);
-                $contents[] = $contentAdded;
-                $output->writeln('User group <info>' . $contentAdded->contentInfo->name . '</info> created');
-            }
-        }
-
-        foreach ($contents as $content) {
-            /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentType $contentType */
-            $contentType = $repository->getContentTypeService()->loadContentType($content->contentInfo->contentTypeId);
-            switch ($contentType->identifier) {
-                case 'user_group':
-                    if ($content->contentInfo->name == 'Creators') {
-                        $this->userCreatorsLocationID = $content->contentInfo->mainLocationId;
-                    } else {
-                        $this->userEditorsLocationID = $content->contentInfo->mainLocationId;
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
+        $this->userCreatorsLocationID = $userGroups['userCreatorsLocationID'];
+        $this->userEditorsLocationID = $userGroups['userEditorsLocationID'];
     }
 
     /**
