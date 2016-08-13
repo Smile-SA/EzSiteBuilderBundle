@@ -87,6 +87,8 @@ class SiteGenerator extends Generator
         $this->renderFile('site/Extension.php.twig', $dir . '/DependencyInjection/' . $basename . 'Extension.php', $parameters);
         $this->renderFile('site/Configuration.php.twig', $dir . '/DependencyInjection/Configuration.php', $parameters);
 
+        $this->filesystem->mkdir($dir . '/Resources');
+        $this->filesystem->mkdir($dir . '/Resources/config');
         $this->filesystem->mkdir($dir . '/Resources/public');
         $this->filesystem->mkdir($dir . '/Resources/public/css');
         $this->filesystem->mkdir($dir . '/Resources/public/js');
