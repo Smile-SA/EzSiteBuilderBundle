@@ -98,13 +98,18 @@ class SiteCommand extends BaseContainerAwareCommand
             $this->dir
         );
 
-        $namespace = $this->vendorName . '\\' . ProjectGenerator::CUSTOMERS . '\\' . $this->customerName . '\\' . CustomerGenerator::SITES . '\\' . $this->siteName . 'Bundle';
-        $bundle = $this->vendorName . ProjectGenerator::CUSTOMERS . $this->customerName . CustomerGenerator::SITES . $this->siteName . 'Bundle';
-        $this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle);
-
         $output->writeln(array(
             '',
-            $this->getHelper('formatter')->formatBlock('SiteBuilder Contents and Structure generated', 'bg=blue;fg=white', true),
+            $this->getHelper('formatter')->formatBlock(
+                array(
+                    'SiteBuilder Contents and Structure generated',
+                    '',
+                    'Create a VirtualHost for your site and add this line',
+                    '   SetEnvIf Request_URI ".*" SITEBUILDER_ENV=' . $this->vendorName . '_' . $this->customerName . '_' . $this->siteName
+                ),
+                'bg=blue;fg=white',
+                true
+            ),
             ''
         ));
     }

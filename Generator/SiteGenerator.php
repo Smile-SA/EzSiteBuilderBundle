@@ -86,6 +86,9 @@ class SiteGenerator extends Generator
         $this->renderFile('site/Bundle.php.twig', $dir . '/' . $basename . 'Bundle.php', $parameters);
         $this->renderFile('site/Extension.php.twig', $dir . '/DependencyInjection/' . $basename . 'Extension.php', $parameters);
         $this->renderFile('site/Configuration.php.twig', $dir . '/DependencyInjection/Configuration.php', $parameters);
-        $this->renderFile('site/Resources/config/ezplatform.yml.twig', $dir . '/Resources/config/ezplatform.yml', $parameters);
+
+        $this->filesystem->mkdir($dir . '/Resources/public');
+        $this->filesystem->mkdir($dir . '/Resources/public/css');
+        $this->filesystem->mkdir($dir . '/Resources/public/js');
     }
 }

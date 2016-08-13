@@ -94,5 +94,9 @@ class ModelGenerator extends Generator
         $this->renderFile('model/Resources/config/ezplatform.yml.twig', $dir . '/Resources/config/ezplatform.yml', $parameters);
         $this->renderFile('model/Resources/views/pagelayout.html.twig.twig', $dir . '/Resources/views/pagelayout.html.twig', $parameters);
         $this->renderFile('model/Resources/views/full/model.html.twig.twig', $dir . '/Resources/views/full/model.html.twig', $parameters);
+
+        $this->filesystem->mkdir($dir . '/Resources/public');
+        $this->filesystem->mkdir($dir . '/Resources/public/css');
+        $this->filesystem->mkdir($dir . '/Resources/public/js');
     }
 }
