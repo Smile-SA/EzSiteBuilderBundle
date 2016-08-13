@@ -2,7 +2,7 @@ siteaccess:
 {% block siteaccess %}
     list: [{{ siteaccess }}]
     groups:
-        group_{{ siteaccess }}: [{{ siteaccess }}]
+        group_{{ siteaccess_model }}: [{{ siteaccess }}]
     match:
         Compound\LogicalAnd:
             {{ siteaccess }}:
@@ -20,15 +20,7 @@ system:
         var_dir: var/{{ siteaccess }}
         content:
             tree_root:
-                location_id: {{ modelLocationID }}
+                location_id: {{ siteLocationID }}
                 excluded_uri_prefixes:
                     - {{ exclude_uri_prefixes }}
-    group_{{ siteaccess }}:
-        location_view:
-            full:
-                # Defining a ruleset matching a location and pointing to a controller
-                edgar_ez_sb_model:
-                    template: {{ bundle_basename }}Bundle:full:model.html.twig
-                    match:
-                        Identifier\ContentType: [edgar_ez_sb_model]
 {% endblock %}

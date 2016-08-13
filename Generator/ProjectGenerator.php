@@ -102,7 +102,6 @@ class ProjectGenerator extends Generator
         $this->renderFile('project/Extension.php.twig', $dir . '/DependencyInjection/' . $basename . 'Extension.php', $parameters);
         $this->renderFile('project/Configuration.php.twig', $dir . '/DependencyInjection/Configuration.php', $parameters);
         $this->renderFile('project/Resources/config/default_settings.yml.twig', $dir . '/Resources/config/default_settings.yml', $parameters);
-        $this->renderFile('project/Resources/config/ezplatform.yml.twig', $dir . '/Resources/config/ezplatform.yml', $parameters);
 
         $this->filesystem->mkdir($targetDir . '/' . $vendorName . '/' . self::MODELS);
         $this->filesystem->mkdir($targetDir . '/' . $vendorName . '/' . self::CUSTOMERS);

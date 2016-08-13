@@ -39,16 +39,6 @@ class {{ bundle_basename }}Extension extends Extension implements PrependExtensi
     public function prepend(ContainerBuilder $container)
     {
         $container->prependExtensionConfig('assetic', array('bundles' => array('{{ bundle_basename }}Bundle')));
-
-        $this->prependEzPlatform($container);
-    }
-
-    private function prependEzPlatform(ContainerBuilder $container)
-    {
-        $yuiConfigFile = __DIR__ . '/../Resources/config/ezplatform.yml';
-        $config = Yaml::parse(file_get_contents($yuiConfigFile));
-        $container->prependExtensionConfig('ezpublish', $config);
-        $container->addResource(new FileResource($yuiConfigFile));
     }
 {% endblock class_body %}
 }

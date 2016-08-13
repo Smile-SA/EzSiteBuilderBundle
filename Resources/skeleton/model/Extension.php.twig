@@ -45,10 +45,10 @@ class {{ bundle_basename }}Extension extends Extension implements PrependExtensi
 
     private function prependEzPlatform(ContainerBuilder $container)
     {
-        $yuiConfigFile = __DIR__ . '/../Resources/config/ezplatform.yml';
-        $config = Yaml::parse(file_get_contents($yuiConfigFile));
+        $ezConfigFile = __DIR__ . '/../Resources/config/ezplatform.yml';
+        $config = Yaml::parse(file_get_contents($ezConfigFile));
         $container->prependExtensionConfig('ezpublish', $config);
-        $container->addResource(new FileResource($yuiConfigFile));
+        $container->addResource(new FileResource($ezConfigFile));
     }
 {% endblock class_body %}
 }
