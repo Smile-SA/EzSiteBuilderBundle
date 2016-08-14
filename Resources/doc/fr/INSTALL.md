@@ -16,6 +16,22 @@ composer require edgarez/sitebuilderbundle
 php app/console doctrine:schema:update --force
 ```
 
+### Ajout routing
+
+Ajouter dans la configuration globale app/config/routing.yml
+
+```yaml
+edgarezsb_dashboard:
+    resource: '@EdgarEzSiteBuilderBundle/Resources/config/routing.yml'
+```
+
+### Redéfinir les assets
+
+```console
+php app/console assets:install --symlink web
+php app/console assets:dump web
+```
+
 ### Installation SiteBuilder
 
 #### Mode console
