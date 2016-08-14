@@ -10,7 +10,8 @@
 * <s>standardize questions</s>
 * manage _dev.yml, _prod.yml ... settings
 * <s>remove sitebuilder user group administrator</s>
-* user guide
+* finalize user guide
+* translate user guide
 
 ## Installation
 
@@ -29,6 +30,7 @@
 * <s>create user creator/editor role</s>
 * <s>assign role to user groups with subtree limitation</s>
 * <s>create one sitebuilder user creator for this customer</s>
+* send email to first customer creator user
 
 ## Model generator
 
@@ -36,7 +38,7 @@
 
 ## Site generator
 
-* refactor siteaccess (ezplatfor.yml) configuratikon to ProjectBundle
+* <s>refactor siteaccess (ezplatfor.yml) configuratikon to ProjectBundle</s>
 * <s>copy model to customer subtree</s>
 * <s>create customer site bundle inherited model</s>
 * <s>copy model media content structure to customer media content subtree</s>
