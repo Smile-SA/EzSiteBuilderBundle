@@ -1,0 +1,3 @@
+edgarezsb_dashboard:
+    path:     /dashboard
+    defaults: { _controller: edgar_ez_site_builder.controller.dashboard:dashboardAction }

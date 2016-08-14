@@ -2,4 +2,5 @@ system:
     default:
         css:
             files:
+                - %edgar_ez_site_builder.css_dir%/views/dashboard.css
                 - %edgar_ez_site_builder.css_dir%/platform.css

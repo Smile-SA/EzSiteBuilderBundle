@@ -5,6 +5,11 @@ parameters:
     edgar_ez_site_builder.site.service.class: EdgarEz\SiteBuilderBundle\Service\SiteService
 
 services:
+    edgar_ez_site_builder.controller.dashboard:
+        class: EdgarEz\SiteBuilderBundle\Controller\DashboardController
+        arguments: [@ezpublish.api.service.search, @ezpublish.api.service.content_type]
+        parent: ezsystems.platformui.controller.base
+
     edgar_ez_site_builder.install.service:
         class: %edgar_ez_site_builder.install.service.class%
         arguments:
