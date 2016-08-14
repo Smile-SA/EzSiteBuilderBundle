@@ -12,6 +12,7 @@
 * <s>remove sitebuilder user group administrator</s>
 * finalize user guide
 * translate user guide
+* add command to handle sitebuilder_task actions
 
 ## Installation
 
