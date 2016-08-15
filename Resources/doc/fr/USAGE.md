@@ -115,6 +115,9 @@ Le mode interactif de cette installation vous demande les informations suivantes
 * location id de la racine de contenu du modèle de site
 * location id de la racine de média client où devra se créer le site
 * location id de la racine de média du modèle de site
+* host pour le siteaccess
+* voulez-vous une configuration map/uri
+  * suffix pour le map/uri
   
 A l'issue de ces étapes, il ne vous sera pas demandé si vous souhaitez mettre automatiquement à jour le fichier de Kernel (app/AppKernel.php)
 Lors de l'[installation et configuartion des pré-requis](INSTALL.md), vous avez modifié le fichier app/AppKernel.php pour prendre en charge une variable d'environnement : SITEBUILDER_ENV
