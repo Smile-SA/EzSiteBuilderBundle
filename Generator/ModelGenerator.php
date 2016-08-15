@@ -71,12 +71,12 @@ class ModelGenerator extends Generator
             }
         }
 
-        $basename = substr($vendorName . ProjectGenerator::MODELS . $modelName . 'Bundle', 0, -6);
+        $basename = substr(ProjectGenerator::MODELS . $modelName . 'Bundle', 0, -6);
         $parameters = array(
             'namespace' => $namespace,
             'bundle'    => $modelName . 'Bundle',
             'format'    => 'yml',
-            'bundle_basename' => $basename,
+            'bundle_basename' => $vendorName . $basename,
             'extension_alias' => Container::underscore($basename),
             'vendor_name' => $vendorName,
             'model_name' => $modelName,
@@ -88,8 +88,8 @@ class ModelGenerator extends Generator
         );
 
         $this->setSkeletonDirs(array($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/skeleton')));
-        $this->renderFile('model/Bundle.php.twig', $dir . '/' . $basename . 'Bundle.php', $parameters);
-        $this->renderFile('model/Extension.php.twig', $dir . '/DependencyInjection/' . $basename . 'Extension.php', $parameters);
+        $this->renderFile('model/Bundle.php.twig', $dir . '/' . $vendorName . $basename . 'Bundle.php', $parameters);
+        $this->renderFile('model/Extension.php.twig', $dir . '/DependencyInjection/' . $vendorName . $basename . 'Extension.php', $parameters);
         $this->renderFile('model/Configuration.php.twig', $dir . '/DependencyInjection/Configuration.php', $parameters);
         $this->renderFile('model/Resources/config/ezplatform.yml.twig', $dir . '/Resources/config/ezplatform.yml', $parameters);
         $this->renderFile('model/Resources/views/pagelayout.html.twig.twig', $dir . '/Resources/views/pagelayout.html.twig', $parameters);

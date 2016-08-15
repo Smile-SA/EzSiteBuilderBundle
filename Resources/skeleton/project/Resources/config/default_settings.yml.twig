@@ -1,9 +1,11 @@
 parameters:
 {% block parameters %}
-    {{ extension_alias }}.default.models_location_id: {{ settings.modelsLocationID }}
-    {{ extension_alias }}.default.customers_location_id: {{ settings.customersLocationID }}
-    {{ extension_alias }}.default.media_models_location_id: {{ settings.mediaModelsLocationID }}
-    {{ extension_alias }}.default.media_customers_location_id: {{ settings.mediaCustomersLocationID }}
-    {{ extension_alias }}.default.user_creators_location_id: {{ settings.userCreatorsLocationID }}
-    {{ extension_alias }}.default.user_editors_location_id: {{ settings.userEditorsLocationID }}
+    edgarez_sb.{{ extension_alias }}.default.vendor_name: {{ settings.vendor_name }}
+    edgarez_sb.{{ extension_alias }}.default.dir: {{ settings.dir }}
+    edgarez_sb.{{ extension_alias }}.default.models_location_id: {{ settings.modelsLocationID }}
+    edgarez_sb.{{ extension_alias }}.default.customers_location_id: {{ settings.customersLocationID }}
+    edgarez_sb.{{ extension_alias }}.default.media_models_location_id: {{ settings.mediaModelsLocationID }}
+    edgarez_sb.{{ extension_alias }}.default.media_customers_location_id: {{ settings.mediaCustomersLocationID }}
+    edgarez_sb.{{ extension_alias }}.default.user_creators_location_id: {{ settings.userCreatorsLocationID }}
+    edgarez_sb.{{ extension_alias }}.default.user_editors_location_id: {{ settings.userEditorsLocationID }}
 {% endblock parameters %}

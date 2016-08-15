@@ -65,7 +65,7 @@ class ProjectGenerator extends Generator
     {
         $namespace = $vendorName . '\\' . self::BUNDLE;
 
-        $dir = $targetDir . '/' . strtr($namespace, '\\', '/');
+        $dir = rtrim($targetDir, '/') . '/' . strtr($namespace, '\\', '/');
         if (file_exists($dir)) {
             if (!is_dir($dir)) {
                 throw new \RuntimeException(sprintf('Unable to generate the bundle as the target directory "%s" exists but is a file.', realpath($dir)));
@@ -79,14 +79,16 @@ class ProjectGenerator extends Generator
             }
         }
 
-        $basename = substr($vendorName . self::BUNDLE, 0, -6);
+        $basename = substr(self::BUNDLE, 0, -6);
         $parameters = array(
             'namespace' => $namespace,
             'bundle'    => self::BUNDLE,
             'format'    => 'yml',
-            'bundle_basename' => $basename,
+            'bundle_basename' => $vendorName . $basename,
             'extension_alias' => Container::underscore($basename),
             'settings' => array(
+                'vendor_name' => $vendorName,
+                'dir' => $targetDir,
                 'modelsLocationID' => $modelsLocationID,
                 'customersLocationID' => $customersLocationID,
                 'mediaModelsLocationID' => $mediaModelsLocationID,
@@ -98,8 +100,8 @@ class ProjectGenerator extends Generator
         );
 
         $this->setSkeletonDirs(array($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/skeleton')));
-        $this->renderFile('project/Bundle.php.twig', $dir . '/' . $basename . 'Bundle.php', $parameters);
-        $this->renderFile('project/Extension.php.twig', $dir . '/DependencyInjection/' . $basename . 'Extension.php', $parameters);
+        $this->renderFile('project/Bundle.php.twig', $dir . '/' . $vendorName . $basename . 'Bundle.php', $parameters);
+        $this->renderFile('project/Extension.php.twig', $dir . '/DependencyInjection/' . $vendorName . $basename . 'Extension.php', $parameters);
         $this->renderFile('project/Configuration.php.twig', $dir . '/DependencyInjection/Configuration.php', $parameters);
         $this->renderFile('project/Resources/config/default_settings.yml.twig', $dir . '/Resources/config/default_settings.yml', $parameters);
 

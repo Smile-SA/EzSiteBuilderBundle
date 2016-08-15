@@ -74,12 +74,12 @@ class CustomerGenerator extends Generator
             }
         }
 
-        $basename = substr($vendorName . ProjectGenerator::CUSTOMERS . $customerName . self::BUNDLE, 0, -6);
+        $basename = substr(ProjectGenerator::CUSTOMERS . $customerName . self::BUNDLE, 0, -6);
         $parameters = array(
             'namespace' => $namespace,
             'bundle'    => self::BUNDLE,
             'format'    => 'yml',
-            'bundle_basename' => $basename,
+            'bundle_basename' => $vendorName . $basename,
             'extension_alias' => Container::underscore($basename),
             'settings' => array(
                 'customerLocationID' => $customerLocationID,
@@ -92,8 +92,8 @@ class CustomerGenerator extends Generator
         );
 
         $this->setSkeletonDirs(array($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/skeleton')));
-        $this->renderFile('customer/Bundle.php.twig', $dir . '/' . $basename . 'Bundle.php', $parameters);
-        $this->renderFile('customer/Extension.php.twig', $dir . '/DependencyInjection/' . $basename . 'Extension.php', $parameters);
+        $this->renderFile('customer/Bundle.php.twig', $dir . '/' . $vendorName . $basename . 'Bundle.php', $parameters);
+        $this->renderFile('customer/Extension.php.twig', $dir . '/DependencyInjection/' . $vendorName . $basename . 'Extension.php', $parameters);
         $this->renderFile('customer/Configuration.php.twig', $dir . '/DependencyInjection/Configuration.php', $parameters);
         $this->renderFile('customer/default_settings.yml.twig', $dir . '/Resources/config/default_settings.yml', $parameters);
 

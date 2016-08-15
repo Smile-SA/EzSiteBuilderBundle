@@ -2,7 +2,6 @@
 
 namespace EdgarEz\SiteBuilderBundle\Service;
 
-
 use EdgarEz\ToolsBundle\Service\Content;
 use EdgarEz\ToolsBundle\Service\Role;
 use eZ\Publish\API\Repository\ContentTypeService;

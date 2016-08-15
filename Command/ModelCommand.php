@@ -58,7 +58,7 @@ class ModelCommand extends BaseContainerAwareCommand
         $questionHelper = $this->getQuestionHelper();
         $questionHelper->writeSection($output, 'SiteBuilder model initialization');
 
-        $this->init($input, $output);
+        $this->getVendorNameDir();
 
         $this->createModelContent($input, $output);
         $this->createMediaModelContent($input, $output);
@@ -111,11 +111,11 @@ class ModelCommand extends BaseContainerAwareCommand
 
         $this->modelName = $modelName;
 
-        $basename = $this->vendorName . ProjectGenerator::MAIN ;
+        $basename = ProjectGenerator::MAIN ;
 
         /** @var ModelService $modelService */
         $modelService = $this->getContainer()->get('edgar_ez_site_builder.model.service');
-        $modelsLocationID = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.models_location_id');
+        $modelsLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.models_location_id');
 
         $content = $modelService->createModelContent($modelsLocationID, $this->modelName);
         $this->excludeUriPrefixes = $content['excludeUriPrefixes'];
@@ -130,11 +130,11 @@ class ModelCommand extends BaseContainerAwareCommand
      */
     protected function createMediaModelContent(InputInterface $input, OutputInterface $output)
     {
-        $basename = $this->vendorName . ProjectGenerator::MAIN;
+        $basename = ProjectGenerator::MAIN;
 
         /** @var ModelService $modelService */
         $modelService = $this->getContainer()->get('edgar_ez_site_builder.model.service');
-        $mediaModelsLocationID = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.media_models_location_id');
+        $mediaModelsLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.media_models_location_id');
 
         $this->mediaModelLocationID = $modelService->createMediaModelContent($mediaModelsLocationID, $this->modelName);
     }

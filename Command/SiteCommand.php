@@ -80,7 +80,7 @@ class SiteCommand extends BaseContainerAwareCommand
         $questionHelper = $this->getQuestionHelper();
         $questionHelper->writeSection($output, 'SiteBuilder Site initialization');
 
-        $this->init($input, $output);
+        $this->getVendorNameDir();
 
         $this->createSiteContent($input, $output);
         $this->createMediaSiteContent($input, $output);

@@ -2,6 +2,7 @@
 
 namespace EdgarEz\SiteBuilderBundle\Command;
 
+use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use Sensio\Bundle\GeneratorBundle\Command\GeneratorCommand;
 use Sensio\Bundle\GeneratorBundle\Command\Helper\QuestionHelper;
 use Sensio\Bundle\GeneratorBundle\Manipulator\KernelManipulator;
@@ -9,6 +10,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
@@ -140,5 +142,14 @@ abstract class BaseContainerAwareCommand extends GeneratorCommand
     {
         $this->getVendorName($input, $output);
         $this->getDir($input, $output);
+    }
+
+    protected function getVendorNameDir()
+    {
+        $basename = substr(ProjectGenerator::BUNDLE, 0, -6);
+        $extensionAlias = 'edgarez_sb.' . Container::underscore($basename);
+
+        $this->vendorName = $this->getContainer()->getParameter($extensionAlias . '.default.vendor_name');
+        $this->dir = $this->getContainer()->getParameter($extensionAlias . '.default.dir');
     }
 }

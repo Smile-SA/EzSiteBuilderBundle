@@ -59,7 +59,7 @@ class CustomerCommand extends BaseContainerAwareCommand
         $questionHelper = $this->getQuestionHelper();
         $questionHelper->writeSection($output, 'SiteBuilder Customer initialization');
 
-        $this->init($input, $output);
+        $this->getVendorNameDir();
 
         $this->createContentStructure($input, $output);
         $this->createMediaContentStructure($input, $output);
@@ -117,12 +117,12 @@ class CustomerCommand extends BaseContainerAwareCommand
 
         $this->customerName = $customerName;
 
-        $basename = $this->vendorName . ProjectGenerator::MAIN;
+        $basename = ProjectGenerator::MAIN;
 
         /** @var CustomerService $customerService */
         $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
 
-        $parentLocationID = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.customers_location_id');
+        $parentLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.customers_location_id');
         $contentAdded = $customerService->createContentStructure($parentLocationID, $this->customerName);
         $output->writeln('Content Structure created');
 
@@ -137,12 +137,12 @@ class CustomerCommand extends BaseContainerAwareCommand
      */
     protected function createMediaContentStructure(InputInterface $input, OutputInterface $output)
     {
-        $basename = $this->vendorName . ProjectGenerator::MAIN;
+        $basename = ProjectGenerator::MAIN;
 
         /** @var CustomerService $customerService */
         $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
 
-        $parentLocationID = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.media_customers_location_id');
+        $parentLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.media_customers_location_id');
         $contentAdded = $customerService->createMediaContentStructure($parentLocationID, $this->customerName);
         $output->writeln('Media Content Structure created');
 
@@ -157,13 +157,13 @@ class CustomerCommand extends BaseContainerAwareCommand
      */
     protected function createUserGroups(InputInterface $input, OutputInterface $output)
     {
-        $basename = $this->vendorName . ProjectGenerator::MAIN;
+        $basename = ProjectGenerator::MAIN;
 
         /** @var CustomerService $customerService */
         $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
 
-        $parentCreatorLocationID = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.user_creators_location_id');
-        $parentEditorLocationID = $this->getContainer()->getParameter(Container::underscore($basename) . '.default.user_editors_location_id');
+        $parentCreatorLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.user_creators_location_id');
+        $parentEditorLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.user_editors_location_id');
         $contents = $customerService->createUserGroups($parentCreatorLocationID, $parentEditorLocationID, $this->customerName);
         $output->writeln('User groups created');
 
