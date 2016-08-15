@@ -7,7 +7,7 @@
 * catch exceptions
 * finalize user guide
 * translate user guide
-* add command to handle sitebuilder_task actions
+* finalize command and services to handle sitebuilder_task actions
 
 ## Installation
 
