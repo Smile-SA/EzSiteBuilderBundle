@@ -21,9 +21,7 @@
 
 ## Site generator
 
-* ask host for siteaccess
 * add new siteaccess to user/login policies for creator/editor roles for this customer
-* manage siteaccess matching
 * manage multilanguage site
 * send system admin a mail to configure virtualhost with new siteaccess
 

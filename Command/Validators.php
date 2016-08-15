@@ -88,9 +88,30 @@ class Validators
     public static function validateEmail($email)
     {
         if (!\ezcMailTools::validateEmailAddress($email)) {
-            throw new InvalidArgumentException('email', $email, 'UserCreateStruct');
+            throw new InvalidArgumentException('email', $email, 'Validators');
         }
 
         return $email;
+    }
+
+    public static function validateHost($host)
+    {
+        if (!preg_match("/^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$/i", $host)
+            && !preg_match("/^.{1,253}$/", $host)
+            && !preg_match("/^[^\.]{1,63}(\.[^\.]{1,63})*$/", $host)
+        ) {
+            throw new InvalidArgumentException('host', $host, 'Validators');
+        }
+
+        return $host;
+    }
+
+    public static function validateSiteaccessSuffix($siteaccessSuffix)
+    {
+        if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_\x7f-\xff]*[a-zA-Z0-9]$/', $siteaccessSuffix)) {
+            throw new InvalidArgumentException('siteaccessSuffix', $siteaccessSuffix, 'Validators');
+        }
+
+        return $siteaccessSuffix;
     }
 }

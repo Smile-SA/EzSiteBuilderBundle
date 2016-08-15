@@ -12,6 +12,7 @@ use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\URLAliasService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 
 /**
@@ -59,6 +60,15 @@ class SiteCommand extends BaseContainerAwareCommand
      */
     protected $excludeUriPrefixes;
 
+    /** @var string $host siteaccess host */
+    protected $host;
+
+    /** @var boolean $mapuri */
+    protected $mapuri;
+
+    /** @var string $siteaccessSuffix */
+    protected $siteaccessSuffix;
+
     /**
      * Configure Customer generator command
      */
@@ -81,7 +91,7 @@ class SiteCommand extends BaseContainerAwareCommand
         /** @var Repository $repository */
         $repository = $this->getContainer()->get('ezpublish.api.repository');
         $repository->setCurrentUser($repository->getUserService()->loadUser($adminID));
-        
+
         $questionHelper = $this->getQuestionHelper();
         $questionHelper->writeSection($output, 'SiteBuilder Site initialization');
 
@@ -89,6 +99,7 @@ class SiteCommand extends BaseContainerAwareCommand
 
         $contentLocationIDs = $this->askSiteContent($input, $output);
         $mediaLocationIDs = $this->askMediaSiteContent($input, $output);
+        $this->askSiteaccessMapping($input, $output);
 
         $this->createSiteContent(
             $output,
@@ -112,6 +123,9 @@ class SiteCommand extends BaseContainerAwareCommand
             $this->modelName,
             $this->siteName,
             $this->excludeUriPrefixes,
+            $this->host,
+            $this->mapuri,
+            $this->siteaccessSuffix,
             $this->dir
         );
 
@@ -312,6 +326,53 @@ class SiteCommand extends BaseContainerAwareCommand
         $siteSerice = $this->getContainer()->get('edgar_ez_site_builder.site.service');
 
         $this->mediaSiteLocationID = $siteSerice->createMediaSiteContent($mediaModelLocationID, $mediaCustomerLocationID, $this->siteName);
+    }
+
+    protected function askSiteaccessMapping(InputInterface $input, OutputInterface $output)
+    {
+        $questionHelper = $this->getQuestionHelper();
+
+        $host = false;
+        $question = new Question($questionHelper->getQuestion('Siteaccess host', $host));
+        $question->setValidator(
+            array(
+                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'validateHost'
+            )
+        );
+
+        while (!$host) {
+            $host = $questionHelper->ask($input, $output, $question);
+        }
+
+        $this->host = $host;
+
+        $mapuri = true;
+        if ($input->isInteractive()) {
+            $question = new ConfirmationQuestion($questionHelper->getQuestion('Add siteaccess suffix', 'yes', '?'), true);
+            $mapuri = $questionHelper->ask($input, $output, $question);
+        }
+
+        if ($mapuri) {
+            $this->mapuri = true;
+            $siteaccessSuffix = false;
+            $question = new Question($questionHelper->getQuestion('Siteaccess suffix', $siteaccessSuffix));
+            $question->setValidator(
+                array(
+                    'EdgarEz\SiteBuilderBundle\Command\Validators',
+                    'validateSiteaccessSuffix'
+                )
+            );
+
+            while (!$siteaccessSuffix) {
+                $siteaccessSuffix = $questionHelper->ask($input, $output, $question);
+            }
+
+            $this->siteaccessSuffix = $siteaccessSuffix;
+        } else {
+            $this->mapuri = false;
+            $this->siteaccessSuffix = false;
+        }
     }
 
     /**

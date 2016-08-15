@@ -8,7 +8,8 @@ siteaccess:
             {{ siteaccess }}:
                 matchers:
                     Map\URI:
-                        {{ siteaccess }}: true
+                        {% if mapuri %}{{ siteaccess_suffix }}: true{% else %}{{ siteaccess }}: false{% endif %}
+
                     Map\Host:
                         {{ host }}: true
                 match: {{ siteaccess }}

@@ -44,7 +44,19 @@ class SiteGenerator extends Generator
      * @param string $siteName customer site name
      * @param string $targetDir filesystem directory where bundle would be generated
      */
-    public function generate($siteLocationID, $mediaSiteLocationID, $vendorName, $customerName, $modelName, $siteName, $excludeUriPrefixes, $targetDir)
+    public function generate(
+        $siteLocationID,
+        $mediaSiteLocationID,
+        $vendorName,
+        $customerName,
+        $modelName,
+        $siteName,
+        $excludeUriPrefixes,
+        $host,
+        $mapuri,
+        $siteaccessSuffix,
+        $targetDir
+    )
     {
         $namespace = $vendorName . '\\' . ProjectGenerator::CUSTOMERS . '\\' . $customerName . '\\' . CustomerGenerator::SITES . '\\' . $siteName . 'Bundle';
 
@@ -78,8 +90,10 @@ class SiteGenerator extends Generator
             'parent_model_bundle' => substr($vendorName . ProjectGenerator::MODELS . $modelName . 'Bundle', 0, -6),
             'siteaccess_model' => Container::underscore($vendorName . $modelName),
             'siteaccess' => Container::underscore($vendorName . $customerName . $siteName),
-            'host' => 'ezplatform.lxc',
-            'exclude_uri_prefixes' => $excludeUriPrefixes
+            'exclude_uri_prefixes' => $excludeUriPrefixes,
+            'host' => $host,
+            'mapuri' => $mapuri,
+            'siteaccess_suffix' => $siteaccessSuffix
         );
 
         $this->setSkeletonDirs(array($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/skeleton')));
