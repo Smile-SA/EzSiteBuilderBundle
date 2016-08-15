@@ -4,6 +4,11 @@ parameters:
     edgar_ez_site_builder.model.service.class: EdgarEz\SiteBuilderBundle\Service\ModelService
     edgar_ez_site_builder.site.service.class: EdgarEz\SiteBuilderBundle\Service\SiteService
 
+    edgar_ez_site_builder.project.task.service.class: EdgarEz\SiteBuilderBundle\Service\Task\ProjectTaskService
+    edgar_ez_site_builder.customer.task.service.class: EdgarEz\SiteBuilderBundle\Service\Task\CustomerTaskService
+    edgar_ez_site_builder.model.task.service.class: EdgarEz\SiteBuilderBundle\Service\Task\ModelTaskService
+    edgar_ez_site_builder.site.task.service.class: EdgarEz\SiteBuilderBundle\Service\Task\SiteTaskService
+
 services:
     edgar_ez_site_builder.controller.dashboard:
         class: EdgarEz\SiteBuilderBundle\Controller\DashboardController
@@ -41,3 +46,15 @@ services:
             - @ezpublish.api.service.location
             - @ezpublish.api.service.url_alias
             - @edgar_ez_tools.content.service
+
+    edgar_ez_site_builder.project.task.service:
+        class: %edgar_ez_site_builder.project.task.service.class%
+
+    edgar_ez_site_builder.customer.task.service:
+        class: %edgar_ez_site_builder.customer.task.service.class%
+
+    edgar_ez_site_builder.model.task.service:
+        class: %edgar_ez_site_builder.model.task.service.class%
+
+    edgar_ez_site_builder.site.task.service:
+        class: %edgar_ez_site_builder.site.task.service.class%
