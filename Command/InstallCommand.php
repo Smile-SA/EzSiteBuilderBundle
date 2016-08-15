@@ -72,14 +72,23 @@ class InstallCommand extends BaseContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $adminID = $this->getContainer()->getParameter('edgar_ez_tools.adminid');
+        /** @var Repository $repository */
+        $repository = $this->getContainer()->get('ezpublish.api.repository');
+        $repository->setCurrentUser($repository->getUserService()->loadUser($adminID));
+
         $questionHelper = $this->getQuestionHelper();
         $questionHelper->writeSection($output, 'Welcome to the SiteBuilder installation');
 
         $this->init($input, $output);
 
-        $this->createContentStructure($input, $output);
-        $this->createMediaContentStructure($input, $output);
-        $this->createUserStructure($input, $output);
+        $contentParentLocationID = $this->askContentStructure($input, $output);
+        $mediaParentLocationID = $this->askMediaContentStructure($input, $output);
+        $userGroupLocationID = $this->askUserStructure($input, $output);
+
+        $this->createContentStructure($output, $contentParentLocationID);
+        $this->createMediaContentStructure($output, $mediaParentLocationID);
+        $this->createUserStructure($output, $userGroupLocationID);
 
         /** @var ProjectGenerator $generator */
         $generator = $this->getGenerator();
@@ -111,7 +120,7 @@ class InstallCommand extends BaseContainerAwareCommand
      * @param InputInterface $input input console
      * @param OutputInterface $output output console
      */
-    protected function createContentStructure(InputInterface $input, OutputInterface $output)
+    protected function askContentStructure(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
 
@@ -145,6 +154,11 @@ class InstallCommand extends BaseContainerAwareCommand
             }
         }
 
+        return $parentLocationID;
+    }
+
+    protected function createContentStructure(OutputInterface $output, $parentLocationID)
+    {
         /** @var InstallService $installService */
         $installService = $this->getContainer()->get('edgar_ez_site_builder.install.service');
 
@@ -162,7 +176,7 @@ class InstallCommand extends BaseContainerAwareCommand
      * @param InputInterface $input input console
      * @param OutputInterface $output output console
      */
-    protected function createMediaContentStructure(InputInterface $input, OutputInterface $output)
+    protected function askMediaContentStructure(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
 
@@ -196,6 +210,11 @@ class InstallCommand extends BaseContainerAwareCommand
             }
         }
 
+        return $parentLocationID;
+    }
+
+    protected function createMediaContentStructure(OutputInterface $output, $parentLocationID)
+    {
         /** @var InstallService $installService */
         $installService = $this->getContainer()->get('edgar_ez_site_builder.install.service');
 
@@ -212,7 +231,7 @@ class InstallCommand extends BaseContainerAwareCommand
      * @param InputInterface $input input console
      * @param OutputInterface $output outpput console
      */
-    protected function createUserStructure(InputInterface $input, OutputInterface $output)
+    protected function askUserStructure(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
 
@@ -246,6 +265,11 @@ class InstallCommand extends BaseContainerAwareCommand
             }
         }
 
+        return $userGroupParenttLocationID;
+    }
+
+    protected function createUserStructure(OutputInterface $output, $userGroupParenttLocationID)
+    {
         /** @var InstallService $installService */
         $installService = $this->getContainer()->get('edgar_ez_site_builder.install.service');
 

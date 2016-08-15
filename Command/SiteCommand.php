@@ -77,13 +77,30 @@ class SiteCommand extends BaseContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $adminID = $this->getContainer()->getParameter('edgar_ez_tools.adminid');
+        /** @var Repository $repository */
+        $repository = $this->getContainer()->get('ezpublish.api.repository');
+        $repository->setCurrentUser($repository->getUserService()->loadUser($adminID));
+        
         $questionHelper = $this->getQuestionHelper();
         $questionHelper->writeSection($output, 'SiteBuilder Site initialization');
 
         $this->getVendorNameDir();
 
-        $this->createSiteContent($input, $output);
-        $this->createMediaSiteContent($input, $output);
+        $contentLocationIDs = $this->askSiteContent($input, $output);
+        $mediaLocationIDs = $this->askMediaSiteContent($input, $output);
+
+        $this->createSiteContent(
+            $output,
+            $contentLocationIDs['customerLocationID'],
+            $contentLocationIDs['modelLocationID']
+        );
+
+        $this->createMediaSiteContent(
+            $output,
+            $mediaLocationIDs['mediaCustomerLocationID'],
+            $mediaLocationIDs['mediaModelLocationID']
+        );
 
         /** @var SiteGenerator $generator */
         $generator = $this->getGenerator();
@@ -120,7 +137,7 @@ class SiteCommand extends BaseContainerAwareCommand
      * @param InputInterface  $input input console
      * @param OutputInterface $output output console
      */
-    protected function createSiteContent(InputInterface $input, OutputInterface $output)
+    protected function askSiteContent(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
 
@@ -198,6 +215,14 @@ class SiteCommand extends BaseContainerAwareCommand
         $modelLocation = $locationService->loadLocation($modelLocationID);
         $this->modelName = $modelLocation->getContentInfo()->name;
 
+        return array(
+            'customerLocationID' => $customerLocationID,
+            'modelLocationID' => $modelLocationID
+        );
+    }
+
+    protected function createSiteContent(OutputInterface $output, $customerLocationID, $modelLocationID)
+    {
         /** @var SiteService $siteSerice */
         $siteSerice = $this->getContainer()->get('edgar_ez_site_builder.site.service');
 
@@ -212,7 +237,7 @@ class SiteCommand extends BaseContainerAwareCommand
      * @param InputInterface  $input input console
      * @param OutputInterface $output output console
      */
-    protected function createMediaSiteContent(InputInterface $input, OutputInterface $output)
+    protected function askMediaSiteContent(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
 
@@ -275,6 +300,14 @@ class SiteCommand extends BaseContainerAwareCommand
         $mediaModelLocation = $locationService->loadLocation($mediaModelLocationID);
         $this->mediaModelName = $mediaModelLocation->getContentInfo()->name;
 
+        return array(
+            'mediaCustomerLocationID' => $mediaCustomerLocationID,
+            'mediaModelLocationID' => $mediaModelLocationID
+        );
+    }
+
+    protected function createMediaSiteContent(OutputInterface $output, $mediaCustomerLocationID, $mediaModelLocationID)
+    {
         /** @var SiteService $siteSerice */
         $siteSerice = $this->getContainer()->get('edgar_ez_site_builder.site.service');
 

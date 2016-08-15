@@ -5,6 +5,7 @@ namespace EdgarEz\SiteBuilderBundle\Command;
 use EdgarEz\SiteBuilderBundle\Generator\ModelGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\SiteBuilderBundle\Service\ModelService;
+use eZ\Publish\API\Repository\Repository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
@@ -55,13 +56,20 @@ class ModelCommand extends BaseContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $adminID = $this->getContainer()->getParameter('edgar_ez_tools.adminid');
+        /** @var Repository $repository */
+        $repository = $this->getContainer()->get('ezpublish.api.repository');
+        $repository->setCurrentUser($repository->getUserService()->loadUser($adminID));
+
         $questionHelper = $this->getQuestionHelper();
         $questionHelper->writeSection($output, 'SiteBuilder model initialization');
 
         $this->getVendorNameDir();
 
-        $this->createModelContent($input, $output);
-        $this->createMediaModelContent($input, $output);
+        $this->askModelContent($input, $output);
+
+        $this->createModelContent($output);
+        $this->createMediaModelContent($output);
 
         /** @var ModelGenerator $generator */
         $generator = $this->getGenerator();
@@ -92,7 +100,7 @@ class ModelCommand extends BaseContainerAwareCommand
      * @param InputInterface $input input console
      * @param OutputInterface $output output console
      */
-    protected function createModelContent(InputInterface $input, OutputInterface $output)
+    protected function askModelContent(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
 
@@ -110,7 +118,10 @@ class ModelCommand extends BaseContainerAwareCommand
         }
 
         $this->modelName = $modelName;
+    }
 
+    protected function createModelContent(OutputInterface $output)
+    {
         $basename = ProjectGenerator::MAIN ;
 
         /** @var ModelService $modelService */
@@ -128,7 +139,7 @@ class ModelCommand extends BaseContainerAwareCommand
      * @param InputInterface $input input console
      * @param OutputInterface $output output console
      */
-    protected function createMediaModelContent(InputInterface $input, OutputInterface $output)
+    protected function createMediaModelContent(OutputInterface $output)
     {
         $basename = ProjectGenerator::MAIN;
 

@@ -5,8 +5,6 @@
 * manage content/contentType language
 * throw exception for question validator methods
 * catch exceptions
-* manage questions and content actions because no rollback (question/validation first)
-* manage _dev.yml, _prod.yml ... settings
 * finalize user guide
 * translate user guide
 * add command to handle sitebuilder_task actions

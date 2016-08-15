@@ -5,6 +5,7 @@ namespace EdgarEz\SiteBuilderBundle\Command;
 use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\SiteBuilderBundle\Service\CustomerService;
+use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\Values\User\Role;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -44,6 +45,10 @@ class CustomerCommand extends BaseContainerAwareCommand
      */
     protected $customerName;
 
+    protected $userFirstName;
+    protected $userLastName;
+    protected $userEmail;
+
     /**
      * Configure Customer generator command
      */
@@ -56,16 +61,24 @@ class CustomerCommand extends BaseContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $adminID = $this->getContainer()->getParameter('edgar_ez_tools.adminid');
+        /** @var Repository $repository */
+        $repository = $this->getContainer()->get('ezpublish.api.repository');
+        $repository->setCurrentUser($repository->getUserService()->loadUser($adminID));
+
         $questionHelper = $this->getQuestionHelper();
         $questionHelper->writeSection($output, 'SiteBuilder Customer initialization');
 
         $this->getVendorNameDir();
 
-        $this->createContentStructure($input, $output);
-        $this->createMediaContentStructure($input, $output);
-        $this->createUserGroups($input, $output);
-        $this->createRoles($input, $output);
-        $this->initializeUserCreator($input, $output);
+        $this->askContentStructure($input, $output);
+        $this->askUserCreator($input, $output);
+
+        $this->createContentStructure($output);
+        $this->createMediaContentStructure($output);
+        $this->createUserGroups($output);
+        $this->createRoles($output);
+        $this->initializeUserCreator($output);
 
         /** @var CustomerGenerator $generator */
         $generator = $this->getGenerator();
@@ -98,7 +111,7 @@ class CustomerCommand extends BaseContainerAwareCommand
      * @param InputInterface $input input console
      * @param OutputInterface $output output console
      */
-    protected function createContentStructure(InputInterface $input, OutputInterface $output)
+    protected function askContentStructure(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
 
@@ -116,7 +129,10 @@ class CustomerCommand extends BaseContainerAwareCommand
         }
 
         $this->customerName = $customerName;
+    }
 
+    protected function createContentStructure(OutputInterface $output)
+    {
         $basename = ProjectGenerator::MAIN;
 
         /** @var CustomerService $customerService */
@@ -135,7 +151,7 @@ class CustomerCommand extends BaseContainerAwareCommand
      * @param InputInterface $input input console
      * @param OutputInterface $output output console
      */
-    protected function createMediaContentStructure(InputInterface $input, OutputInterface $output)
+    protected function createMediaContentStructure(OutputInterface $output)
     {
         $basename = ProjectGenerator::MAIN;
 
@@ -155,7 +171,7 @@ class CustomerCommand extends BaseContainerAwareCommand
      * @param InputInterface  $input input console
      * @param OutputInterface $output output console
      */
-    protected function createUserGroups(InputInterface $input, OutputInterface $output)
+    protected function createUserGroups(OutputInterface $output)
     {
         $basename = ProjectGenerator::MAIN;
 
@@ -175,7 +191,7 @@ class CustomerCommand extends BaseContainerAwareCommand
      * @param InputInterface  $input input console
      * @param OutputInterface $output output console
      */
-    protected function createRoles(InputInterface $input, OutputInterface $output)
+    protected function createRoles(OutputInterface $output)
     {
         /** @var CustomerService $customerService */
         $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
@@ -200,7 +216,7 @@ class CustomerCommand extends BaseContainerAwareCommand
      * @param InputInterface $input input console
      * @param OutputInterface $output output console
      */
-    protected function initializeUserCreator(InputInterface $input, OutputInterface $output)
+    protected function askUserCreator(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
         $questionHelper->writeSection($output, 'Initialize customeruser creator account');
@@ -218,6 +234,8 @@ class CustomerCommand extends BaseContainerAwareCommand
             $userFirstName = $questionHelper->ask($input, $output, $question);
         }
 
+        $this->userFirstName = $userFirstName;
+
         $userLastName = false;
         $question = new Question($questionHelper->getQuestion('Last name', null));
         $question->setValidator(
@@ -230,6 +248,8 @@ class CustomerCommand extends BaseContainerAwareCommand
         while (!$userLastName) {
             $userLastName = $questionHelper->ask($input, $output, $question);
         }
+
+        $this->userLastName = $userLastName;
 
         $userEmail = false;
         $question = new Question($questionHelper->getQuestion('User email', null));
@@ -244,17 +264,29 @@ class CustomerCommand extends BaseContainerAwareCommand
             $userEmail = $questionHelper->ask($input, $output, $question);
         }
 
+        $this->userEmail = $userEmail;
+    }
+
+    protected function initializeUserCreator(OutputInterface $output)
+    {
+        $questionHelper = $this->getQuestionHelper();
+
         /** @var CustomerService $customerService */
         $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
         $output->writeln('User creator initialized');
 
-        $userPassword = $customerService->initializeUserCreator($userFirstName, $userLastName, $userEmail, $this->customerUserCreatorsGroupLocationID);
+        $userPassword = $customerService->initializeUserCreator(
+            $this->userFirstName,
+            $this->userLastName,
+            $this->userEmail,
+            $this->customerUserCreatorsGroupLocationID
+        );
 
         $questionHelper->writeSection(
             $output,
             array(
                 '',
-                'user login: ' . $userEmail,
+                'user login: ' . $this->userEmail,
                 'user password: ' . $userPassword ,
                 ''
             )
