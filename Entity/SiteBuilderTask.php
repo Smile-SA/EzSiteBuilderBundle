@@ -26,6 +26,9 @@ class SiteBuilderTask
     /** @ORM\Column(type="datetime", name="posted_at", nullable=false) */
     private $postedAt;
 
+    /** @ORM\Column(type="datetime", name="executed_at", nullable=true) */
+    private $executedAt;
+
     /** @ORM\Column(type="integer", name="state", nullable=false, options={"default":0}) */
     private $state;
 
@@ -133,5 +136,29 @@ class SiteBuilderTask
     public function getState()
     {
         return $this->state;
+    }
+
+    /**
+     * Set executedAt
+     *
+     * @param \DateTime $executedAt
+     *
+     * @return SiteBuilderTask
+     */
+    public function setExecutedAt($executedAt)
+    {
+        $this->executedAt = $executedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get executedAt
+     *
+     * @return \DateTime
+     */
+    public function getExecutedAt()
+    {
+        return $this->executedAt;
     }
 }
