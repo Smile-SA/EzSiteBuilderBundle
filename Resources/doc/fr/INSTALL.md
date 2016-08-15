@@ -63,7 +63,7 @@ class AppKernel extends Kernel
 
 où :
 
-* <VendorName> : nom du vendeur
+* VendorName : nom du vendeur
 
 Notes :
 

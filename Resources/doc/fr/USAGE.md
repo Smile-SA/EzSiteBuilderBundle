@@ -34,8 +34,8 @@ class AppKernel extends Kernel
 
 où :
 
-* <VendorName> : nom du vendeur
-* <ModelsName> : nom du modèle
+* VendorName : nom du vendeur
+* ModelsName : nom du modèle
 
 Notes :
 
@@ -81,8 +81,8 @@ class AppKernel extends Kernel
 
 où :
 
-* <VendorName> : nom du vendeur
-* <ModelName> : nom du modèle
+* VendorName : nom du vendeur
+* CustomerName : nom du modèle
 
 Notes :
 
@@ -120,6 +120,7 @@ A l'issue de ces étapes, il ne vous sera pas demandé si vous souhaitez mettre 
 Lors de l'[installation et configuartion des pré-requis](INSTALL.md), vous avez modifié le fichier app/AppKernel.php pour prendre en charge une variable d'environnement : SITEBUILDER_ENV
  
 De ce fait, après initialisation de votre site, dans la configuration de votre serveur web, vous devez définir cette variable d'environnement, exemple pour une configuration Aapache :
+
 ```apache
 <VirtualHost *:80>
     ServerName domain.tld
@@ -137,9 +138,9 @@ De ce fait, après initialisation de votre site, dans la configuration de votre 
 
 où :
 
-* <VendorName> : nom du vendeur
-* <CustomerName> : nom du modèle
-* <SiteName> : nom du site
+* VendorName : nom du vendeur
+* CustomerName : nom du modèle
+* SiteName : nom du site
 
 Notes :
 
