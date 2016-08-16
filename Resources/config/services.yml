@@ -32,6 +32,7 @@ services:
             - @ezpublish.api.service.content_type
             - @edgar_ez_tools.content.service
             - @edgar_ez_tools.role.service
+            - %ezpublish.siteaccess.groups%
 
     edgar_ez_site_builder.model.service:
         class: %edgar_ez_site_builder.model.service.class%

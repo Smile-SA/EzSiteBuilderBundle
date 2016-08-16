@@ -20,6 +20,7 @@ class CustomerService
 
     private $content;
     private $role;
+    private $siteaccessGroups;
 
     public function __construct(
         RoleService $roleService,
@@ -27,7 +28,8 @@ class CustomerService
         UserService $userService,
         ContentTypeService $contentTypeService,
         Content $content,
-        Role $role
+        Role $role,
+        array $siteaccessGroups
     )
     {
         $this->roleService = $roleService;
@@ -36,6 +38,7 @@ class CustomerService
         $this->contentTypeService = $contentTypeService;
         $this->content = $content;
         $this->role = $role;
+        $this->siteaccessGroups = $siteaccessGroups;
     }
 
     public function createContentStructure($parentLocationID, $customerName)
@@ -91,6 +94,9 @@ class CustomerService
         $this->role->addPolicy($roleCreator->id, 'content', 'edit');
         $this->role->addPolicy($roleCreator->id, 'user', 'login');
 
+        $this->role->addPolicy($roleCreator->id, 'sitebuilder', 'sitecreate');
+        $this->role->addPolicy($roleCreator->id, 'sitebuilder', 'siteactivate');
+
         /** @var \eZ\Publish\API\Repository\Values\User\Role $roleEditor */
         $roleEditor = $this->role->add('SiteBuilder ' . $customerName . ' editor');
         $returnValue['customerRoleEditorID'] = $roleEditor->id;
@@ -129,6 +135,18 @@ class CustomerService
             $userGroupEditor,
             $subtreeLimitation
         );
+
+        $siteaccess = array();
+        $siteaccessGroups = array_keys($this->siteaccessGroups);
+        foreach ($siteaccessGroups as $sg) {
+            if (strpos($sg, 'edgarezsb_group_') === 0) {
+                $sg = substr($sg, strlen('edgarezsb_group_'));
+                $siteaccess[] = crc32($sg);
+            }
+        }
+
+        $this->role->addModelsSiteaccessLimitation($roleCreator, $siteaccess);
+        $this->role->addModelsSiteaccessLimitation($roleEditor, $siteaccess);
 
         return $returnValue;
     }

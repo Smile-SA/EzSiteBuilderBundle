@@ -2,7 +2,7 @@ siteaccess:
 {% block siteaccess %}
     list: [{{ siteaccess }}]
     groups:
-        group_{{ siteaccess }}: [{{ siteaccess }}]
+        edgarezsb_group_{{ siteaccess }}: [{{ siteaccess }}]
     match:
         Compound\LogicalAnd:
             {{ siteaccess }}:
@@ -23,7 +23,7 @@ system:
                 location_id: {{ modelLocationID }}
                 excluded_uri_prefixes:
                     - {{ exclude_uri_prefixes }}
-    group_{{ siteaccess }}:
+    edgarezsb_group_{{ siteaccess }}:
         location_view:
             full:
                 edgar_ez_sb_model:
