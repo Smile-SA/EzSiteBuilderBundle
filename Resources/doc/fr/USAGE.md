@@ -35,12 +35,13 @@ class AppKernel extends Kernel
 où :
 
 * VendorName : nom du vendeur
-* ModelsName : nom du modèle
+* ModelName : nom du modèle
 
 Notes :
 
 * l'utilisateur exécutant cette commande doit avoir les droits d'écriture dans le dossier d'installation des bundles (src)
 * l'utilisateur exécutant cette commande doit avoir les droits d'écriture sur le fichier app/AppKernel.php
+* cet utilisateur doit également pouvoir vider les cache et écrire dans les logs
 
 ### interface Back-Office
 
@@ -89,7 +90,7 @@ Notes :
 * l'identifiant et le mot de passe du premier utilisateur créateur de ce client est indiqué dans la console : ces informations permettront à l'utilisateur de se connecter au Back-OFfice eZ Platform pour accéder au contenu et à l'interface de gestion de ses sites
 * l'utilisateur exécutant cette commande doit avoir les droits d'écriture dans le dossier d'installation des bundles (src)
 * l'utilisateur exécutant cette commande doit avoir les droits d'écriture sur le fichier app/AppKernel.php
-
+* cet utilisateur doit également pouvoir vider les cache et écrire dans les logs
 
 ### interface Back-Office
 
@@ -149,7 +150,7 @@ Notes :
 
 * l'utilisateur exécutant cette commande doit avoir les droits d'écriture dans le dossier d'installation des bundles (src)
 * l'utilisateur exécutant cette commande doit avoir les droits d'écriture sur le fichier app/AppKernel.php
-
+* cet utilisateur doit également pouvoir vider les cache et écrire dans les logs
 
 ### interface Back-Office
 

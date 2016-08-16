@@ -25,6 +25,17 @@ edgarezsb_dashboard:
     resource: '@EdgarEzSiteBuilderBundle/Resources/config/routing.yml'
 ```
 
+### Ajout support Doctrine ORM
+
+Ajouter dans la configuration globale app/config/ezplatform.yml
+
+```yaml
+doctrine:
+    orm:
+        auto_mapping: true
+```
+
+
 ### Redéfinir les assets
 
 ```console
@@ -43,10 +54,10 @@ php app/console edgarez:sitebuilder:install
 Le mode interactif de cette installation vous demande les informations suivantes :
 
 * nom du vendeur (vendorName) [Acme]
-* dossier d'installation des bundles [<votre dopssier d'installation ezplatform>/src]
-* location id de la racine des contenus où seont initialisés les structures clients/modèles [2]
-* location id de la racine des médias où seont initialisés les structures clients/modèles [43]
-* location id de la racine des utilisateurs où seont initialisés les structures créateur/éditeur [5]
+* dossier d'installation des bundles [votre dopssier d'installation ezplatform/src]
+* location id de la racine des contenus où seront initialisés les structures clients/modèles [2]
+* location id de la racine des médias où seront initialisés les structures clients/modèles [43]
+* location id de la racine des utilisateurs où seront initialisés les structures créateur/éditeur [5]
 
 A l'issue de ces étapes, il vous est demandé si vous souhaitez mettre automatiquement à jour le fichier de Kernel (app/AppKernel.php)
 Si vous refusez cette mise à jour automatique, modifiez le fichier app/AppKernel.php comme suit :
@@ -69,6 +80,7 @@ Notes :
 
 * l'utilisateur exécutant cette commande doit avoir les droits d'écriture dans le dossier d'installation des bundles (src)
 * l'utilisateur exécutant cette commande doit avoir les droits d'écriture sur le fichier app/AppKernel.php
+* cet utilisateur doit également pouvoir vider les cache et écrire dans les logs
 
 #### Mode Back-office
 
@@ -106,9 +118,9 @@ class AppKernel extends Kernel
         $loader->load($this->getRootDir() . '/config/config_' . $this->getEnvironment() . '.yml');
     }
 
+    // ### Surcharge de la méthode de définition du dossier de cache
     public function getCacheDir()
     {
-        // ### Modifier la ligne de définition du dossier de cache comme suit ###
         return $this->rootDir.'/cache/'.$this->environment . ((getenv('SITEBUILDER_ENV')) ? '/' . getenv('SITEBUILDER_ENV') : '');
     }
     
