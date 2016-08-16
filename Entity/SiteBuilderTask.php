@@ -32,7 +32,7 @@ class SiteBuilderTask
     /** @ORM\Column(type="text", name="logs", nullable=true) */
     private $logs;
 
-    /** @ORM\Column(type="integer", name="state", nullable=false, options={"default":0}) */
+    /** @ORM\Column(type="integer", name="status", nullable=false, options={"default":0}) */
     private $status;
 
     /**
