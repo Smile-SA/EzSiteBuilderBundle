@@ -139,8 +139,8 @@ class CustomerService
         $siteaccess = array();
         $siteaccessGroups = array_keys($this->siteaccessGroups);
         foreach ($siteaccessGroups as $sg) {
-            if (strpos($sg, 'edgarezsb_group_') === 0) {
-                $sg = substr($sg, strlen('edgarezsb_group_'));
+            if (strpos($sg, 'edgarezsb_models_') === 0) {
+                $sg = substr($sg, strlen('edgarezsb_models_'));
                 $siteaccess[] = crc32($sg);
             }
         }

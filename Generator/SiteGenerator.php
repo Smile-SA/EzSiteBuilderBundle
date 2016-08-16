@@ -90,6 +90,7 @@ class SiteGenerator extends Generator
             'parent_model_bundle' => substr($vendorName . ProjectGenerator::MODELS . $modelName . 'Bundle', 0, -6),
             'siteaccess_model' => Container::underscore($vendorName . $modelName),
             'siteaccess' => Container::underscore($vendorName . $customerName . $siteName),
+            'customer' => Container::underscore($customerName),
             'exclude_uri_prefixes' => $excludeUriPrefixes,
             'host' => $host,
             'mapuri' => $mapuri,

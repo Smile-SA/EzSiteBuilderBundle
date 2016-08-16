@@ -2,7 +2,7 @@ siteaccess:
 {% block siteaccess %}
     list: [{{ siteaccess }}]
     groups:
-        edgarezsb_group_{{ siteaccess }}: [{{ siteaccess }}]
+        edgarezsb_models_{{ siteaccess }}: [{{ siteaccess }}]
     match:
         Compound\LogicalAnd:
             {{ siteaccess }}:

@@ -2,7 +2,8 @@ siteaccess:
 {% block siteaccess %}
     list: [{{ siteaccess }}]
     groups:
-        edgarezsb_group_{{ siteaccess_model }}: [{{ siteaccess }}]
+        edgarezsb_models_{{ siteaccess_model }}: [{{ siteaccess }}]
+        edgarezsb_customer_{{ customer }}: [{{ siteaccess }}]
     match:
         Compound\LogicalAnd:
             {{ siteaccess }}:
