@@ -29,8 +29,11 @@ class SiteBuilderTask
     /** @ORM\Column(type="datetime", name="executed_at", nullable=true) */
     private $executedAt;
 
+    /** @ORM\Column(type="text", name="logs", nullable=true) */
+    private $logs;
+
     /** @ORM\Column(type="integer", name="state", nullable=false, options={"default":0}) */
-    private $state;
+    private $status;
 
     /**
      * Get id
@@ -160,5 +163,53 @@ class SiteBuilderTask
     public function getExecutedAt()
     {
         return $this->executedAt;
+    }
+
+    /**
+     * Set logs
+     *
+     * @param string $logs
+     *
+     * @return SiteBuilderTask
+     */
+    public function setLogs($logs)
+    {
+        $this->logs = $logs;
+
+        return $this;
+    }
+
+    /**
+     * Get logs
+     *
+     * @return string
+     */
+    public function getLogs()
+    {
+        return $this->logs;
+    }
+
+    /**
+     * Set status
+     *
+     * @param integer $status
+     *
+     * @return SiteBuilderTask
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return integer
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 }

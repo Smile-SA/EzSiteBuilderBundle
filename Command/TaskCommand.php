@@ -13,9 +13,9 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 
 class TaskCommand extends ContainerAwareCommand
 {
-    const STATE_SUBMITTED = 0;
-    const STATE_OK = 1;
-    const STATE_FAIL = 2;
+    const STATUS_SUBMITTED = 0;
+    const STATUS_OK = 1;
+    const STATUS_FAIL = 2;
 
     /**
      * {@inheritdoc}
@@ -38,8 +38,8 @@ class TaskCommand extends ContainerAwareCommand
         $repository = $doctrineRegistry->getRepository('EdgarEzSiteBuilderBundle:SiteBuilderTask');
 
         $query = $repository->createQueryBuilder('t')
-            ->where('t.state = :state')
-            ->setParameter('state', self::STATE_SUBMITTED)
+            ->where('t.status = :status')
+            ->setParameter('status', self::STATUS_SUBMITTED)
             ->orderBy('t.postedAt', 'ASC')
             ->getQuery();
 
@@ -63,10 +63,11 @@ class TaskCommand extends ContainerAwareCommand
             $result = $taskService->execute($action['parameters']);
 
             if (!$result) {
+                $task->setLogs($task->getLogs());
                 $output->writeln('<error>error : ' . $taskService->getMessage().'</error>');
-                $task->setState(self::STATE_FAIL);
+                $task->setStatus(self::STATUS_FAIL);
             } else {
-                $task->setState(self::STATE_OK);
+                $task->setStatus(self::STATUS_OK);
             }
 
             $task->setExecutedAt(time());
