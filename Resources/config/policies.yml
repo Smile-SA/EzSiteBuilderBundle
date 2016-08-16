@@ -1,0 +1,7 @@
+sitebuilder:
+    initialize: ~
+    customercreate: ~
+    modelcreate: ~
+    sitecreate: ~
+    sitepreactivate: ~
+    siteactivate: ~
