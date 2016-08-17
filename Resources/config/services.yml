@@ -9,6 +9,8 @@ parameters:
     edgar_ez_site_builder.model.task.service.class: EdgarEz\SiteBuilderBundle\Service\Task\ModelTaskService
     edgar_ez_site_builder.site.task.service.class: EdgarEz\SiteBuilderBundle\Service\Task\SiteTaskService
 
+    edgar_ez_site_builder.mailer.class: EdgarEz\SiteBuilderBundle\Mail\Sender
+
 services:
     edgar_ez_site_builder.controller.dashboard:
         class: EdgarEz\SiteBuilderBundle\Controller\DashboardController
@@ -64,3 +66,8 @@ services:
 
     edgar_ez_site_builder.site.task.service:
         class: %edgar_ez_site_builder.site.task.service.class%
+
+    edgar_ez_site_builder.mailer:
+        class: %edgar_ez_site_builder.mailer.class%
+        arguments:
+            - @swiftmailer.mailer

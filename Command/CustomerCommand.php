@@ -4,6 +4,7 @@ namespace EdgarEz\SiteBuilderBundle\Command;
 
 use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
+use EdgarEz\SiteBuilderBundle\Mail\Sender;
 use EdgarEz\SiteBuilderBundle\Service\CustomerService;
 use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\Values\User\Role;
@@ -280,6 +281,15 @@ class CustomerCommand extends BaseContainerAwareCommand
             $this->userLastName,
             $this->userEmail,
             $this->customerUserCreatorsGroupLocationID
+        );
+
+        /** @var Sender $mailer */
+        $mailer = $this->getContainer()->get('edgar_ez_site_builder.mailer');
+        $mailer->send(
+            'new user (' . $this->userEmail . '/' . $userPassword . ')',
+            'new user',
+            $this->getContainer()->getParameter('edgar_ez_site_builder.sysadminemail'),
+            $this->userEmail
         );
 
         $questionHelper->writeSection(
