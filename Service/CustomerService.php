@@ -141,12 +141,12 @@ class CustomerService
         foreach ($siteaccessGroups as $sg) {
             if (strpos($sg, 'edgarezsb_models_') === 0) {
                 $sg = substr($sg, strlen('edgarezsb_models_'));
-                $siteaccess[] = crc32($sg);
+                $siteaccess[] = sprintf('%u', crc32($sg));
             }
         }
 
-        $this->role->addModelsSiteaccessLimitation($roleCreator, $siteaccess);
-        $this->role->addModelsSiteaccessLimitation($roleEditor, $siteaccess);
+        $this->role->addSiteaccessLimitation($roleCreator, $siteaccess);
+        $this->role->addSiteaccessLimitation($roleEditor, $siteaccess);
 
         return $returnValue;
     }

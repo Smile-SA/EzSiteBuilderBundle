@@ -47,6 +47,7 @@ services:
             - @ezpublish.api.service.location
             - @ezpublish.api.service.url_alias
             - @edgar_ez_tools.content.service
+            - @edgar_ez_tools.role.service
 
     edgar_ez_site_builder.project.task.service:
         class: %edgar_ez_site_builder.project.task.service.class%

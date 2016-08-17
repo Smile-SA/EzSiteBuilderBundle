@@ -12,10 +12,6 @@ php app/console edgarez:sitebuilder:model:generate
 
 Le mode interactif de cette installation vous demande les informations suivantes :
 
-* nom du vendeur (vendorName) [Acme]
-  * uniquement des lettres, première lettre en majuscule
-  * renseignez le même nom de vendeur que celui lors de l'installation de SiteBuilder
-* dossier d'installation des bundles [<votre dopssier d'installation ezplatform>/src]
 * nom du modèle
   * uniquement des lettres, première lettre en majuscule
   
@@ -57,10 +53,6 @@ php app/console edgarez:sitebuilder:customer:generate
 
 Le mode interactif de cette installation vous demande les informations suivantes :
 
-* nom du vendeur (vendorName) [Acme]
-  * uniquement des lettres, première lettre en majuscule
-  * renseignez le même nom de vendeur que celui lors de l'installation de SiteBuilder
-* dossier d'installation des bundles [<votre dopssier d'installation ezplatform>/src]
 * nom du client
   * uniquement des lettres, première lettre en majuscule
 * Prénom du premier utilisateur créateur
@@ -106,10 +98,6 @@ php app/console edgarez:sitebuilder:site:generate
 
 Le mode interactif de cette installation vous demande les informations suivantes :
 
-* nom du vendeur (vendorName) [Acme]
-  * uniquement des lettres, première lettre en majuscule
-  * renseignez le même nom de vendeur que celui lors de l'installation de SiteBuilder
-* dossier d'installation des bundles [<votre dopssier d'installation ezplatform>/src]
 * nom du site
   * uniquement des lettres, première lettre en majuscule
 * location id de la racine de contenu client où devra se créer le site
@@ -151,6 +139,19 @@ Notes :
 * l'utilisateur exécutant cette commande doit avoir les droits d'écriture dans le dossier d'installation des bundles (src)
 * l'utilisateur exécutant cette commande doit avoir les droits d'écriture sur le fichier app/AppKernel.php
 * cet utilisateur doit également pouvoir vider les cache et écrire dans les logs
+
+Pour que le nouveau siteaccess soit accessible aux utilisateurs dont le rôle est creator ou éditeur du site auquel appartien le client, vous devez exécuter la commande suivante :
+ 
+ ```console
+ php app/console edgarez:sitebuilder:site:policy
+ ```
+ 
+ Le mode interactif de cette installation vous demande les informations suivantes :
+ 
+ * nom du client
+   * uniquement des lettres, première lettre en majuscule
+ * nom du site
+   * uniquement des lettres, première lettre en majuscule
 
 ### interface Back-Office
 

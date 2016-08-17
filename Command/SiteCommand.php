@@ -9,11 +9,11 @@ use EdgarEz\SiteBuilderBundle\Service\SiteService;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
-use eZ\Publish\API\Repository\URLAliasService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\DependencyInjection\Container;
 
 /**
  * Class SiteCommand
