@@ -2,9 +2,8 @@
 
 ## Global
 
-* manage content/contentType language
-* throw exception for question validator methods
-* catch exceptions
+* manage language
+* catch and throw exceptions
 * finalize user guide
 * translate user guide
 * finalize command and services to handle sitebuilder_task actions
@@ -13,13 +12,10 @@
 
 ## Customer bundle generation 
 
-* send email to first customer creator user
-
 ## Model generator
 
 ## Site generator
 
-* manage multilanguage site
 * send system admin a mail to configure virtualhost with new siteaccess
 
 ## eZPlatform  SiteBuilder interface
