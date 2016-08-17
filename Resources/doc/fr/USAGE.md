@@ -39,6 +39,17 @@ Notes :
 * l'utilisateur exécutant cette commande doit avoir les droits d'écriture sur le fichier app/AppKernel.php
 * cet utilisateur doit également pouvoir vider les cache et écrire dans les logs
 
+Pour que le nouveau model soit accessible aux utilisateurs dont le rôle est creator de site, vous devez exécuter la commande suivante :
+ 
+```console
+php app/console edgarez:sitebuilder:model:policy
+```
+ 
+Le mode interactif de cette installation vous demande les informations suivantes :
+ 
+* nom du modèle
+  * uniquement des lettres, première lettre en majuscule
+
 ### interface Back-Office
 
 en développement
@@ -142,16 +153,16 @@ Notes :
 
 Pour que le nouveau siteaccess soit accessible aux utilisateurs dont le rôle est creator ou éditeur du site auquel appartien le client, vous devez exécuter la commande suivante :
  
- ```console
- php app/console edgarez:sitebuilder:site:policy
- ```
+```console
+php app/console edgarez:sitebuilder:site:policy
+```
  
- Le mode interactif de cette installation vous demande les informations suivantes :
+Le mode interactif de cette installation vous demande les informations suivantes :
  
- * nom du client
-   * uniquement des lettres, première lettre en majuscule
- * nom du site
-   * uniquement des lettres, première lettre en majuscule
+* nom du client
+  * uniquement des lettres, première lettre en majuscule
+* nom du site
+  * uniquement des lettres, première lettre en majuscule
 
 ### interface Back-Office
 

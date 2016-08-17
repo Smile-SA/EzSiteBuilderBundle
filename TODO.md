@@ -17,11 +17,8 @@
 
 ## Model generator
 
-* update user/login for each customer user group
-
 ## Site generator
 
-* add new siteaccess to user/login policies for creator/editor roles for this customer
 * manage multilanguage site
 * send system admin a mail to configure virtualhost with new siteaccess
 

@@ -122,8 +122,8 @@ class SitePolicyCommand extends BaseContainerAwareCommand
         $siteService = $this->getContainer()->get('edgar_ez_site_builder.site.service');
 
         $extensionAlias = Container::underscore(ProjectGenerator::CUSTOMERS . $customerName . CustomerGenerator::SITES);
-        $roleCreatorID = $this->getContainer()->getParameter('edgarez_sb.' . $extensionAlias . '.default.customer_user_creator_role_id');
-        $roleEditorID = $this->getContainer()->getParameter('edgarez_sb.' . $extensionAlias . '.default.customer_user_editor_role_id');
+        $roleCreatorID = $this->getContainer()->getParameter('edgarez_sb.customer.' . $extensionAlias . '.default.customer_user_creator_role_id');
+        $roleEditorID = $this->getContainer()->getParameter('edgarez_sb.customer.' . $extensionAlias . '.default.customer_user_editor_role_id');
 
         /** @var Repository $repository */
         $repository = $this->getContainer()->get('ezpublish.api.repository');
