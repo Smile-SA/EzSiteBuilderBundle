@@ -3,24 +3,29 @@
 namespace EdgarEz\SiteBuilderBundle\Controller;
 
 use EzSystems\PlatformUIBundle\Controller\Controller as BaseController;
-use eZ\Publish\API\Repository\SearchService;
-use eZ\Publish\API\Repository\ContentTypeService;
-use eZ\Publish\API\Repository\Values\Content\LocationQuery;
-use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
 
 class DashboardController extends BaseController
 {
-    private $searchService;
-    private $contentTypeService;
+    protected $tabItems;
 
-    public function __construct(SearchService $searchService, ContentTypeService $contentTypeService)
+    public function __construct($tabItems)
     {
-        $this->searchService = $searchService;
-        $this->contentTypeService = $contentTypeService;
+        $this->tabItems = $tabItems;
     }
 
     public function dashboardAction()
     {
-        return $this->render('EdgarEzSiteBuilderBundle:dashboard:dashboard.html.twig', []);
+        return $this->render('EdgarEzSiteBuilderBundle:dashboard:dashboard.html.twig', [
+            'tab_items' => $this->tabItems
+        ]);
+    }
+
+    public function tabAction($tabItem, $viewType)
+    {
+        return $this->render('EdgarEzSiteBuilderBundle:dashboard:tab/' . $tabItem . '.html.twig', [
+            'tab_items' => $this->tabItems,
+            'tab_item' => $tabItem,
+            'view_type' => $viewType
+        ]);
     }
 }

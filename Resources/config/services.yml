@@ -11,12 +11,10 @@ parameters:
 
     edgar_ez_site_builder.mailer.class: EdgarEz\SiteBuilderBundle\Mail\Sender
 
-services:
-    edgar_ez_site_builder.controller.dashboard:
-        class: EdgarEz\SiteBuilderBundle\Controller\DashboardController
-        arguments: [@ezpublish.api.service.search, @ezpublish.api.service.content_type]
-        parent: ezsystems.platformui.controller.base
+    edgar_ez_site_builder.controller.dashboard.class: EdgarEz\SiteBuilderBundle\Controller\DashboardController
+    edgar_ez_site_builder.tabs: [dashboard, install, modelgenerate, sitegenerate, siteactivate]
 
+services:
     edgar_ez_site_builder.install.service:
         class: %edgar_ez_site_builder.install.service.class%
         arguments:
@@ -75,3 +73,9 @@ services:
         class: %edgar_ez_site_builder.mailer.class%
         arguments:
             - @swiftmailer.mailer
+
+    edgar_ez_site_builder.controller.dashboard:
+        class: %edgar_ez_site_builder.controller.dashboard.class%
+        arguments:
+            - %edgar_ez_site_builder.tabs%
+        parent: ezsystems.platformui.controller.base
