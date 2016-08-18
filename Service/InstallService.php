@@ -16,19 +16,48 @@ use eZ\Publish\Core\Repository\Values\User\PolicyDraft;
 use eZ\Publish\Core\Repository\Values\User\PolicyUpdateStruct;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Class InstallService
+ * @package EdgarEz\SiteBuilderBundle\Service
+ */
 class InstallService
 {
+    /** @var ContentTypeService $contentTypeService eZ ContentType Service */
     private $contentTypeService;
 
+    /** @var ContentTypeGroup $contentTypeGroup EdgarEz content type group service */
     private $contentTypeGroup;
+
+    /** @var RoleService eZ Role Service */
     private $roleService;
+
+    /** @var LocationService $locationService eZ Location Service */
     private $locationService;
+
+    /** @var UserService $userService User Service */
     private $userService;
 
+    /** @var ContentType $contentType EdgarEz ContentType Service */
     private $contentType;
+
+    /** @var Content $content EdgarEz Content Service */
     private $content;
+
+    /** @var Role $role EdgarEz Role Service */
     private $role;
 
+    /**
+     * InstallService constructor.
+     *
+     * @param ContentTypeService $contentTypeService eZ ContentType Service
+     * @param RoleService $roleService eZ Role Service
+     * @param LocationService $locationService eZ Location Service
+     * @param UserService $userService eZ User Service
+     * @param ContentTypeGroup $contentTypeGroup EdgarEz ContentTypeGroup service
+     * @param ContentType $contentType EdgarEz ContentType Service
+     * @param Content $content EdgarEz Content Service
+     * @param Role $role EdgarEz Role Service
+     */
     public function __construct(
         ContentTypeService $contentTypeService,
         RoleService $roleService,
@@ -51,11 +80,22 @@ class InstallService
         $this->role = $role;
     }
 
+    /**
+     * Create ContentType Group
+     *
+     * @return \eZ\Publish\API\Repository\Values\ContentType\ContentTypeGroup
+     */
     public function createContentTypeGroup()
     {
         return $this->contentTypeGroup->add('SiteBuilder');
     }
 
+    /**
+     * Create Content Types
+     *
+     * @param \eZ\Publish\API\Repository\Values\ContentType\ContentTypeGroup $contentTypeGroup
+     * @return array
+     */
     public function createContentTypes(\eZ\Publish\API\Repository\Values\ContentType\ContentTypeGroup $contentTypeGroup)
     {
         $contentTypes = array();
@@ -72,6 +112,12 @@ class InstallService
         return $contentTypes;
     }
 
+    /**
+     * Create Media ContentTypes
+     *
+     * @param \eZ\Publish\API\Repository\Values\ContentType\ContentTypeGroup $contentTypeGroup
+     * @return array
+     */
     public function createMediaContentTypes(\eZ\Publish\API\Repository\Values\ContentType\ContentTypeGroup $contentTypeGroup)
     {
         $contentTypes = array();
@@ -88,6 +134,12 @@ class InstallService
         return $contentTypes;
     }
 
+    /**
+     * Create contents
+     *
+     * @param $parentLocationID
+     * @return array
+     */
     public function createContents($parentLocationID)
     {
         $contents = array();
@@ -126,6 +178,12 @@ class InstallService
         );
     }
 
+    /**
+     * Create media contents
+     *
+     * @param $parentLocationID
+     * @return array
+     */
     public function createMediaContents($parentLocationID)
     {
         $contents = array();
@@ -164,6 +222,12 @@ class InstallService
         );
     }
 
+    /**
+     * Create user groups
+     *
+     * @param $parentLocationID
+     * @return array
+     */
     public function createUserGroups($parentLocationID)
     {
         $userGroupDefinition = Yaml::parse(file_get_contents(__DIR__. '/../Resources/datas/usergrouproot.yml'));
@@ -210,6 +274,12 @@ class InstallService
         );
     }
 
+    /**
+     * Create Role
+     *
+     * @param $userGroupLocationID
+     * @param array $locationIDs
+     */
     public function createRole($userGroupLocationID, array $locationIDs)
     {
         /** @var \eZ\Publish\API\Repository\Values\User\Role $roleCreator */

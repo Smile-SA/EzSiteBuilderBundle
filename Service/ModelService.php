@@ -11,17 +11,44 @@ use eZ\Publish\API\Repository\Values\User\Policy;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Class ModelService
+ * @package EdgarEz\SiteBuilderBundle\Service
+ */
 class ModelService
 {
+    /** @var URLAliasService $urlAliasService eZ URLAlias Service */
     private $urlAliasService;
+
+    /** @var LocationService $locationService eZ Lccation Service */
     private $locationService;
+
+    /** @var RoleService $roleService eZ Role Service */
     private $roleService;
+
+    /** @var Content $content EdgarEz Content Service */
     private $content;
 
+    /** @var \EdgarEz\ToolsBundle\Service\Role EdgarEz Role Service */
     private $role;
+
+    /** @var array $siteaccessGroups ezpublish siteaccess groups */
     private $siteaccessGroups;
+
+    /** @var ContainerInterface $container */
     private $container;
 
+    /**
+     * ModelService constructor.
+     *
+     * @param URLAliasService $urlAliasService eZ URLAlias Service
+     * @param LocationService $locationService eZ Location Service
+     * @param RoleService $roleService eZ Role Service
+     * @param Content $content EdgarEz Content Service
+     * @param \EdgarEz\ToolsBundle\Service\Role $role EdgarEz Role Service
+     * @param array $siteaccessGroups ezpublish siteaccess groups
+     * @param ContainerInterface $container
+     */
     public function __construct(
         URLAliasService $urlAliasService,
         LocationService $locationService,
@@ -41,6 +68,13 @@ class ModelService
         $this->container = $container;
     }
 
+    /**
+     * Create model content
+     *
+     * @param int $modelsLocationID model root contentlocation ID
+     * @param string $modelName model name
+     * @return array model content location ID and path prefix
+     */
     public function createModelContent($modelsLocationID, $modelName)
     {
         $returnValue = array();
@@ -58,6 +92,13 @@ class ModelService
         return $returnValue;
     }
 
+    /**
+     * Create model media content
+     *
+     * @param int $mediaModelsLocationID model media root location ID
+     * @param string $modelName model name
+     * @return mixed model media content location ID
+     */
     public function createMediaModelContent($mediaModelsLocationID, $modelName)
     {
         $contentDefinition = Yaml::parse(file_get_contents(__DIR__ . '/../Resources/datas/mediamodelcontent.yml'));
@@ -68,6 +109,11 @@ class ModelService
         return $contentAdded->contentInfo->mainLocationId;
     }
 
+    /**
+     * Add siteaccess limitation to user/login policy
+     *
+     * @param string $modelName model name
+     */
     public function addSiteaccessLimitation($modelName)
     {
         $customers = array();

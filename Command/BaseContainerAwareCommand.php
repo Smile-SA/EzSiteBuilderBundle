@@ -58,7 +58,14 @@ abstract class BaseContainerAwareCommand extends GeneratorCommand
      * @param string $bundle project bundle name
      * @return array message to display at console output
      */
-    protected function updateKernel(QuestionHelper $questionHelper, InputInterface $input, OutputInterface $output, KernelInterface $kernel, $namespace, $bundle)
+    protected function updateKernel(
+        QuestionHelper $questionHelper,
+        InputInterface $input,
+        OutputInterface $output,
+        KernelInterface $kernel,
+        $namespace,
+        $bundle
+    )
     {
         $auto = true;
         if ($input->isInteractive()) {
@@ -90,6 +97,12 @@ abstract class BaseContainerAwareCommand extends GeneratorCommand
         }
     }
 
+    /**
+     * Ask for Project Bundle vendor name
+     *
+     * @param InputInterface $input input console
+     * @param OutputInterface $output output console
+     */
     protected function getVendorName(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
@@ -110,6 +123,12 @@ abstract class BaseContainerAwareCommand extends GeneratorCommand
         $this->vendorName = $vendorName;
     }
 
+    /**
+     * Ask for directory where to install project bundles
+     *
+     * @param InputInterface $input input console
+     * @param OutputInterface $output output console
+     */
     protected function getDir(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
@@ -138,12 +157,21 @@ abstract class BaseContainerAwareCommand extends GeneratorCommand
         $this->dir = $dir;
     }
 
+    /**
+     * Initialize command by asking vendor name and directory bundles
+     *
+     * @param InputInterface $input input console
+     * @param OutputInterface $output output console
+     */
     protected function init(InputInterface $input, OutputInterface $output)
     {
         $this->getVendorName($input, $output);
         $this->getDir($input, $output);
     }
 
+    /**
+     * Return vendor name and directory bundles from parameters
+     */
     protected function getVendorNameDir()
     {
         $basename = substr(ProjectGenerator::BUNDLE, 0, -6);

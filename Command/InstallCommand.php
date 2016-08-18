@@ -3,7 +3,6 @@
 namespace EdgarEz\SiteBuilderBundle\Command;
 
 use EdgarEz\SiteBuilderBundle\Service\InstallService;
-use EdgarEz\ToolsBundle\Service\Content;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\LocationService;
@@ -21,7 +20,10 @@ use Symfony\Component\Console\Question\Question;
  */
 class InstallCommand extends BaseContainerAwareCommand
 {
+    /** @var int $rootContentLocationID eZ Platform content root location ID */
     protected $rootContentLocationID;
+
+    /** @var int $rootMediaLocationID eZ Platform media root location ID */
     protected $rootMediaLocationID;
 
     /**
@@ -44,6 +46,7 @@ class InstallCommand extends BaseContainerAwareCommand
      */
     protected $mediaCustomersLocationID;
 
+    /** @var int $userGroupParenttLocationID user group root location ID */
     protected $userGroupParenttLocationID;
 
     /**
@@ -56,6 +59,7 @@ class InstallCommand extends BaseContainerAwareCommand
      */
     protected $userEditorsLocationID;
 
+    /** @var string $contentTypeGroup content type */
     protected $contentTypeGroup;
 
     /**
@@ -122,10 +126,11 @@ class InstallCommand extends BaseContainerAwareCommand
     }
 
     /**
-     * Create content types and structure for sitebuilder installation
+     * Ask for root location ID where to create customer content structure
      *
      * @param InputInterface $input input console
      * @param OutputInterface $output output console
+     * @return int content root location ID
      */
     protected function askContentStructure(InputInterface $input, OutputInterface $output)
     {
@@ -166,6 +171,12 @@ class InstallCommand extends BaseContainerAwareCommand
         return $parentLocationID;
     }
 
+    /**
+     * Create content structure
+     *
+     * @param OutputInterface $output output console
+     * @param int $parentLocationID content root location ID
+     */
     protected function createContentStructure(OutputInterface $output, $parentLocationID)
     {
         /** @var InstallService $installService */
@@ -180,10 +191,11 @@ class InstallCommand extends BaseContainerAwareCommand
     }
 
     /**
-     * Create media content structure for sitebuilder installation
+     * Ask for root location ID where to create customer content structure
      *
      * @param InputInterface $input input console
      * @param OutputInterface $output output console
+     * @return int media root location ID
      */
     protected function askMediaContentStructure(InputInterface $input, OutputInterface $output)
     {
@@ -224,6 +236,12 @@ class InstallCommand extends BaseContainerAwareCommand
         return $parentLocationID;
     }
 
+    /**
+     * Create media structure
+     *
+     * @param OutputInterface $output
+     * @param int $parentLocationID media root location ID
+     */
     protected function createMediaContentStructure(OutputInterface $output, $parentLocationID)
     {
         /** @var InstallService $installService */
@@ -237,10 +255,11 @@ class InstallCommand extends BaseContainerAwareCommand
     }
 
     /**
-     * Create user content structure for sitebuilder installation
+     * Ask for user root location ID
      *
      * @param InputInterface $input input console
      * @param OutputInterface $output outpput console
+     * @return int user root location ID
      */
     protected function askUserStructure(InputInterface $input, OutputInterface $output)
     {
@@ -279,6 +298,12 @@ class InstallCommand extends BaseContainerAwareCommand
         return $userGroupParenttLocationID;
     }
 
+    /**
+     * Create user structure
+     *
+     * @param OutputInterface $output output console
+     * @param int $userGroupParenttLocationID user root location ID
+     */
     protected function createUserStructure(OutputInterface $output, $userGroupParenttLocationID)
     {
         /** @var InstallService $installService */
@@ -292,6 +317,9 @@ class InstallCommand extends BaseContainerAwareCommand
         $this->userEditorsLocationID = $userGroups['userEditorsLocationID'];
     }
 
+    /**
+     * Create global role
+     */
     protected function createRole()
     {
         /** @var InstallService $installService */

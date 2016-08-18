@@ -11,6 +11,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 
+/**
+ * Class TaskCommand
+ * @package EdgarEz\SiteBuilderBundle\Command
+ */
 class TaskCommand extends ContainerAwareCommand
 {
     const STATUS_SUBMITTED = 0;

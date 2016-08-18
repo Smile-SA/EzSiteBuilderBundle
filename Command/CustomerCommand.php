@@ -13,6 +13,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\DependencyInjection\Container;
 
+/**
+ * Class CustomerCommand
+ * @package EdgarEz\SiteBuilderBundle\Command
+ */
 class CustomerCommand extends BaseContainerAwareCommand
 {
     /**
@@ -41,13 +45,16 @@ class CustomerCommand extends BaseContainerAwareCommand
     /** @var int $customerRoleEditorID editor role ID */
     protected $customerRoleEditorID;
 
-    /**
-     * @var string $customerName customer name
-     */
+    /** @var string $customerName customer name */
     protected $customerName;
 
+    /** @var string $userFirstName first customer creator first name */
     protected $userFirstName;
+
+    /** @var string $userLastName first customer creator last name */
     protected $userLastName;
+
+    /** @var string $userEmail first customer creator email */
     protected $userEmail;
 
     /**
@@ -60,6 +67,13 @@ class CustomerCommand extends BaseContainerAwareCommand
             ->setDescription('Generate SiteBuilder Customer (Content Structure and Bundle)');
     }
 
+    /**
+     * Execute command
+     *
+     * @param InputInterface $input input console
+     * @param OutputInterface $output output console
+     * @return void
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $adminID = $this->getContainer()->getParameter('edgar_ez_tools.adminid');
@@ -132,6 +146,11 @@ class CustomerCommand extends BaseContainerAwareCommand
         $this->customerName = $customerName;
     }
 
+    /**
+     * Create customer content structure
+     *
+     * @param OutputInterface $output output console
+     */
     protected function createContentStructure(OutputInterface $output)
     {
         $basename = ProjectGenerator::MAIN;
@@ -149,7 +168,6 @@ class CustomerCommand extends BaseContainerAwareCommand
     /**
      * Create media customer root content
      *
-     * @param InputInterface $input input console
      * @param OutputInterface $output output console
      */
     protected function createMediaContentStructure(OutputInterface $output)
@@ -169,7 +187,6 @@ class CustomerCommand extends BaseContainerAwareCommand
     /**
      * Create customer user groups (creator and editor)
      *
-     * @param InputInterface  $input input console
      * @param OutputInterface $output output console
      */
     protected function createUserGroups(OutputInterface $output)
@@ -189,7 +206,8 @@ class CustomerCommand extends BaseContainerAwareCommand
     }
 
     /**
-     * @param InputInterface  $input input console
+     * Create customer creator/editor roles
+     *
      * @param OutputInterface $output output console
      */
     protected function createRoles(OutputInterface $output)
@@ -268,6 +286,11 @@ class CustomerCommand extends BaseContainerAwareCommand
         $this->userEmail = $userEmail;
     }
 
+    /**
+     * Create first customer creator user
+     *
+     * @param OutputInterface $output output console
+     */
     protected function initializeUserCreator(OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();

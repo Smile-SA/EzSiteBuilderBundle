@@ -43,14 +43,16 @@ class ProjectGenerator extends Generator
     }
 
     /**
-     * Generate SiteBuilder project bundle
+     * Generate project bundle
      *
-     * @param int $modelsLocationID models content location ID
-     * @param int $customersLocationID sites content location ID
-     * @param int $userCreatorsLocationID user creators group content location ID
-     * @param int $userEditorsLocationID user editors group content location ID
-     * @param string $vendorName project vendor name
-     * @param string $targetDir filesystem directory where bundle would be generated
+     * @param int $modelsLocationID models content root location ID
+     * @param int $customersLocationID customers content root location ID
+     * @param int $mediaModelsLocationID models media root location ID
+     * @param int $mediaCustomersLocationID customers media root location ID
+     * @param int $userCreatorsLocationID user creator groups root location ID
+     * @param int $userEditorsLocationID user editor groups root location ID
+     * @param string $vendorName vendor name
+     * @param string $targetDir bundle target dir
      */
     public function generate(
         $modelsLocationID,

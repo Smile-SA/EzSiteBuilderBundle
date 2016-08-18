@@ -37,13 +37,15 @@ class ModelGenerator extends Generator
     }
 
     /**
-     * Generate Model bundle
+     * Generate model bundle
      *
-     * @param string $vendorName bundle vendor name
-     * @param string $modelName bundle model name
-     * @param int $modelLocationID model content location ID registered in settings ezplatform.yml
-     * @param string $excludeUriPrefixes
-     * @param string $targetDir
+     * @param string $vendorName vendor name
+     * @param string $modelName model name
+     * @param int $modelLocationID model content location ID
+     * @param int $mediaModelLocationID model media location ID
+     * @param string $excludeUriPrefixes path prefix
+     * @param string $host siteaccess host
+     * @param string $targetDir bundle target dir
      */
     public function generate(
         $vendorName,

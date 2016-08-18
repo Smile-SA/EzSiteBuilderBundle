@@ -37,12 +37,19 @@ class SiteGenerator extends Generator
     }
 
     /**
-     * Generate Customer Bundle
+     * Generate site bundle
      *
-     * @param int $siteLocationID customer site content location ID
-     * @param string $vendorName project vendor name
-     * @param string $siteName customer site name
-     * @param string $targetDir filesystem directory where bundle would be generated
+     * @param int $siteLocationID site content root location ID
+     * @param int $mediaSiteLocationID site media root location ID
+     * @param string $vendorName vendir name
+     * @param string $customerName customer name
+     * @param string $modelName model name
+     * @param string $siteName site name
+     * @param string $excludeUriPrefixes path prefix
+     * @param string $host siteaccess host
+     * @param boolean $mapuri siteaccess mapuri option
+     * @param string $siteaccessSuffix siteaccess suffix
+     * @param string $targetDir bundle target dir
      */
     public function generate(
         $siteLocationID,

@@ -2,17 +2,11 @@
 
 namespace EdgarEz\SiteBuilderBundle\Command;
 
-use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
-use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\SiteGenerator;
 use EdgarEz\SiteBuilderBundle\Service\ModelService;
-use EdgarEz\SiteBuilderBundle\Service\SiteService;
-use eZ\Publish\API\Repository\Exceptions\NotFoundException;
-use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\DependencyInjection\Container;
 
@@ -41,6 +35,7 @@ class ModelPolicyCommand extends BaseContainerAwareCommand
      *
      * @param InputInterface  $input input console
      * @param OutputInterface $output output console
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -71,6 +66,12 @@ class ModelPolicyCommand extends BaseContainerAwareCommand
         ));
     }
 
+    /**
+     * Ask for model name
+     *
+     * @param InputInterface $input input console
+     * @param OutputInterface $output output console
+     */
     protected function askModelName(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
@@ -91,6 +92,11 @@ class ModelPolicyCommand extends BaseContainerAwareCommand
         $this->modelName = $modelName;
     }
 
+    /**
+     * Add siteaccess limitation to user/login foreach user creator roles
+     *
+     * @param string $modelName model name
+     */
     protected function addSiteaccessLimitation($modelName)
     {
         /** @var ModelService $modelService */
@@ -100,9 +106,9 @@ class ModelPolicyCommand extends BaseContainerAwareCommand
     }
 
     /**
-     * Initialize customer generator tool
+     * Initialize generator tool
      *
-     * @return SiteGenerator customer generator tool
+     * @return null
      */
     protected function createGenerator()
     {

@@ -95,7 +95,7 @@ class ModelCommand extends BaseContainerAwareCommand
     }
 
     /**
-     * Create model content
+     * Ask for model name
      *
      * @param InputInterface $input input console
      * @param OutputInterface $output output console
@@ -120,6 +120,11 @@ class ModelCommand extends BaseContainerAwareCommand
         $this->modelName = $modelName;
     }
 
+    /**
+     * Create model content structure
+     *
+     * @param OutputInterface $output output console
+     */
     protected function createModelContent(OutputInterface $output)
     {
         $basename = ProjectGenerator::MAIN ;
@@ -134,9 +139,8 @@ class ModelCommand extends BaseContainerAwareCommand
     }
 
     /**
-     * Create media model content
+     * Create media model content structure
      *
-     * @param InputInterface $input input console
      * @param OutputInterface $output output console
      */
     protected function createMediaModelContent(OutputInterface $output)

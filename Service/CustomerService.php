@@ -11,17 +11,44 @@ use eZ\Publish\API\Repository\UserService;
 use eZ\Publish\API\Repository\Values\User\Limitation\SubtreeLimitation;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Class CustomerService
+ * @package EdgarEz\SiteBuilderBundle\Service
+ */
 class CustomerService
 {
+    /** @var RoleService $roleService eZ Role Service */
     private $roleService;
+
+    /** @var LocationService $locationService eZ Location Service */
     private $locationService;
+
+    /** @var UserService $userService eZ User Service */
     private $userService;
+
+    /** @var ContentTypeService $contentTypeService eZ ContentType Service */
     private $contentTypeService;
 
+    /** @var Content $content EdgarEz Content Service */
     private $content;
+
+    /** @var Role $role EdgarEz Role Service */
     private $role;
+
+    /** @var array $siteaccessGroups ezpublish siteaccess groups */
     private $siteaccessGroups;
 
+    /**
+     * CustomerService constructor.
+     *
+     * @param RoleService $roleService eZ role Service
+     * @param LocationService $locationService eZ Location Service
+     * @param UserService $userService eZ User Service
+     * @param ContentTypeService $contentTypeService eZ ContentType Service
+     * @param Content $content EdgarEz Content Service
+     * @param Role $role EdgarEz Role Service
+     * @param array $siteaccessGroups ezpublish siteaccess groups
+     */
     public function __construct(
         RoleService $roleService,
         LocationService $locationService,
@@ -41,39 +68,71 @@ class CustomerService
         $this->siteaccessGroups = $siteaccessGroups;
     }
 
-    public function createContentStructure($parentLocationID, $customerName)
+    /**
+     * Create eZ Content
+     *
+     * @param int $parentLocationID parent location ID
+     * @param string $name content name
+     * @return \eZ\Publish\API\Repository\Values\Content\Content eZ Content
+     */
+    public function createContentStructure($parentLocationID, $name)
     {
         $contentDefinition = Yaml::parse(file_get_contents(__DIR__ . '/../Resources/datas/customercontent.yml'));
         $contentDefinition['parentLocationID'] = $parentLocationID;
-        $contentDefinition['fields']['title']['value'] = $customerName;
+        $contentDefinition['fields']['title']['value'] = $name;
         return $this->content->add($contentDefinition);
     }
 
-    public function createMediaContentStructure($parentLocationID, $customerName)
+    /**
+     * Create media content structure
+     *
+     * @param int $parentLocationID parent location ID
+     * @param string $name name
+     * @return \eZ\Publish\API\Repository\Values\Content\Content eZ Content
+     */
+    public function createMediaContentStructure($parentLocationID, $name)
     {
         $contentDefinition = Yaml::parse(file_get_contents(__DIR__ . '/../Resources/datas/mediacustomercontent.yml'));
         $contentDefinition['parentLocationID'] = $parentLocationID;
-        $contentDefinition['fields']['title']['value'] = $customerName;
+        $contentDefinition['fields']['title']['value'] = $name;
         return $this->content->add($contentDefinition);
     }
 
-    public function createUserGroups($parentCreatorLocationID, $parentEditorLocationID, $customerName)
+    /**
+     * Create user groups
+     *
+     * @param int $parentCreatorLocationID parent user creator groupe location ID
+     * @param int $parentEditorLocationID parent user editor groupe location ID
+     * @param string $name name
+     * @return array
+     */
+    public function createUserGroups($parentCreatorLocationID, $parentEditorLocationID, $name)
     {
         $contents = array();
 
         $userGroupDefinition = Yaml::parse(file_get_contents(__DIR__. '/../Resources/datas/customerusergroup_creators.yml'));
         $userGroupDefinition['parentLocationID'] = $parentCreatorLocationID;
-        $userGroupDefinition['fields']['name']['value'] = $customerName;
+        $userGroupDefinition['fields']['name']['value'] = $name;
         $contents['customerUserCreatorsGroup'] = $this->content->add($userGroupDefinition);
 
         $userGroupDefinition = Yaml::parse(file_get_contents(__DIR__. '/../Resources/datas/customerusergroup_editors.yml'));
         $userGroupDefinition['parentLocationID'] = $parentEditorLocationID;
-        $userGroupDefinition['fields']['name']['value'] = $customerName;
+        $userGroupDefinition['fields']['name']['value'] = $name;
         $contents['customerUserEditorsGroup'] = $this->content->add($userGroupDefinition);
 
         return $contents;
     }
 
+    /**
+     * Create user roles
+     *
+     * @param string $customerName customer nme
+     * @param int $customerLocationID customer content location ID
+     * @param int $mediaCustomerLocationIcustomer media location ID
+     * @param int $customerUserCreatorsGroupLocationID customer user creator group location ID
+     * @param int $customerUserEditorsGroupLocationID customer user editor group location ID
+     * @return array
+     */
     public function createRoles(
         $customerName,
         $customerLocationID,
@@ -151,6 +210,15 @@ class CustomerService
         return $returnValue;
     }
 
+    /**
+     * Create user creator
+     *
+     * @param string $userFirstName first name
+     * @param string $userLastName last name
+     * @param string $userEmail email
+     * @param int $customerUserCreatorsGroupLocationID group location ID
+     * @return string
+     */
     public function initializeUserCreator($userFirstName, $userLastName, $userEmail, $customerUserCreatorsGroupLocationID)
     {
         $userLogin = $userEmail;

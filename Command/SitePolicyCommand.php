@@ -6,12 +6,9 @@ use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\SiteGenerator;
 use EdgarEz\SiteBuilderBundle\Service\SiteService;
-use eZ\Publish\API\Repository\Exceptions\NotFoundException;
-use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\DependencyInjection\Container;
 
@@ -45,6 +42,7 @@ class SitePolicyCommand extends BaseContainerAwareCommand
      *
      * @param InputInterface  $input input console
      * @param OutputInterface $output output console
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -76,6 +74,12 @@ class SitePolicyCommand extends BaseContainerAwareCommand
         ));
     }
 
+    /**
+     * Ask for customer name where site is registered
+     *
+     * @param InputInterface $input input console
+     * @param OutputInterface $output output console
+     */
     protected function askCustomerName(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
@@ -96,6 +100,12 @@ class SitePolicyCommand extends BaseContainerAwareCommand
         $this->customerName = $customerName;
     }
 
+    /**
+     * Ask for site name to identify site policies to manipulate
+     *
+     * @param InputInterface $input intput console
+     * @param OutputInterface $output output console
+     */
     protected function askSiteName(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
@@ -116,6 +126,12 @@ class SitePolicyCommand extends BaseContainerAwareCommand
         $this->siteName = $siteName;
     }
 
+    /**
+     * Add siteaccess limitation to user/login to customer creator/editor roles
+     *
+     * @param string $customerName customer name
+     * @param string $siteaccessName siteaccess name
+     */
     protected function addSiteaccessLimitation($customerName, $siteaccessName)
     {
         /** @var SiteService $siteSerice */
@@ -136,9 +152,9 @@ class SitePolicyCommand extends BaseContainerAwareCommand
     }
 
     /**
-     * Initialize customer generator tool
+     * Initialize generator tool
      *
-     * @return SiteGenerator customer generator tool
+     * @return null
      */
     protected function createGenerator()
     {

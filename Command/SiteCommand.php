@@ -2,8 +2,6 @@
 
 namespace EdgarEz\SiteBuilderBundle\Command;
 
-use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
-use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\SiteGenerator;
 use EdgarEz\SiteBuilderBundle\Service\SiteService;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
@@ -13,7 +11,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
-use Symfony\Component\DependencyInjection\Container;
 
 /**
  * Class SiteCommand
@@ -84,6 +81,7 @@ class SiteCommand extends BaseContainerAwareCommand
      *
      * @param InputInterface  $input input console
      * @param OutputInterface $output output console
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -146,10 +144,12 @@ class SiteCommand extends BaseContainerAwareCommand
     }
 
     /**
-     * Choose and copy Model content structure to customer content tree
+     * Ask for site name
+     * Ask for customer and model content location ID used to create new site content structure
      *
      * @param InputInterface  $input input console
      * @param OutputInterface $output output console
+     * @return array customer and model content location IDs
      */
     protected function askSiteContent(InputInterface $input, OutputInterface $output)
     {
@@ -235,6 +235,13 @@ class SiteCommand extends BaseContainerAwareCommand
         );
     }
 
+    /**
+     * Create new site content structure
+     *
+     * @param OutputInterface $output output console
+     * @param int $customerLocationID customer content root location ID
+     * @param int $modelLocationID model content root location ID
+     */
     protected function createSiteContent(OutputInterface $output, $customerLocationID, $modelLocationID)
     {
         /** @var SiteService $siteSerice */
@@ -246,10 +253,11 @@ class SiteCommand extends BaseContainerAwareCommand
     }
 
     /**
-     * Choose and copy Media Model content structure to customer media content tree
+     * Ask for customer and model media location ID used to create new site content structure
      *
      * @param InputInterface  $input input console
      * @param OutputInterface $output output console
+     * @return array customer and model media root location IDs
      */
     protected function askMediaSiteContent(InputInterface $input, OutputInterface $output)
     {
@@ -320,6 +328,13 @@ class SiteCommand extends BaseContainerAwareCommand
         );
     }
 
+    /**
+     * Create new media site structure
+     *
+     * @param OutputInterface $output output console
+     * @param int $mediaCustomerLocationID customer media root location ID
+     * @param int $mediaModelLocationID model media root location ID
+     */
     protected function createMediaSiteContent(OutputInterface $output, $mediaCustomerLocationID, $mediaModelLocationID)
     {
         /** @var SiteService $siteSerice */
@@ -328,6 +343,12 @@ class SiteCommand extends BaseContainerAwareCommand
         $this->mediaSiteLocationID = $siteSerice->createMediaSiteContent($mediaModelLocationID, $mediaCustomerLocationID, $this->siteName);
     }
 
+    /**
+     * Ask for host and mapuri to constructure siteaccess config
+     *
+     * @param InputInterface $input input console
+     * @param OutputInterface $output output console
+     */
     protected function askSiteaccessMapping(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();

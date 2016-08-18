@@ -26,7 +26,7 @@ class Validators
     }
 
     /**
-     * Validation string vendor name
+     * Validation string vendor name/customer name/model name ...
      *
      * @param string $vendorName vendor name
      * @return mixed exception if not valid, vendorName if correct
@@ -67,6 +67,12 @@ class Validators
         return '/' === substr($dir, -1, 1) ? $dir : $dir.'/';
     }
 
+    /**
+     * Validate user first name
+     *
+     * @param string $firstName user first name
+     * @return mixed exception if not validated, first name otherwise
+     */
     public static function validateFirstName($firstName)
     {
         if (!preg_match('/^[ \'a-zA-Z0-9-]*$/', $firstName)) {
@@ -76,6 +82,12 @@ class Validators
         return $firstName;
     }
 
+    /**
+     * Validate user last name
+     *
+     * @param string $lastName user last name
+     * @return mixed exception if not validated, last name otherwise
+     */
     public static function validateLastName($lastName)
     {
         if (!preg_match('/^[ \'a-zA-Z0-9-]*$/', $lastName)) {
@@ -85,6 +97,13 @@ class Validators
         return $lastName;
     }
 
+    /**
+     * Validate user email
+     *
+     * @param string $email user email
+     * @return mixed user email
+     * @throws InvalidArgumentException
+     */
     public static function validateEmail($email)
     {
         if (!\ezcMailTools::validateEmailAddress($email)) {
@@ -94,6 +113,13 @@ class Validators
         return $email;
     }
 
+    /**
+     * Validate siteaccess host
+     *
+     * @param string $host siteaccess host
+     * @return mixed host
+     * @throws InvalidArgumentException
+     */
     public static function validateHost($host)
     {
         if (!preg_match("/^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$/i", $host)
@@ -106,6 +132,13 @@ class Validators
         return $host;
     }
 
+    /**
+     * Validate siteaccess suffix
+     *
+     * @param string $siteaccessSuffix
+     * @return mixed siteaccess suffix
+     * @throws InvalidArgumentException
+     */
     public static function validateSiteaccessSuffix($siteaccessSuffix)
     {
         if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_\x7f-\xff]*[a-zA-Z0-9]$/', $siteaccessSuffix)) {

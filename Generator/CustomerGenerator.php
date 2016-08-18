@@ -40,11 +40,17 @@ class CustomerGenerator extends Generator
     }
 
     /**
-     * Generate Customer Bundle
+     * Generate customer bundle
      *
-     * @param int $customerLocationID customer content location ID
-     * @param string $vendorName project vendor name
-     * @param string $targetDir filesystem directory where bundle would be generated
+     * @param int $customerLocationID customer content root location ID
+     * @param int $mediaCustomerLocationID customer media root location ID
+     * @param int $customerUserCreatorsGroupLocationID customer user groupe creator location ID
+     * @param int $customerUserEditorsGroupLocationID customer user groupe editor location ID
+     * @param int $customerRoleCreatorID customer creator role ID
+     * @param int $customerRoleEditorID customer editor role ID
+     * @param string $vendorName vendor name
+     * @param string $customerName customer name
+     * @param string $targetDir bundle target dir
      */
     public function generate(
         $customerLocationID,
