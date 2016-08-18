@@ -21,9 +21,13 @@ services:
         class: %edgar_ez_site_builder.install.service.class%
         arguments:
             - @ezpublish.api.service.content_type
+            - @ezpublish.api.service.role
+            - @ezpublish.api.service.location
+            - @ezpublish.api.service.user
             - @edgar_ez_tools.contenttypegroup.service
             - @edgar_ez_tools.contenttype.service
             - @edgar_ez_tools.content.service
+            - @edgar_ez_tools.role.service
 
     edgar_ez_site_builder.customer.service:
         class: %edgar_ez_site_builder.customer.service.class%

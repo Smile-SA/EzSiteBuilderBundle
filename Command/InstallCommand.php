@@ -21,6 +21,9 @@ use Symfony\Component\Console\Question\Question;
  */
 class InstallCommand extends BaseContainerAwareCommand
 {
+    protected $rootContentLocationID;
+    protected $rootMediaLocationID;
+
     /**
      * @var int $modelsLocationID root location ID for models content
      */
@@ -40,6 +43,8 @@ class InstallCommand extends BaseContainerAwareCommand
      * @var int $mediaCustomersLocationID media root location ID for customers site content
      */
     protected $mediaCustomersLocationID;
+
+    protected $userGroupParenttLocationID;
 
     /**
      * @var int $userCreatorsLocationID root locationID for creator users
@@ -89,6 +94,8 @@ class InstallCommand extends BaseContainerAwareCommand
         $this->createContentStructure($output, $contentParentLocationID);
         $this->createMediaContentStructure($output, $mediaParentLocationID);
         $this->createUserStructure($output, $userGroupLocationID);
+
+        $this->createRole();
 
         /** @var ProjectGenerator $generator */
         $generator = $this->getGenerator();
@@ -154,6 +161,8 @@ class InstallCommand extends BaseContainerAwareCommand
             }
         }
 
+        $this->rootContentLocationID = $parentLocationID;
+
         return $parentLocationID;
     }
 
@@ -209,6 +218,8 @@ class InstallCommand extends BaseContainerAwareCommand
                 $parentLocationID = false;
             }
         }
+
+        $this->rootMediaLocationID = $parentLocationID;
 
         return $parentLocationID;
     }
@@ -276,8 +287,26 @@ class InstallCommand extends BaseContainerAwareCommand
         /** @var int[] $userGroups */
         $userGroups = $installService->createUserGroups($userGroupParenttLocationID);
 
+        $this->userGroupParenttLocationID = $userGroups['userGroupParenttLocationID'];
         $this->userCreatorsLocationID = $userGroups['userCreatorsLocationID'];
         $this->userEditorsLocationID = $userGroups['userEditorsLocationID'];
+    }
+
+    protected function createRole()
+    {
+        /** @var InstallService $installService */
+        $installService = $this->getContainer()->get('edgar_ez_site_builder.install.service');
+
+        $locationIDs = array(
+            $this->rootContentLocationID,
+            $this->rootMediaLocationID,
+            $this->customersLocationID,
+            $this->mediaCustomersLocationID,
+            $this->modelsLocationID,
+            $this->mediaModelsLocationID
+        );
+
+        $installService->createRole($this->userGroupParenttLocationID, $locationIDs);
     }
 
     /**

@@ -5,7 +5,15 @@ namespace EdgarEz\SiteBuilderBundle\Service;
 use EdgarEz\ToolsBundle\Service\Content;
 use EdgarEz\ToolsBundle\Service\ContentType;
 use EdgarEz\ToolsBundle\Service\ContentTypeGroup;
+use EdgarEz\ToolsBundle\Service\Role;
 use eZ\Publish\API\Repository\ContentTypeService;
+use eZ\Publish\API\Repository\LocationService;
+use eZ\Publish\API\Repository\RoleService;
+use eZ\Publish\API\Repository\UserService;
+use eZ\Publish\API\Repository\Values\User\Limitation\LocationLimitation;
+use eZ\Publish\Core\Repository\Values\User\Policy;
+use eZ\Publish\Core\Repository\Values\User\PolicyDraft;
+use eZ\Publish\Core\Repository\Values\User\PolicyUpdateStruct;
 use Symfony\Component\Yaml\Yaml;
 
 class InstallService
@@ -13,21 +21,34 @@ class InstallService
     private $contentTypeService;
 
     private $contentTypeGroup;
+    private $roleService;
+    private $locationService;
+    private $userService;
+
     private $contentType;
     private $content;
+    private $role;
 
     public function __construct(
         ContentTypeService $contentTypeService,
+        RoleService $roleService,
+        LocationService $locationService,
+        UserService $userService,
         ContentTypeGroup $contentTypeGroup,
         ContentType $contentType,
-        Content $content
+        Content $content,
+        Role $role
     )
     {
         $this->contentTypeService = $contentTypeService;
+        $this->roleService = $roleService;
+        $this->locationService = $locationService;
+        $this->userService = $userService;
 
         $this->contentTypeGroup = $contentTypeGroup;
         $this->contentType = $contentType;
         $this->content = $content;
+        $this->role = $role;
     }
 
     public function createContentTypeGroup()
@@ -183,8 +204,50 @@ class InstallService
         }
 
         return array(
+            'userGroupParenttLocationID' => $userGroupParenttLocationID,
             'userCreatorsLocationID' => $userCreatorsLocationID,
             'userEditorsLocationID' => $userEditorsLocationID
+        );
+    }
+
+    public function createRole($userGroupLocationID, array $locationIDs)
+    {
+        /** @var \eZ\Publish\API\Repository\Values\User\Role $roleCreator */
+        $role = $this->role->add('SiteBuilder');
+
+        $userGroupLocation = $this->locationService->loadLocation($userGroupLocationID);
+        $userGroup = $this->userService->loadUserGroup($userGroupLocation->contentId);
+
+        $this->role->addPolicy($role->id, 'content', 'read');
+
+        $roleDraft = $this->roleService->createRoleDraft($role);
+
+        /** @var Policy[] $policies */
+        $policies = $roleDraft->policies;
+        foreach ($policies as $policy) {
+            if ($policy->module == 'content' && $policy->function == 'read') {
+                $locationLimitation = new LocationLimitation(
+                    array(
+                        'limitationValues' => $locationIDs
+                    )
+                );
+
+                $policyUpdateStruct = new PolicyUpdateStruct();
+                $policyUpdateStruct->addLimitation($locationLimitation);
+                $policyDraft = new PolicyDraft(['innerPolicy' => new Policy(['id' => $policy->id, 'module' => 'content', 'function' => 'read', 'roleId' => $roleDraft->id])]);
+
+                $this->roleService->updatePolicyByRoleDraft(
+                    $roleDraft,
+                    $policyDraft,
+                    $policyUpdateStruct
+                );
+                $this->roleService->publishRoleDraft($roleDraft);
+            }
+        }
+
+        $this->roleService->assignRoleToUserGroup(
+            $role,
+            $userGroup
         );
     }
 }
