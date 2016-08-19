@@ -7,8 +7,7 @@ edgarezsb_install:
     defaults:
         _controller: edgar_ez_site_builder.controller.sb:tabInstallAction
 
-edgarezsb_install_post:
-    path: /sb/install/post
-    methods: [POST]
-    defaults:
-        _controller: edgar_ez_site_builder.controller.sb:postInstallAction
+edgarezsb_pjax:
+    resource: "@EdgarEzSiteBuilderBundle/Resources/config/routing_pjax.yml"
+    prefix:   /pjax
+
