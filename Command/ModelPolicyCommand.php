@@ -2,7 +2,6 @@
 
 namespace EdgarEz\SiteBuilderBundle\Command;
 
-use EdgarEz\SiteBuilderBundle\Generator\SiteGenerator;
 use EdgarEz\SiteBuilderBundle\Service\ModelService;
 use eZ\Publish\API\Repository\Repository;
 use Symfony\Component\Console\Input\InputInterface;

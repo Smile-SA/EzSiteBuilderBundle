@@ -13,7 +13,6 @@ class ProjectTaskService implements TaskInterface
 
     public function validateParameters($parameters)
     {
-        // TODO: Implement validateParameters() method.
     }
 
     public function execute($parameters)

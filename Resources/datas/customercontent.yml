@@ -7,3 +7,4 @@ fields:
     max_site_count:
         identifier: max_site_count
         value: -1
+
