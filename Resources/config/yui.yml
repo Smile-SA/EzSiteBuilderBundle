@@ -2,19 +2,19 @@ system:
     default:
         yui:
             modules:
-                edgarezsb-dashboardapplugin: # should match the first parameter of YUI.add
-                    requires: ['ez-pluginregistry', 'plugin', 'base', 'edgarezsb-dashboardview', 'edgarezsb-dashboardviewservice'] # depends on the plugin code
+                edgarezsb-sbapplugin: # should match the first parameter of YUI.add
+                    requires: ['ez-pluginregistry', 'plugin', 'base', 'edgarezsb-sbview', 'edgarezsb-sbviewservice'] # depends on the plugin code
                     dependencyOf: ['ez-platformuiapp']
-                    path: %edgar_ez_site_builder.public_dir%/js/apps/plugins/edgarezsb-dashboardappplugin.js
+                    path: %edgar_ez_site_builder.public_dir%/js/apps/plugins/edgarezsb-sbappplugin.js
                 edgarezsb-navigationplugin:
                     requires: ['ez-pluginregistry', 'ez-viewservicebaseplugin', 'ez-navigationitemview']
                     dependencyOf: ['ez-navigationhubviewservice']
                     path: %edgar_ez_site_builder.public_dir%/js/views/services/plugins/edgarezsb-navigationplugin.js
-                edgarezsb-dashboardviewservice:
+                edgarezsb-sbviewservice:
                     requires: ['ez-serversideviewservice']
-                    path: %edgar_ez_site_builder.public_dir%/js/views/services/edgarezsb-dashboardviewservice.js
-                edgarezsb-dashboardview:
+                    path: %edgar_ez_site_builder.public_dir%/js/views/services/edgarezsb-sbviewservice.js
+                edgarezsb-sbview:
                     requires: ['ez-serversideview']
-                    path: %edgar_ez_site_builder.public_dir%/js/views/edgarezsb-dashboardview.js
+                    path: %edgar_ez_site_builder.public_dir%/js/views/edgarezsb-sbview.js
 
 

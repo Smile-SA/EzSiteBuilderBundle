@@ -1,7 +1,7 @@
-YUI.add('edgarezsb-dashboardviewservice', function (Y) {
+YUI.add('edgarezsb-sbviewservice', function (Y) {
     Y.namespace('edgarEzSb');
 
-    Y.edgarEzSb.DashboardViewService = Y.Base.create('edgarezsbDashboardViewService', Y.eZ.ServerSideViewService, [], {
+    Y.edgarEzSb.SbViewService = Y.Base.create('edgarezsbSbViewService', Y.eZ.ServerSideViewService, [], {
         initializer: function () {
             this.on('*:navigateTo', function (e) {
                 this.get('app').navigateTo(
@@ -12,7 +12,7 @@ YUI.add('edgarezsb-dashboardviewservice', function (Y) {
         },
 
         _load: function (callback) {
-            uri = this.get('app').get('apiRoot') + 'dashboard';
+            uri = this.get('app').get('apiRoot') + 'sb';
 
             Y.io(uri, {
                 method: 'GET',

@@ -1,16 +1,16 @@
-YUI.add('edgarezsb-dashboardview', function (Y) {
+YUI.add('edgarezsb-sbview', function (Y) {
     Y.namespace('edgarEzSb');
 
-    Y.edgarEzSb.DashboardView = Y.Base.create('edgarezsbDashboardView', Y.eZ.ServerSideView, [], {
+    Y.edgarEzSb.SbView = Y.Base.create('edgarezsbSbView', Y.eZ.ServerSideView, [], {
         events: {
-            '.edgarezsb-dashboard-location': {
+            '.edgarezsb-sb-location': {
                 // tap is 'fast click' (touch friendly)
                 'tap': '_navigateToLocation'
             }
         },
 
         initializer: function () {
-            this.containerTemplate = '<div class="ez-view-edgarezsbdashboardview"/>';
+            this.containerTemplate = '<div class="ez-view-edgarezsbsbview"/>';
         },
 
         _navigateToLocation: function (e) {

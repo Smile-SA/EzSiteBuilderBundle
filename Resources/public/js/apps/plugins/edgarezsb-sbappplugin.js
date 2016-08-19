@@ -1,19 +1,19 @@
-YUI.add('edgarezsb-dashboardapplugin', function (Y) {
+YUI.add('edgarezsb-sbapplugin', function (Y) {
     Y.namespace('edgarEzSb.Plugin');
 
-    Y.edgarEzSb.Plugin.DashboardAppPlugin = Y.Base.create('edgarezsbDashboardAppPlugin', Y.Plugin.Base, [], {
+    Y.edgarEzSb.Plugin.SbAppPlugin = Y.Base.create('edgarezsbSbAppPlugin', Y.Plugin.Base, [], {
         initializer: function () {
             var app = this.get('host'); // the plugged object is called host
 
-            app.views.edgarezsbDashboardView = {
-                type: Y.edgarEzSb.DashboardView,
+            app.views.edgarezsbSbView = {
+                type: Y.edgarEzSb.SbView,
             };
 
             app.route({
-                name: "edgarEzSbDashboard",
-                path: "/edgarezsb/dashboard",
-                view: "edgarezsbDashboardView",
-                service: Y.edgarEzSb.DashboardViewService, // the service will be used to load the necessary data
+                name: "edgarEzSbSb",
+                path: "/edgarezsb/sb",
+                view: "edgarezsbSbView",
+                service: Y.edgarEzSb.SbViewService, // the service will be used to load the necessary data
                 // we want the navigationHub (top menu) but not the discoveryBar
                 // (left bar), we can try different options
                 sideViews: {'navigationHub': true, 'discoveryBar': false},
@@ -25,6 +25,6 @@ YUI.add('edgarezsb-dashboardapplugin', function (Y) {
     });
 
     Y.eZ.PluginRegistry.registerPlugin(
-        Y.edgarEzSb.Plugin.DashboardAppPlugin, ['platformuiApp']
+        Y.edgarEzSb.Plugin.SbAppPlugin, ['platformuiApp']
     );
 });

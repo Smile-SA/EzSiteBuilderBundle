@@ -11,7 +11,7 @@ YUI.add('edgarezsb-navigationplugin', function (Y) {
                     title: "Site Builder",
                     identifier: "edgarezsb-list-contents",
                     route: {
-                        name: "edgarEzSbDashboard"
+                        name: "edgarEzSbSb"
                     }
                 }
             }, 'platform');

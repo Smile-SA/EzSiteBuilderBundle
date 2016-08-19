@@ -21,7 +21,7 @@
             {% for tab_item in tab_items %}
                 <div class="ez-tabs-panel{% if loop.first %} is-tab-selected{% endif %}" id="ez-tabs-{{ tab_item }}">
                     {{ render( controller(
-                    'edgar_ez_site_builder.controller.dashboard:tabAction', {
+                    'edgar_ez_site_builder.controller.sb:tabAction', {
                         'tabItem': tab_item,
                         'viewType': 'pjax_tab'
                     } ) ) }}
