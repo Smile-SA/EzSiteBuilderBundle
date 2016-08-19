@@ -25,13 +25,16 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('{{ extension_alias }}');
+        $rootNode = $treeBuilder->root('edgar_ez_site_builder');
 
-// Here you should define the parameters that are allowed to
-// configure your bundle. See the documentation linked above for
-// more information on that topic.
+        $rootNode
+            ->children()
+                ->booleanNode('installed')
+                ->defaultTrue()
+            ->end()
+        ->end();
 
-return $treeBuilder;
-}
+        return $treeBuilder;
+    }
 {% endblock class_body %}
 }

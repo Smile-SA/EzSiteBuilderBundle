@@ -89,6 +89,12 @@ class InstallCommand extends BaseContainerAwareCommand
         $questionHelper = $this->getQuestionHelper();
         $questionHelper->writeSection($output, 'Welcome to the SiteBuilder installation');
 
+        $installed = $this->getContainer()->hasParameter('edgar_ez_site_builder.installed') ? $this->getContainer()->getParameter('edgar_ez_site_builder.installed') : false;
+        if ($installed) {
+            $output->writeln('<error>SiteBuilder is already installed</error>');
+            return;
+        }
+
         $this->init($input, $output);
 
         $contentParentLocationID = $this->askContentStructure($input, $output);

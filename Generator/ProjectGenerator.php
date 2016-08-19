@@ -105,6 +105,7 @@ class ProjectGenerator extends Generator
         $this->renderFile('project/Bundle.php.twig', $dir . '/' . $vendorName . $basename . 'Bundle.php', $parameters);
         $this->renderFile('project/Extension.php.twig', $dir . '/DependencyInjection/' . $vendorName . $basename . 'Extension.php', $parameters);
         $this->renderFile('project/Configuration.php.twig', $dir . '/DependencyInjection/Configuration.php', $parameters);
+        $this->renderFile('project/Resources/config/edgarezsb.yml.twig', $dir . '/Resources/config/edgarezsb.yml', $parameters);
         $this->renderFile('project/Resources/config/default_settings.yml.twig', $dir . '/Resources/config/default_settings.yml', $parameters);
 
         $this->filesystem->mkdir($targetDir . '/' . $vendorName . '/' . self::MODELS);
