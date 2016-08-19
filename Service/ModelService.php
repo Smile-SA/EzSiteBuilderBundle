@@ -9,6 +9,7 @@ use eZ\Publish\API\Repository\URLAliasService;
 use eZ\Publish\API\Repository\Values\User\Limitation;
 use eZ\Publish\API\Repository\Values\User\Policy;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -17,6 +18,9 @@ use Symfony\Component\Yaml\Yaml;
  */
 class ModelService
 {
+    /** @var Kernel $kernel symfony kernel interface */
+    private $kernel;
+
     /** @var URLAliasService $urlAliasService eZ URLAlias Service */
     private $urlAliasService;
 
@@ -50,6 +54,7 @@ class ModelService
      * @param ContainerInterface $container
      */
     public function __construct(
+        Kernel $kernel,
         URLAliasService $urlAliasService,
         LocationService $locationService,
         RoleService $roleService,
@@ -59,6 +64,7 @@ class ModelService
         ContainerInterface $container
     )
     {
+        $this->kernel = $kernel;
         $this->urlAliasService = $urlAliasService;
         $this->locationService = $locationService;
         $this->roleService = $roleService;
@@ -79,7 +85,7 @@ class ModelService
     {
         $returnValue = array();
 
-        $contentDefinition = Yaml::parse(file_get_contents(__DIR__ . '/../Resources/datas/modelcontent.yml'));
+        $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/modelcontent.yml')));
         $contentDefinition['parentLocationID'] = $modelsLocationID;
         $contentDefinition['fields']['title']['value'] = $modelName;
         $contentAdded = $this->content->add($contentDefinition);
@@ -101,7 +107,7 @@ class ModelService
      */
     public function createMediaModelContent($mediaModelsLocationID, $modelName)
     {
-        $contentDefinition = Yaml::parse(file_get_contents(__DIR__ . '/../Resources/datas/mediamodelcontent.yml'));
+        $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediamodelcontent.yml')));
         $contentDefinition['parentLocationID'] = $mediaModelsLocationID;
         $contentDefinition['fields']['title']['value'] = $modelName;
         $contentAdded = $this->content->add($contentDefinition);

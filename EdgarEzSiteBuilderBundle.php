@@ -15,6 +15,6 @@ class EdgarEzSiteBuilderBundle extends Bundle
 
         /** @var EzPublishCoreExtension $eZExtension */
         $eZExtension = $container->getExtension('ezpublish');
-        $eZExtension->addPolicyProvider(new SiteBuilderPolicyProvider());
+        $eZExtension->addPolicyProvider(new SiteBuilderPolicyProvider($this->getPath()));
     }
 }

@@ -31,6 +31,7 @@ services:
     edgar_ez_site_builder.customer.service:
         class: %edgar_ez_site_builder.customer.service.class%
         arguments:
+            - @kernel
             - @ezpublish.api.service.role
             - @ezpublish.api.service.location
             - @ezpublish.api.service.user
@@ -42,6 +43,7 @@ services:
     edgar_ez_site_builder.model.service:
         class: %edgar_ez_site_builder.model.service.class%
         arguments:
+            - @kernel
             - @ezpublish.api.service.url_alias
             - @ezpublish.api.service.location
             - @ezpublish.api.service.role

@@ -9,6 +9,7 @@ use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\RoleService;
 use eZ\Publish\API\Repository\UserService;
 use eZ\Publish\API\Repository\Values\User\Limitation\SubtreeLimitation;
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -17,6 +18,9 @@ use Symfony\Component\Yaml\Yaml;
  */
 class CustomerService
 {
+    /** @var Kernel $kernel symfony kernel interface */
+    private $kernel;
+
     /** @var RoleService $roleService eZ Role Service */
     private $roleService;
 
@@ -50,6 +54,7 @@ class CustomerService
      * @param array $siteaccessGroups ezpublish siteaccess groups
      */
     public function __construct(
+        Kernel $kernel,
         RoleService $roleService,
         LocationService $locationService,
         UserService $userService,
@@ -59,6 +64,7 @@ class CustomerService
         array $siteaccessGroups
     )
     {
+        $this->kernel = $kernel;
         $this->roleService = $roleService;
         $this->locationService = $locationService;
         $this->userService = $userService;
@@ -77,7 +83,7 @@ class CustomerService
      */
     public function createContentStructure($parentLocationID, $name)
     {
-        $contentDefinition = Yaml::parse(file_get_contents(__DIR__ . '/../Resources/datas/customercontent.yml'));
+        $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/customercontent.yml')));
         $contentDefinition['parentLocationID'] = $parentLocationID;
         $contentDefinition['fields']['title']['value'] = $name;
         return $this->content->add($contentDefinition);
@@ -92,7 +98,7 @@ class CustomerService
      */
     public function createMediaContentStructure($parentLocationID, $name)
     {
-        $contentDefinition = Yaml::parse(file_get_contents(__DIR__ . '/../Resources/datas/mediacustomercontent.yml'));
+        $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediacustomercontent.yml')));
         $contentDefinition['parentLocationID'] = $parentLocationID;
         $contentDefinition['fields']['title']['value'] = $name;
         return $this->content->add($contentDefinition);
@@ -110,12 +116,12 @@ class CustomerService
     {
         $contents = array();
 
-        $userGroupDefinition = Yaml::parse(file_get_contents(__DIR__. '/../Resources/datas/customerusergroup_creators.yml'));
+        $userGroupDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/customerusergroup_creators.yml')));
         $userGroupDefinition['parentLocationID'] = $parentCreatorLocationID;
         $userGroupDefinition['fields']['name']['value'] = $name;
         $contents['customerUserCreatorsGroup'] = $this->content->add($userGroupDefinition);
 
-        $userGroupDefinition = Yaml::parse(file_get_contents(__DIR__. '/../Resources/datas/customerusergroup_editors.yml'));
+        $userGroupDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/customerusergroup_editors.yml')));
         $userGroupDefinition['parentLocationID'] = $parentEditorLocationID;
         $userGroupDefinition['fields']['name']['value'] = $name;
         $contents['customerUserEditorsGroup'] = $this->content->add($userGroupDefinition);
