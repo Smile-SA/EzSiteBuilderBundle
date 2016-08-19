@@ -2,8 +2,6 @@
 
 namespace EdgarEz\SiteBuilderBundle\Command;
 
-use EdgarEz\SiteBuilderBundle\Command\Task\BaseTask;
-use EdgarEz\SiteBuilderBundle\Command\Task\Task;
 use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
 use EdgarEz\SiteBuilderBundle\Service\Task\TaskInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
