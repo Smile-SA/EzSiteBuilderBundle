@@ -12,7 +12,7 @@ parameters:
     edgar_ez_site_builder.mailer.class: EdgarEz\SiteBuilderBundle\Mail\Sender
 
     edgar_ez_site_builder.controller.sb.class: EdgarEz\SiteBuilderBundle\Controller\SbController
-    edgar_ez_site_builder.tabs: [install, dashboard, modelgenerate, sitegenerate, siteactivate]
+    edgar_ez_site_builder.tabs: [install, dashboard, customergenerate, modelgenerate, sitegenerate, siteactivate]
 
 services:
     edgar_ez_site_builder.install.service:

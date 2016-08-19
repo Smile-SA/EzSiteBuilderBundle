@@ -1,3 +1,14 @@
 edgarezsb_dashboard:
     path:     /sb
     defaults: { _controller: edgar_ez_site_builder.controller.sb:dashboardAction }
+
+edgarezsb_install:
+    path: /sb/install
+    defaults:
+        _controller: edgar_ez_site_builder.controller.sb:tabInstallAction
+
+edgarezsb_install_post:
+    path: /sb/install/post
+    methods: [POST]
+    defaults:
+        _controller: edgar_ez_site_builder.controller.sb:postInstallAction

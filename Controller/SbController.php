@@ -2,7 +2,9 @@
 
 namespace EdgarEz\SiteBuilderBundle\Controller;
 
+use EdgarEz\SiteBuilderBundle\Form\Type\InstallType;
 use EzSystems\PlatformUIBundle\Controller\Controller as BaseController;
+use Symfony\Component\HttpFoundation\Request;
 
 class SbController extends BaseController
 {
@@ -32,10 +34,32 @@ class SbController extends BaseController
 
     public function tabAction($tabItem, $viewType)
     {
+        $params = array();
+        switch ($tabItem) {
+            case 'install':
+                $params['installForm'] = $this->createForm(
+                    new InstallType()
+                )->createView();
+                break;
+            default:
+                break;
+
+        }
+
         return $this->render('EdgarEzSiteBuilderBundle:sb:tab/' . $tabItem . '.html.twig', [
             'tab_items' => $this->tabItems,
             'tab_item' => $tabItem,
+            'params' => $params,
             'view_type' => $viewType
         ]);
+    }
+
+    public function tabInstallAction()
+    {
+    }
+
+    public function postInstallAction(Request $request)
+    {
+        return $this->redirectToRouteAfterFormPost('edgarezsb_dashboard');
     }
 }

@@ -6,13 +6,17 @@
             <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
         </header>
         <body>
+            <trans-unit id="tabiteminstall" resname="install">
+                <source>install</source>
+                <target>Installation</target>
+            </trans-unit>
             <trans-unit id="tabitemdashboard" resname="dashboard">
                 <source>dashboard</source>
                 <target>Tableau de bord</target>
             </trans-unit>
-            <trans-unit id="tabiteminstall" resname="install">
-                <source>install</source>
-                <target>Installation</target>
+            <trans-unit id="tabitemcustomergenerate" resname="customergenerate">
+                <source>customergenerate</source>
+                <target>Génération client</target>
             </trans-unit>
             <trans-unit id="tabitemmodelgenerate" resname="modelgenerate">
                 <source>modelgenerate</source>
