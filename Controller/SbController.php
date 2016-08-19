@@ -16,9 +16,17 @@ class SbController extends BaseController
     public function dashboardAction()
     {
         $installed = $this->container->hasParameter('edgar_ez_site_builder.installed') ? $this->container->getParameter('edgar_ez_site_builder.installed') : false;
+        $tabItems = $this->tabItems;
+
+        if (!$installed) {
+            $tabItems = array($tabItems[0]);
+        } else {
+            unset($tabItems[0]);
+        }
+
         return $this->render('EdgarEzSiteBuilderBundle:sb:dashboard.html.twig', [
             'installed' => $installed,
-            'tab_items' => $this->tabItems
+            'tab_items' => $tabItems
         ]);
     }
 
