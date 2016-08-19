@@ -14,6 +14,7 @@ use eZ\Publish\API\Repository\Values\User\Limitation\LocationLimitation;
 use eZ\Publish\Core\Repository\Values\User\Policy;
 use eZ\Publish\Core\Repository\Values\User\PolicyDraft;
 use eZ\Publish\Core\Repository\Values\User\PolicyUpdateStruct;
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -22,6 +23,9 @@ use Symfony\Component\Yaml\Yaml;
  */
 class InstallService
 {
+    /** @var Kernel $kernel symfony kernel interface */
+    private $kernel;
+
     /** @var ContentTypeService $contentTypeService eZ ContentType Service */
     private $contentTypeService;
 
@@ -49,6 +53,7 @@ class InstallService
     /**
      * InstallService constructor.
      *
+     * @param Kernel $kernel symfony kernel interface
      * @param ContentTypeService $contentTypeService eZ ContentType Service
      * @param RoleService $roleService eZ Role Service
      * @param LocationService $locationService eZ Location Service
@@ -59,6 +64,7 @@ class InstallService
      * @param Role $role EdgarEz Role Service
      */
     public function __construct(
+        Kernel $kernel,
         ContentTypeService $contentTypeService,
         RoleService $roleService,
         LocationService $locationService,
@@ -69,6 +75,7 @@ class InstallService
         Role $role
     )
     {
+        $this->kernel = $kernel;
         $this->contentTypeService = $contentTypeService;
         $this->roleService = $roleService;
         $this->locationService = $locationService;
@@ -99,14 +106,13 @@ class InstallService
     public function createContentTypes(\eZ\Publish\API\Repository\Values\ContentType\ContentTypeGroup $contentTypeGroup)
     {
         $contentTypes = array();
+        $identifiers = array('customer', 'customersroot', 'model', 'modelsroot', 'user');
 
-        $contentTypeDefinitions = glob(__DIR__. '/../Resources/datas/contenttype_*.yml');
-        if (is_array($contentTypeDefinitions) && count($contentTypeDefinitions) > 0) {
-            foreach ($contentTypeDefinitions as $contentTypeDefinition) {
-                $contentTypeDefinition = Yaml::parse(file_get_contents($contentTypeDefinition));
-                $contentTypeDefinition['contentTypeGroup'] = $contentTypeGroup;
-                $this->contentType->add($contentTypeDefinition);
-            }
+        foreach ($identifiers as $identifier) {
+            $contentTypeDefinition = $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/contenttype_' . $identifier . '.yml');
+            $contentTypeDefinition = Yaml::parse(file_get_contents($contentTypeDefinition));
+            $contentTypeDefinition['contentTypeGroup'] = $contentTypeGroup;
+            $this->contentType->add($contentTypeDefinition);
         }
 
         return $contentTypes;
@@ -121,14 +127,13 @@ class InstallService
     public function createMediaContentTypes(\eZ\Publish\API\Repository\Values\ContentType\ContentTypeGroup $contentTypeGroup)
     {
         $contentTypes = array();
+        $identifiers = array('customer', 'customersroot', 'model', 'modelsroot');
 
-        $contentTypeDefinitions = glob(__DIR__. '/../Resources/datas/mediacontenttype_*.yml');
-        if (is_array($contentTypeDefinitions) && count($contentTypeDefinitions) > 0) {
-            foreach ($contentTypeDefinitions as $contentTypeDefinition) {
-                $contentTypeDefinition = Yaml::parse(file_get_contents($contentTypeDefinition));
-                $contentTypeDefinition['contentTypeGroup'] = $contentTypeGroup;
-                $this->contentType->add($contentTypeDefinition);
-            }
+        foreach ($identifiers as $identifier) {
+            $contentTypeDefinition = $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediacontenttype_' . $identifier . '.yml');
+            $contentTypeDefinition = Yaml::parse(file_get_contents($contentTypeDefinition));
+            $contentTypeDefinition['contentTypeGroup'] = $contentTypeGroup;
+            $this->contentType->add($contentTypeDefinition);
         }
 
         return $contentTypes;
@@ -143,15 +148,14 @@ class InstallService
     public function createContents($parentLocationID)
     {
         $contents = array();
+        $identifiers = array('customersroot', 'modelsroot');
 
-        $contentDefinitions = glob(__DIR__. '/../Resources/datas/content_*.yml');
-        if (is_array($contentDefinitions) && count($contentDefinitions) > 0) {
-            foreach ($contentDefinitions as $contentDefinition) {
-                $contentDefinition = Yaml::parse(file_get_contents($contentDefinition));
-                $contentDefinition['parentLocationID'] = $parentLocationID;
-                $contentAdded = $this->content->add($contentDefinition);
-                $contents[] = $contentAdded;
-            }
+        foreach ($identifiers as $identifier) {
+            $contentDefinition = $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/content_' . $identifier . '.yml');
+            $contentDefinition = Yaml::parse(file_get_contents($contentDefinition));
+            $contentDefinition['parentLocationID'] = $parentLocationID;
+            $contentAdded = $this->content->add($contentDefinition);
+            $contents[] = $contentAdded;
         }
 
         $modelsLocationID = false;
@@ -187,15 +191,14 @@ class InstallService
     public function createMediaContents($parentLocationID)
     {
         $contents = array();
+        $identifiers = array('customersroot', 'modelsroot');
 
-        $contentDefinitions = glob(__DIR__. '/../Resources/datas/mediacontent_*.yml');
-        if (is_array($contentDefinitions) && count($contentDefinitions) > 0) {
-            foreach ($contentDefinitions as $contentDefinition) {
-                $contentDefinition = Yaml::parse(file_get_contents($contentDefinition));
-                $contentDefinition['parentLocationID'] = $parentLocationID;
-                $contentAdded = $this->content->add($contentDefinition);
-                $contents[] = $contentAdded;
-            }
+        foreach ($identifiers as $identifier) {
+            $contentDefinition = $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediacontent_' . $identifier . '.yml');
+            $contentDefinition = Yaml::parse(file_get_contents($contentDefinition));
+            $contentDefinition['parentLocationID'] = $parentLocationID;
+            $contentAdded = $this->content->add($contentDefinition);
+            $contents[] = $contentAdded;
         }
 
         $mediaModelsLocationID = false;
@@ -230,23 +233,22 @@ class InstallService
      */
     public function createUserGroups($parentLocationID)
     {
-        $userGroupDefinition = Yaml::parse(file_get_contents(__DIR__. '/../Resources/datas/usergrouproot.yml'));
+        $userGroupDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/usergrouproot.yml')));
         $userGroupDefinition['parentLocationID'] = $parentLocationID;
         /** @var \eZ\Publish\API\Repository\Values\Content\Content $userGroup */
         $userGroup = $this->content->add($userGroupDefinition);
 
         $contents = array();
         $userGroupParenttLocationID = $userGroup->contentInfo->mainLocationId;
+        $identifiers = array('creator', 'editor');
 
-        $userGroupDefinitions = glob(__DIR__. '/../Resources/datas/usergroup_*.yml');
-        if (is_array($userGroupDefinitions) && count($userGroupDefinitions) > 0) {
-            foreach ($userGroupDefinitions as $userGroupDefinition) {
-                $userGroupDefinition = Yaml::parse(file_get_contents($userGroupDefinition));
-                $userGroupDefinition['parentLocationID'] = $userGroupParenttLocationID;
-                /** @var \eZ\Publish\Core\REST\Client\Values\Content\Content $contentAdded */
-                $contentAdded = $this->content->add($userGroupDefinition);
-                $contents[] = $contentAdded;
-            }
+        foreach ($identifiers as $identifier) {
+            $userGroupDefinition = $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/usergroup_' . $identifier . '.yml');
+            $userGroupDefinition = Yaml::parse(file_get_contents($userGroupDefinition));
+            $userGroupDefinition['parentLocationID'] = $userGroupParenttLocationID;
+            /** @var \eZ\Publish\Core\REST\Client\Values\Content\Content $contentAdded */
+            $contentAdded = $this->content->add($userGroupDefinition);
+            $contents[] = $contentAdded;
         }
 
         $userCreatorsLocationID = false;

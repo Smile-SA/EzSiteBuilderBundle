@@ -87,7 +87,7 @@ class SiteService
 
     /**
      * Add siteaccess limitation to user/login policy
-     * 
+     *
      * @param \eZ\Publish\API\Repository\Values\User\Role $roleCreator eZ Role for user creator
      * @param \eZ\Publish\API\Repository\Values\User\Role $roleEditor eZ Role for user editor
      * @param $siteaccessName siteaccess name

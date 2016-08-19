@@ -18,6 +18,7 @@ services:
     edgar_ez_site_builder.install.service:
         class: %edgar_ez_site_builder.install.service.class%
         arguments:
+            - @kernel
             - @ezpublish.api.service.content_type
             - @ezpublish.api.service.role
             - @ezpublish.api.service.location
