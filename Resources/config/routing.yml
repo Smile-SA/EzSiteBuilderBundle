@@ -2,12 +2,11 @@ edgarezsb_dashboard:
     path:     /sb
     defaults: { _controller: edgar_ez_site_builder.controller.sb:dashboardAction }
 
-edgarezsb_install:
+edgarezsb_install_post:
     path: /sb/install
+    methods: [POST]
     defaults:
-        _controller: edgar_ez_site_builder.controller.sb:tabInstallAction
+        _controller: edgar_ez_site_builder.controller.sb:postInstallAction
 
-edgarezsb_pjax:
-    resource: "@EdgarEzSiteBuilderBundle/Resources/config/routing_pjax.yml"
-    prefix:   /pjax
+
 

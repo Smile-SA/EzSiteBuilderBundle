@@ -1,6 +1,0 @@
-edgarezsb_install_post:
-    path: /sb/install
-    methods: [POST]
-    defaults:
-        _controller: edgar_ez_site_builder.controller.sb:postInstallAction
-

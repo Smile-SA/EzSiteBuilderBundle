@@ -20,11 +20,17 @@
         <div class="ez-tabs-panels">
             {% for tab_item in tab_items %}
                 <div class="ez-tabs-panel{% if loop.first %} is-tab-selected{% endif %}" id="ez-tabs-{{ tab_item }}">
-                    {{ render( controller(
-                    'edgar_ez_site_builder.controller.sb:tabAction', {
-                        'tabItem': tab_item,
-                        'viewType': 'pjax_tab'
-                    } ) ) }}
+                    <div class="ez-view-container pure-u yui3-app-views">
+                        <div class="ez-view-serversideview">
+                            <section class="ez-serverside-content">
+                                {{ render( controller(
+                                'edgar_ez_site_builder.controller.sb:tabAction', {
+                                    'tabItem': tab_item,
+                                    'viewType': 'pjax_tab'
+                                } ) ) }}
+                            </section>
+                        </div>
+                    </div>
                 </div>
             {% endfor %}
         </div>

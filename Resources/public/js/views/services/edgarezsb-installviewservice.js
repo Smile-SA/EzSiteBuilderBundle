@@ -1,7 +1,7 @@
-YUI.add('edgarezsb-sbviewservice', function (Y) {
+YUI.add('edgarezsb-installviewservice', function (Y) {
     Y.namespace('edgarEzSb');
 
-    Y.edgarEzSb.SbViewService = Y.Base.create('edgarezsbSbViewService', Y.eZ.ServerSideViewService, [], {
+    Y.edgarEzSb.InstallViewService = Y.Base.create('edgarezsbInstallViewService', Y.eZ.ServerSideViewService, [], {
         initializer: function () {
             this.on('*:navigateTo', function (e) {
                 this.get('app').navigateTo(
@@ -12,7 +12,7 @@ YUI.add('edgarezsb-sbviewservice', function (Y) {
         },
 
         _load: function (callback) {
-            uri = this.get('app').get('apiRoot') + 'sb';
+            uri = this.get('app').get('apiRoot') + 'sb/install';
 
             Y.io(uri, {
                 method: 'GET',

@@ -1,15 +1,15 @@
-YUI.add('edgarezsb-sbview', function (Y) {
+YUI.add('edgarezsb-installview', function (Y) {
     Y.namespace('edgarEzSb');
 
-    Y.edgarEzSb.SbView = Y.Base.create('edgarezsbSbView', Y.eZ.ServerSideView, [], {
+    Y.edgarEzSb.InstallView = Y.Base.create('edgarezsbInstallView', Y.eZ.ServerSideView, [], {
         events: {
-            '.edgarezsb-sb-location': {
+            '.edgarezsb-install-location': {
                 'tap': '_navigateToLocation'
             }
         },
 
         initializer: function () {
-            this.containerTemplate = '<div class="ez-view-edgarezsbsbview"/>';
+            this.containerTemplate = '<div class="ez-view-edgarezsbinstallview"/>';
         },
 
         _navigateToLocation: function (e) {

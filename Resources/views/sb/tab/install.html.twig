@@ -1,32 +1,21 @@
 {% trans_default_domain "sitebuilder_install" %}
 
-<div class="ez-table-data is-flexible">
-    <div class="ez-table-data-container">
-        {{ form_start(params.installForm, {"action": path("edgarezsb_install_post", {})}) }}
-        <table class="pure-table pure-table-striped ez-selection-table">
-            <thead>
-            <tr class="ez-selection-table-row">
-                <th>{{ 'install.vendor.name'|trans }}</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ form_widget(params.installForm.vendorName) }}</td>
-                    <td>
-                        {{
-                        form_widget(
-                        params.installForm.install,
-                        {
-                            "disabled": false,
-                            "attr": {"class": "pure-button ez-button ez-install-button ez-font-icon ez-button-install"}
-                        }
-                        )
-                        }}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        {{ form_end(params.installForm) }}
+{{ form_start(params.installForm, {"action": path("edgarezsb_install_post", {}), "attr": {"class": "pure-form pure-form-aligned"}}) }}
+<fieldset>
+    <div class=pure-control-groupe">
+        {{ form_label(params.installForm.vendorName) }}
+        {{ form_errors(params.installForm.vendorName) }}
+        {{ form_widget(params.installForm.vendorName) }}
     </div>
+</fieldset>
+<div class=pure-controls">
+    {{ form_widget(
+    params.installForm.install,
+    {
+        "disabled": false,
+        "attr": {"class": "pure-button ez-button ez-install-button ez-font-icon ez-button-install"}
+    }
+    ) }}
 </div>
+{{ form_end(params.installForm) }}
+
