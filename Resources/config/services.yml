@@ -11,6 +11,7 @@ parameters:
 
     edgar_ez_site_builder.mailer.class: EdgarEz\SiteBuilderBundle\Mail\Sender
 
+    ezrepoforms.action_dispatcher.install.class: EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\InstallDispatcher
     edgar_ez_site_builder.controller.sb.class: EdgarEz\SiteBuilderBundle\Controller\SbController
     edgar_ez_site_builder.tabs: [install, dashboard, customergenerate, modelgenerate, sitegenerate, siteactivate]
 
@@ -62,6 +63,11 @@ services:
 
     edgar_ez_site_builder.project.task.service:
         class: %edgar_ez_site_builder.project.task.service.class%
+        arguments:
+            - @filesystem
+            - @kernel
+            - @edgar_ez_site_builder.install.service
+            - %kernel.root_dir%
 
     edgar_ez_site_builder.customer.task.service:
         class: %edgar_ez_site_builder.customer.task.service.class%
@@ -77,8 +83,13 @@ services:
         arguments:
             - @swiftmailer.mailer
 
+    ezrepoforms.action_dispatcher.install:
+        class: %ezrepoforms.action_dispatcher.install.class%
+        parent: ezrepoforms.action_dispatcher.base
+
     edgar_ez_site_builder.controller.sb:
         class: %edgar_ez_site_builder.controller.sb.class%
         arguments:
+            - @ezrepoforms.action_dispatcher.install
             - %edgar_ez_site_builder.tabs%
         parent: ezsystems.platformui.controller.base

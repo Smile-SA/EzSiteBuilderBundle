@@ -23,6 +23,8 @@ use Symfony\Component\Yaml\Yaml;
  */
 class InstallService
 {
+    protected $ctg;
+
     /** @var Kernel $kernel symfony kernel interface */
     private $kernel;
 
@@ -94,7 +96,8 @@ class InstallService
      */
     public function createContentTypeGroup()
     {
-        return $this->contentTypeGroup->add('SiteBuilder');
+        /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentTypeGroup ctg */
+        $this->ctg = $this->contentTypeGroup->add('SiteBuilder');
     }
 
     /**
@@ -320,6 +323,58 @@ class InstallService
         $this->roleService->assignRoleToUserGroup(
             $role,
             $userGroup
+        );
+    }
+
+    /**
+     * Create content structure
+     *
+     * @param OutputInterface $output output console
+     * @param int $parentLocationID content root location ID
+     */
+    public function createContentStructure($parentLocationID)
+    {
+        $this->createContentTypes($this->ctg);
+        $contents = $this->createContents($parentLocationID);
+
+        return array(
+            'modelsLocationID' => $contents['modelsLocationID'],
+            'customersLocationID' => $contents['customersLocationID']
+        );
+    }
+
+    /**
+     * Create media structure
+     *
+     * @param OutputInterface $output
+     * @param int $parentLocationID media root location ID
+     */
+    public function createMediaContentStructure($parentLocationID)
+    {
+        $this->createMediaContentTypes($this->ctg);
+        $contents = $this->createMediaContents($parentLocationID);
+
+        return array(
+            'mediaModelsLocationID' => $contents['modelsLocationID'],
+            'mediaCustomersLocationID' => $contents['customersLocationID']
+        );
+    }
+
+    /**
+     * Create user structure
+     *
+     * @param OutputInterface $output output console
+     * @param int $userGroupParenttLocationID user root location ID
+     */
+    public function createUserStructure($userGroupParenttLocationID)
+    {
+        /** @var int[] $userGroups */
+        $userGroups = $this->createUserGroups($userGroupParenttLocationID);
+
+        return array(
+            'userGroupParenttLocationID' => $userGroups['userGroupParenttLocationID'],
+            'userCreatorsLocationID' => $userGroups['userCreatorsLocationID'],
+            'userEditorsLocationID' => $userGroups['userEditorsLocationID']
         );
     }
 }

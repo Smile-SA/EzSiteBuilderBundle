@@ -101,11 +101,33 @@ class InstallCommand extends BaseContainerAwareCommand
         $mediaParentLocationID = $this->askMediaContentStructure($input, $output);
         $userGroupLocationID = $this->askUserStructure($input, $output);
 
-        $this->createContentStructure($output, $contentParentLocationID);
-        $this->createMediaContentStructure($output, $mediaParentLocationID);
-        $this->createUserStructure($output, $userGroupLocationID);
+        /** @var InstallService $installService */
+        $installService = $this->getContainer()->get('edgar_ez_site_builder.install.service');
 
-        $this->createRole();
+        $installService->createContentTypeGroup();
+
+        $returnValue = $installService->createContentStructure($contentParentLocationID);
+        $this->modelsLocationID = $returnValue['modelsLocationID'];
+        $this->customersLocationID = $returnValue['customersLocationID'];
+
+        $returnValue = $installService->createMediaContentStructure($mediaParentLocationID);
+        $this->mediaModelsLocationID = $returnValue['mediaModelsLocationID'];
+        $this->mediaCustomersLocationID = $returnValue['mediaCustomersLocationID'];
+
+        $returnValue = $installService->createUserStructure($userGroupLocationID);
+        $this->userGroupParenttLocationID = $returnValue['userGroupParenttLocationID'];
+        $this->userCreatorsLocationID = $returnValue['userCreatorsLocationID'];
+        $this->userEditorsLocationID = $returnValue['userEditorsLocationID'];
+
+        $locationIDs = array(
+            $this->rootContentLocationID,
+            $this->rootMediaLocationID,
+            $this->customersLocationID,
+            $this->mediaCustomersLocationID,
+            $this->modelsLocationID,
+            $this->mediaModelsLocationID
+        );
+        $installService->createRole($this->userGroupParenttLocationID, $locationIDs);
 
         /** @var ProjectGenerator $generator */
         $generator = $this->getGenerator();
@@ -178,25 +200,6 @@ class InstallCommand extends BaseContainerAwareCommand
     }
 
     /**
-     * Create content structure
-     *
-     * @param OutputInterface $output output console
-     * @param int $parentLocationID content root location ID
-     */
-    protected function createContentStructure(OutputInterface $output, $parentLocationID)
-    {
-        /** @var InstallService $installService */
-        $installService = $this->getContainer()->get('edgar_ez_site_builder.install.service');
-
-        $this->contentTypeGroup = $installService->createContentTypeGroup();
-        $installService->createContentTypes($this->contentTypeGroup);
-        $contents = $installService->createContents($parentLocationID);
-
-        $this->modelsLocationID = $contents['modelsLocationID'];
-        $this->customersLocationID = $contents['customersLocationID'];
-    }
-
-    /**
      * Ask for root location ID where to create customer content structure
      *
      * @param InputInterface $input input console
@@ -243,24 +246,6 @@ class InstallCommand extends BaseContainerAwareCommand
     }
 
     /**
-     * Create media structure
-     *
-     * @param OutputInterface $output
-     * @param int $parentLocationID media root location ID
-     */
-    protected function createMediaContentStructure(OutputInterface $output, $parentLocationID)
-    {
-        /** @var InstallService $installService */
-        $installService = $this->getContainer()->get('edgar_ez_site_builder.install.service');
-
-        $installService->createMediaContentTypes($this->contentTypeGroup);
-        $contents = $installService->createMediaContents($parentLocationID);
-
-        $this->mediaModelsLocationID = $contents['modelsLocationID'];
-        $this->mediaCustomersLocationID = $contents['customersLocationID'];
-    }
-
-    /**
      * Ask for user root location ID
      *
      * @param InputInterface $input input console
@@ -302,45 +287,6 @@ class InstallCommand extends BaseContainerAwareCommand
         }
 
         return $userGroupParenttLocationID;
-    }
-
-    /**
-     * Create user structure
-     *
-     * @param OutputInterface $output output console
-     * @param int $userGroupParenttLocationID user root location ID
-     */
-    protected function createUserStructure(OutputInterface $output, $userGroupParenttLocationID)
-    {
-        /** @var InstallService $installService */
-        $installService = $this->getContainer()->get('edgar_ez_site_builder.install.service');
-
-        /** @var int[] $userGroups */
-        $userGroups = $installService->createUserGroups($userGroupParenttLocationID);
-
-        $this->userGroupParenttLocationID = $userGroups['userGroupParenttLocationID'];
-        $this->userCreatorsLocationID = $userGroups['userCreatorsLocationID'];
-        $this->userEditorsLocationID = $userGroups['userEditorsLocationID'];
-    }
-
-    /**
-     * Create global role
-     */
-    protected function createRole()
-    {
-        /** @var InstallService $installService */
-        $installService = $this->getContainer()->get('edgar_ez_site_builder.install.service');
-
-        $locationIDs = array(
-            $this->rootContentLocationID,
-            $this->rootMediaLocationID,
-            $this->customersLocationID,
-            $this->mediaCustomersLocationID,
-            $this->modelsLocationID,
-            $this->mediaModelsLocationID
-        );
-
-        $installService->createRole($this->userGroupParenttLocationID, $locationIDs);
     }
 
     /**

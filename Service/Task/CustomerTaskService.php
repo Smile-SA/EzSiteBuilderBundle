@@ -15,7 +15,7 @@ class CustomerTaskService implements TaskInterface
     {
     }
 
-    public function execute($parameters)
+    public function execute($command, array $parameters)
     {
         try {
             $this->validateParameters($parameters);

@@ -50,6 +50,11 @@ class TaskCommand extends ContainerAwareCommand
         if ($task) {
             $action = $task->getAction();
 
+            if (!isset($action['service'])) {
+                $output->writeln('task service not identified');
+                return;
+            }
+
             if (!isset($action['command'])) {
                 $output->writeln('task action has no command');
                 return;
@@ -61,8 +66,8 @@ class TaskCommand extends ContainerAwareCommand
             }
 
             /** @var TaskInterface $taskService */
-            $taskService = $this->getContainer()->get('edgar_ez_site_builder.' . $action['command'] . '.task.service');
-            $result = $taskService->execute($action['parameters']);
+            $taskService = $this->getContainer()->get('edgar_ez_site_builder.' . $action['service'] . '.task.service');
+            $result = $taskService->execute($action['command'], $action['parameters']);
 
             if (!$result) {
                 $task->setLogs($task->getLogs());
@@ -72,7 +77,7 @@ class TaskCommand extends ContainerAwareCommand
                 $task->setStatus(self::STATUS_OK);
             }
 
-            $task->setExecutedAt(time());
+            $task->setExecutedAt(new \DateTime());
             $doctrineManager->persist($task);
             $doctrineManager->flush();
         } else {

@@ -3,16 +3,16 @@ YUI.add('edgarezsb-installview', function (Y) {
 
     Y.edgarEzSb.InstallView = Y.Base.create('edgarezsbInstallView', Y.eZ.ServerSideView, [], {
         events: {
-            '.edgarezsb-install-location': {
-                'tap': '_navigateToLocation'
-            }
+            '#edgarezsb_forms_install_install': {
+                'tap': '_submitFormn'
+            },
         },
 
         initializer: function () {
             this.containerTemplate = '<div class="ez-view-edgarezsbinstallview"/>';
         },
 
-        _navigateToLocation: function (e) {
+        _submitFormn: function (e) {
             var link = e.target;
 
             e.preventDefault();

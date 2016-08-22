@@ -7,7 +7,7 @@ interface TaskInterface
 {
     public function validateParameters($parameters);
 
-    public function execute($parameters);
+    public function execute($command, array $parameters);
 
     public function getMessage();
 }

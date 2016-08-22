@@ -2,26 +2,40 @@
 
 namespace EdgarEz\SiteBuilderBundle\Controller;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use EdgarEz\SiteBuilderBundle\Command\TaskCommand;
+use EdgarEz\SiteBuilderBundle\Data\Install\InstallData;
+use EdgarEz\SiteBuilderBundle\Data\Mapper\InstallMapper;
+use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
 use EdgarEz\SiteBuilderBundle\Form\Type\InstallType;
-use EzSystems\PlatformUIBundle\Controller\Controller as BaseController;
+use EdgarEz\SiteBuilderBundle\Values\Content\Install;
+use eZ\Publish\Core\MVC\Symfony\Security\User;
+use EzSystems\PlatformUIBundle\Controller\Controller;
+use EzSystems\RepositoryForms\Form\ActionDispatcher\ActionDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-class SbController extends BaseController
+class SbController extends Controller
 {
     protected $tabItems;
 
-    public function __construct($tabItems)
+    /**
+     * @var ActionDispatcherInterface
+     */
+    private $actionDispatcher;
+
+    public function __construct(ActionDispatcherInterface $actionDispatcher, $tabItems)
     {
         $this->tabItems = $tabItems;
+        $this->actionDispatcher = $actionDispatcher;
     }
 
-    public function dashboardAction()
+    public function sbAction()
     {
         $installed = $this->container->hasParameter('edgar_ez_site_builder.installed') ? $this->container->getParameter('edgar_ez_site_builder.installed') : false;
         $tabItems = $this->tabItems;
 
         if (!$installed) {
-            $tabItems = array($tabItems[0]);
+            $tabItems = array($tabItems[0], $tabItems[1]);
         } else {
             unset($tabItems[0]);
         }
@@ -43,7 +57,6 @@ class SbController extends BaseController
                 break;
             default:
                 break;
-
         }
 
         return $this->render('EdgarEzSiteBuilderBundle:sb:tab/' . $tabItem . '.html.twig', [
@@ -54,12 +67,47 @@ class SbController extends BaseController
         ]);
     }
 
-    public function tabInstallAction()
-    {
-    }
-
     public function postInstallAction(Request $request)
     {
-        return $this->redirectToRouteAfterFormPost('edgarezsb_dashboard');
+        $install = new Install([
+            'vendorName' => 'Foo'
+        ]);
+        $installData = (new InstallMapper())->mapToFormData($install);
+
+        $form = $this->createForm(new InstallType(), $installData);
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            /** @var InstallData $data */
+            $data = $form->getData();
+
+            /** @var Registry $dcotrineRegistry */
+            $doctrineRegistry = $this->get('doctrine');
+            $doctrineManager = $doctrineRegistry->getManager();
+
+            $action = array(
+                'service' => 'project',
+                'command' => 'install',
+                'parameters' => array(
+                    'vendorName' => $data->vendorName
+                )
+            );
+            $task = new SiteBuilderTask();
+            $task->setAction($action);
+            $task->setStatus(TaskCommand::STATUS_SUBMITTED);
+            $task->setPostedAt(new \DateTime());
+
+            /** @var User $user */
+            $user = $this->getUser();
+            $task->setUserID($user->getAPIUser()->getUserId());
+
+            $doctrineManager->persist($task);
+            $doctrineManager->flush();
+
+            return $this->redirectAfterFormPost('edgarezsb_dashboard');
+        }
+
+        return $this->render('EdgarEzSiteBuilderBundle:sb:tab/install.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }
