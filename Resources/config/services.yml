@@ -66,6 +66,7 @@ services:
         arguments:
             - @filesystem
             - @kernel
+            - @ezpublish.api.service.location
             - @edgar_ez_site_builder.install.service
             - %kernel.root_dir%
 

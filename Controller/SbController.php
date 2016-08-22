@@ -13,6 +13,7 @@ use eZ\Publish\Core\MVC\Symfony\Security\User;
 use EzSystems\PlatformUIBundle\Controller\Controller;
 use EzSystems\RepositoryForms\Form\ActionDispatcher\ActionDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Acl\Exception\Exception;
 
 class SbController extends Controller
 {
@@ -80,28 +81,38 @@ class SbController extends Controller
             /** @var InstallData $data */
             $data = $form->getData();
 
+            $action = array(
+                'service'    => 'project',
+                'command'    => 'install',
+                'parameters' => array(
+                    'vendorName'        => $data->vendorName,
+                    'contentLocationID' => 2,
+                    'mediaLocationID'   => 43,
+                    'userLocationID'    => 5,
+                )
+            );
+
             /** @var Registry $dcotrineRegistry */
             $doctrineRegistry = $this->get('doctrine');
             $doctrineManager = $doctrineRegistry->getManager();
 
-            $action = array(
-                'service' => 'project',
-                'command' => 'install',
-                'parameters' => array(
-                    'vendorName' => $data->vendorName
-                )
-            );
             $task = new SiteBuilderTask();
-            $task->setAction($action);
-            $task->setStatus(TaskCommand::STATUS_SUBMITTED);
-            $task->setPostedAt(new \DateTime());
 
-            /** @var User $user */
-            $user = $this->getUser();
-            $task->setUserID($user->getAPIUser()->getUserId());
+            try {
+                $task->setAction($action);
+                $task->setStatus(TaskCommand::STATUS_SUBMITTED);
+                $task->setPostedAt(new \DateTime());
+            } catch (Exception $e) {
+                $task->setLogs('Fail to initialize task');
+                $task->setStatus(TaskCommand::STATUS_FAIL);
+            } finally {
+                /** @var User $user */
+                $user = $this->getUser();
+                $task->setUserID($user->getAPIUser()->getUserId());
 
-            $doctrineManager->persist($task);
-            $doctrineManager->flush();
+                $doctrineManager->persist($task);
+                $doctrineManager->flush();
+            }
 
             return $this->redirectAfterFormPost('edgarezsb_dashboard');
         }

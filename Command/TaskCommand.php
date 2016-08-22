@@ -4,6 +4,7 @@ namespace EdgarEz\SiteBuilderBundle\Command;
 
 use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
 use EdgarEz\SiteBuilderBundle\Service\Task\TaskInterface;
+use eZ\Publish\API\Repository\Repository;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -67,21 +68,22 @@ class TaskCommand extends ContainerAwareCommand
 
             /** @var TaskInterface $taskService */
             $taskService = $this->getContainer()->get('edgar_ez_site_builder.' . $action['service'] . '.task.service');
-            $result = $taskService->execute($action['command'], $action['parameters']);
+            try {
+                $userID = $task->getUserID();
+                /** @var Repository $repository */
+                $repository = $this->getContainer()->get('ezpublish.api.repository');
+                $repository->setCurrentUser($repository->getUserService()->loadUser($userID));
 
-            if (!$result) {
-                $task->setLogs($task->getLogs());
-                $output->writeln('<error>error : ' . $taskService->getMessage().'</error>');
-                $task->setStatus(self::STATUS_FAIL);
-            } else {
+                $task->setExecutedAt(new \DateTime());
+                $taskService->execute($action['command'], $action['parameters']);
                 $task->setStatus(self::STATUS_OK);
+            } catch (\Exception $e) {
+                $task->setLogs($task->getLogs());
+                $task->setStatus(self::STATUS_FAIL);
             }
 
-            $task->setExecutedAt(new \DateTime());
             $doctrineManager->persist($task);
             $doctrineManager->flush();
-        } else {
-            $output->writeln('no task to execute');
         }
     }
 }
