@@ -75,10 +75,14 @@ class TaskCommand extends ContainerAwareCommand
                 $repository->setCurrentUser($repository->getUserService()->loadUser($userID));
 
                 $task->setExecutedAt(new \DateTime());
-                $taskService->execute($action['command'], $action['parameters']);
-                $task->setStatus(self::STATUS_OK);
+                if (!$taskService->execute($action['command'], $action['parameters'])) {
+                    $task->setLogs($taskService->getMessage());
+                    $task->setStatus(self::STATUS_FAIL);
+                } else {
+                    $task->setStatus(self::STATUS_OK);
+                }
             } catch (\Exception $e) {
-                $task->setLogs($task->getLogs());
+                $task->setLogs($taskService->getMessage());
                 $task->setStatus(self::STATUS_FAIL);
             }
 

@@ -5,7 +5,6 @@ namespace EdgarEz\SiteBuilderBundle\Service\Task;
 use EdgarEz\SiteBuilderBundle\Command\Validators;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\SiteBuilderBundle\Service\InstallService;
-use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\LocationService;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
@@ -59,8 +58,6 @@ class ProjectTaskService extends BaseTaskService implements TaskInterface
 
     /** @var InstallService $installService */
     protected $installService;
-
-    private $message;
 
     public function __construct(
         Filesystem $filesystem,
@@ -180,10 +177,5 @@ class ProjectTaskService extends BaseTaskService implements TaskInterface
         }
 
         return true;
-    }
-
-    public function getMessage()
-    {
-        return $this->message;
     }
 }

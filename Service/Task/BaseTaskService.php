@@ -7,6 +7,8 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 abstract class BaseTaskService
 {
+    protected $message;
+
     protected function updateKernel(
         KernelInterface $kernel,
         $namespace,
@@ -28,5 +30,10 @@ abstract class BaseTaskService
                 '',
             );
         }
+    }
+
+    public function getMessage()
+    {
+        return $this->message;
     }
 }
