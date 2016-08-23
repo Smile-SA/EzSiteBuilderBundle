@@ -1,0 +1,22 @@
+{
+  "name": "edgarez/sitebuilderbundle",
+  "description": "SiteBuilder Bundle",
+  "license": "GPL-2.0",
+  "authors": [
+    {
+      "name": "Emmanuel Drouet",
+      "homepage": "http://emmanuel-drouet.me"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.3.3",
+    "doctrine/orm": "^2.5",
+    "jms/translation-bundle": "^1.3",
+    "edgarez/toolsbundle": "^1.0"
+  },
+  "autoload": {
+    "psr-0": {"EdgarEz\\SiteBuilderBundle": ""}
+  },
+  "target-dir": "EdgarEz/SiteBuilderBundle"
+}
