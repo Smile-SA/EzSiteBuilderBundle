@@ -89,10 +89,36 @@ class CustomerCommand extends BaseContainerAwareCommand
         $this->askContentStructure($input, $output);
         $this->askUserCreator($input, $output);
 
-        $this->createContentStructure($output);
-        $this->createMediaContentStructure($output);
-        $this->createUserGroups($output);
-        $this->createRoles($output);
+        /** @var CustomerService $customerService */
+        $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
+
+        $basename = ProjectGenerator::MAIN;
+
+        $parentLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.customers_location_id');
+        $returnValue = $customerService->createContentStructure($parentLocationID, $this->customerName);
+        $this->customerLocationID = $returnValue['customerLocationID'];
+
+        $parentLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.media_customers_location_id');
+        $returnValue = $customerService->createMediaContentStructure($parentLocationID, $this->customerName);
+        $this->mediaCustomerLocationID = $returnValue['mediaCustomerLocationID'];
+
+        $parentCreatorLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.user_creators_location_id');
+        $parentEditorLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.user_editors_location_id');
+        $returnValue = $customerService->createUserGroups($parentCreatorLocationID, $parentEditorLocationID, $this->customerName);
+        $this->customerUserCreatorsGroupLocationID = $returnValue['customerUserCreatorsGroupLocationID'];
+        $this->customerUserEditorsGroupLocationID = $returnValue['customerUserEditorsGroupLocationID'];
+
+        $returnValue = $customerService->createRoles(
+            $this->customerName,
+            $this->customerLocationID,
+            $this->mediaCustomerLocationID,
+            $this->customerUserCreatorsGroupLocationID,
+            $this->customerUserEditorsGroupLocationID
+        );
+        $this->customerRoleCreatorID = $returnValue['customerRoleCreatorID'];
+        $this->customerRoleEditorID = $returnValue['customerRoleEditorID'];
+
+
         $this->initializeUserCreator($output);
 
         /** @var CustomerGenerator $generator */
@@ -144,89 +170,6 @@ class CustomerCommand extends BaseContainerAwareCommand
         }
 
         $this->customerName = $customerName;
-    }
-
-    /**
-     * Create customer content structure
-     *
-     * @param OutputInterface $output output console
-     */
-    protected function createContentStructure(OutputInterface $output)
-    {
-        $basename = ProjectGenerator::MAIN;
-
-        /** @var CustomerService $customerService */
-        $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
-
-        $parentLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.customers_location_id');
-        $contentAdded = $customerService->createContentStructure($parentLocationID, $this->customerName);
-        $output->writeln('Content Structure created');
-
-        $this->customerLocationID = $contentAdded->contentInfo->mainLocationId;
-    }
-
-    /**
-     * Create media customer root content
-     *
-     * @param OutputInterface $output output console
-     */
-    protected function createMediaContentStructure(OutputInterface $output)
-    {
-        $basename = ProjectGenerator::MAIN;
-
-        /** @var CustomerService $customerService */
-        $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
-
-        $parentLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.media_customers_location_id');
-        $contentAdded = $customerService->createMediaContentStructure($parentLocationID, $this->customerName);
-        $output->writeln('Media Content Structure created');
-
-        $this->mediaCustomerLocationID = $contentAdded->contentInfo->mainLocationId;
-    }
-
-    /**
-     * Create customer user groups (creator and editor)
-     *
-     * @param OutputInterface $output output console
-     */
-    protected function createUserGroups(OutputInterface $output)
-    {
-        $basename = ProjectGenerator::MAIN;
-
-        /** @var CustomerService $customerService */
-        $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
-
-        $parentCreatorLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.user_creators_location_id');
-        $parentEditorLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.user_editors_location_id');
-        $contents = $customerService->createUserGroups($parentCreatorLocationID, $parentEditorLocationID, $this->customerName);
-        $output->writeln('User groups created');
-
-        $this->customerUserCreatorsGroupLocationID = $contents['customerUserCreatorsGroup']->contentInfo->mainLocationId;
-        $this->customerUserEditorsGroupLocationID = $contents['customerUserEditorsGroup']->contentInfo->mainLocationId;
-    }
-
-    /**
-     * Create customer creator/editor roles
-     *
-     * @param OutputInterface $output output console
-     */
-    protected function createRoles(OutputInterface $output)
-    {
-        /** @var CustomerService $customerService */
-        $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
-
-        /** @var Role[] $roles */
-        $roles = $customerService->createRoles(
-            $this->customerName,
-            $this->customerLocationID,
-            $this->mediaCustomerLocationID,
-            $this->customerUserCreatorsGroupLocationID,
-            $this->customerUserEditorsGroupLocationID
-        );
-
-        $this->customerRoleCreatorID = $roles['roleCreator']->id;
-        $this->customerRoleEditorID = $roles['roleEditor']->id;
-        $output->writeln('Roles created');
     }
 
     /**

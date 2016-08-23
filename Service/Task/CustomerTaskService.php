@@ -17,11 +17,17 @@ class CustomerTaskService implements TaskInterface
 
     public function execute($command, array $parameters)
     {
-        try {
-            $this->validateParameters($parameters);
-        } catch (\Exception $e) {
-            $this->message = $e->getMessage();
-            return false;
+        switch ($command) {
+            case 'generate':
+                try {
+                    $this->validateParameters($parameters);
+                } catch (\Exception $e) {
+                    $this->message = $e->getMessage();
+                    return false;
+                }
+                break;
+            default:
+                break;
         }
 
         return true;
