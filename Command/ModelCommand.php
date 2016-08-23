@@ -68,8 +68,19 @@ class ModelCommand extends BaseContainerAwareCommand
 
         $this->askModelContent($input, $output);
 
-        $this->createModelContent($output);
-        $this->createMediaModelContent($output);
+        /** @var ModelService $modelService */
+        $modelService = $this->getContainer()->get('edgar_ez_site_builder.model.service');
+
+        $basename = ProjectGenerator::MAIN ;
+
+        $modelsLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.models_location_id');
+        $returnValue = $modelService->createModelContent($modelsLocationID, $this->modelName);
+        $this->excludeUriPrefixes = $returnValue['excludeUriPrefixes'];
+        $this->modelLocationID = $returnValue['modelLocationID'];
+
+        $mediaModelsLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.media_models_location_id');
+        $returnValue = $modelService->createMediaModelContent($mediaModelsLocationID, $this->modelName);
+        $this->mediaModelLocationID = $returnValue['mediaModelLocationID'];
 
         /** @var ModelGenerator $generator */
         $generator = $this->getGenerator();
@@ -118,40 +129,6 @@ class ModelCommand extends BaseContainerAwareCommand
         }
 
         $this->modelName = $modelName;
-    }
-
-    /**
-     * Create model content structure
-     *
-     * @param OutputInterface $output output console
-     */
-    protected function createModelContent(OutputInterface $output)
-    {
-        $basename = ProjectGenerator::MAIN ;
-
-        /** @var ModelService $modelService */
-        $modelService = $this->getContainer()->get('edgar_ez_site_builder.model.service');
-        $modelsLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.models_location_id');
-
-        $content = $modelService->createModelContent($modelsLocationID, $this->modelName);
-        $this->excludeUriPrefixes = $content['excludeUriPrefixes'];
-        $this->modelLocationID = $content['modelLocationID'];
-    }
-
-    /**
-     * Create media model content structure
-     *
-     * @param OutputInterface $output output console
-     */
-    protected function createMediaModelContent(OutputInterface $output)
-    {
-        $basename = ProjectGenerator::MAIN;
-
-        /** @var ModelService $modelService */
-        $modelService = $this->getContainer()->get('edgar_ez_site_builder.model.service');
-        $mediaModelsLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.media_models_location_id');
-
-        $this->mediaModelLocationID = $modelService->createMediaModelContent($mediaModelsLocationID, $this->modelName);
     }
 
     /**

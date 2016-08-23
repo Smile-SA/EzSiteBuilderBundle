@@ -75,47 +75,6 @@ class ModelService
     }
 
     /**
-     * Create model content
-     *
-     * @param int $modelsLocationID model root contentlocation ID
-     * @param string $modelName model name
-     * @return array model content location ID and path prefix
-     */
-    public function createModelContent($modelsLocationID, $modelName)
-    {
-        $returnValue = array();
-
-        $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/modelcontent.yml')));
-        $contentDefinition['parentLocationID'] = $modelsLocationID;
-        $contentDefinition['fields']['title']['value'] = $modelName;
-        $contentAdded = $this->content->add($contentDefinition);
-
-        $contentLocation = $this->locationService->loadLocation($contentAdded->contentInfo->mainLocationId);
-        $contentPath = $this->urlAliasService->reverseLookup($contentLocation, $contentAdded->contentInfo->mainLanguageCode)->path;
-        $returnValue['excludeUriPrefixes'] = trim($contentPath, '/') . '/';
-        $returnValue['modelLocationID'] = $contentAdded->contentInfo->mainLocationId;
-
-        return $returnValue;
-    }
-
-    /**
-     * Create model media content
-     *
-     * @param int $mediaModelsLocationID model media root location ID
-     * @param string $modelName model name
-     * @return mixed model media content location ID
-     */
-    public function createMediaModelContent($mediaModelsLocationID, $modelName)
-    {
-        $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediamodelcontent.yml')));
-        $contentDefinition['parentLocationID'] = $mediaModelsLocationID;
-        $contentDefinition['fields']['title']['value'] = $modelName;
-        $contentAdded = $this->content->add($contentDefinition);
-
-        return $contentAdded->contentInfo->mainLocationId;
-    }
-
-    /**
      * Add siteaccess limitation to user/login policy
      *
      * @param string $modelName model name
@@ -126,8 +85,8 @@ class ModelService
 
         $siteaccessGroups = array_keys($this->siteaccessGroups);
         foreach ($siteaccessGroups as $sg) {
-            if (strpos($sg, 'edgarezsb_customer_') === 0) {
-                $customers[] = substr($sg, strlen('edgarezsb_customer_'));
+            if (strpos($sg, 'edgarezsb_cutomers_') === 0) {
+                $customers[] = substr($sg, strlen('edgarezsb_cutomers_'));
             }
         }
 
@@ -156,5 +115,34 @@ class ModelService
             }
             $this->role->addSiteaccessLimitation($roleCreator, $siteaccess);
         }
+    }
+
+    public function createModelContent($modelsLocationID, $modelName)
+    {
+        $returnValue = array();
+
+        $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/modelcontent.yml')));
+        $contentDefinition['parentLocationID'] = $modelsLocationID;
+        $contentDefinition['fields']['title']['value'] = $modelName;
+        $contentAdded = $this->content->add($contentDefinition);
+
+        $contentLocation = $this->locationService->loadLocation($contentAdded->contentInfo->mainLocationId);
+        $contentPath = $this->urlAliasService->reverseLookup($contentLocation, $contentAdded->contentInfo->mainLanguageCode)->path;
+        $returnValue['excludeUriPrefixes'] = trim($contentPath, '/') . '/';
+        $returnValue['modelLocationID'] = $contentAdded->contentInfo->mainLocationId;
+
+        return $returnValue;
+    }
+
+    public function createMediaModelContent($mediaModelsLocationID, $modelName)
+    {
+        $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediamodelcontent.yml')));
+        $contentDefinition['parentLocationID'] = $mediaModelsLocationID;
+        $contentDefinition['fields']['title']['value'] = $modelName;
+        $contentAdded = $this->content->add($contentDefinition);
+
+        return array(
+            'mediaModelLocationID' => $contentAdded->contentInfo->mainLocationId
+        );
     }
 }

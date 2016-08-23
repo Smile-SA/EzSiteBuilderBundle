@@ -50,7 +50,9 @@ class ModelPolicyCommand extends BaseContainerAwareCommand
 
         $this->askModelName($input, $output);
 
-        $this->addSiteaccessLimitation($this->modelName);
+        /** @var ModelService $modelService */
+        $modelService = $this->getContainer()->get('edgar_ez_site_builder.model.service');
+        $modelService->addSiteaccessLimitation(Container::underscore($this->vendorName . $this->modelName));
 
         $output->writeln(array(
             '',
@@ -89,19 +91,6 @@ class ModelPolicyCommand extends BaseContainerAwareCommand
         }
 
         $this->modelName = $modelName;
-    }
-
-    /**
-     * Add siteaccess limitation to user/login foreach user creator roles
-     *
-     * @param string $modelName model name
-     */
-    protected function addSiteaccessLimitation($modelName)
-    {
-        /** @var ModelService $modelService */
-        $modelService = $this->getContainer()->get('edgar_ez_site_builder.model.service');
-
-        $modelService->addSiteaccessLimitation(Container::underscore($this->vendorName . $modelName));
     }
 
     /**
