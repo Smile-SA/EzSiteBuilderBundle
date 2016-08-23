@@ -51,6 +51,7 @@ services:
             - @edgar_ez_tools.content.service
             - @edgar_ez_tools.role.service
             - %ezpublish.siteaccess.groups%
+            - %edgar_ez_site_builder.customer%
             - @service_container
 
     edgar_ez_site_builder.site.service:

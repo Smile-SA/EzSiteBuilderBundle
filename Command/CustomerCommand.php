@@ -7,7 +7,6 @@ use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\SiteBuilderBundle\Mail\Sender;
 use EdgarEz\SiteBuilderBundle\Service\CustomerService;
 use eZ\Publish\API\Repository\Repository;
-use eZ\Publish\API\Repository\Values\User\Role;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
@@ -117,7 +116,6 @@ class CustomerCommand extends BaseContainerAwareCommand
         );
         $this->customerRoleCreatorID = $returnValue['customerRoleCreatorID'];
         $this->customerRoleEditorID = $returnValue['customerRoleEditorID'];
-
 
         $this->initializeUserCreator($output);
 

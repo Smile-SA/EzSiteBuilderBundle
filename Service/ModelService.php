@@ -39,6 +39,9 @@ class ModelService
     /** @var array $siteaccessGroups ezpublish siteaccess groups */
     private $siteaccessGroups;
 
+    /** @var array $customers */
+    private $customers;
+
     /** @var ContainerInterface $container */
     private $container;
 
@@ -61,6 +64,7 @@ class ModelService
         Content $content,
         \EdgarEz\ToolsBundle\Service\Role $role,
         array $siteaccessGroups,
+        array $customers,
         ContainerInterface $container
     )
     {
@@ -70,6 +74,7 @@ class ModelService
         $this->roleService = $roleService;
         $this->content = $content;
         $this->siteaccessGroups = $siteaccessGroups;
+        $this->customers = $customers;
         $this->role = $role;
         $this->container = $container;
     }
@@ -81,17 +86,8 @@ class ModelService
      */
     public function addSiteaccessLimitation($modelName)
     {
-        $customers = array();
-
-        $siteaccessGroups = array_keys($this->siteaccessGroups);
-        foreach ($siteaccessGroups as $sg) {
-            if (strpos($sg, 'edgarezsb_cutomers_') === 0) {
-                $customers[] = substr($sg, strlen('edgarezsb_cutomers_'));
-            }
-        }
-
         $rolesCreator = array();
-        foreach ($customers as $customer) {
+        foreach ($this->customers as $customer) {
             $parameter = 'edgarez_sb.customer.customers_' . $customer . '_sites.default.customer_user_creator_role_id';
             $roleCreatorID = $this->container->getParameter($parameter);
             $rolesCreator[] = $this->roleService->loadRole($roleCreatorID);
@@ -107,7 +103,12 @@ class ModelService
                     $limitations = $policy->getLimitations();
                     foreach ($limitations as $limitation) {
                         if ($limitation->getIdentifier() == Limitation::SITEACCESS) {
-                            $siteaccess = $limitation->limitationValues;
+                            $siteaccessLogin = $limitation->limitationValues;
+                            foreach ($siteaccessLogin as $s) {
+                                if (!empty($s)) {
+                                    $siteaccess[] = $s;
+                                }
+                            }
                             $siteaccess[] = sprintf('%u', crc32($modelName));
                         }
                     }

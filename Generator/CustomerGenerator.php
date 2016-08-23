@@ -6,6 +6,7 @@ use Sensio\Bundle\GeneratorBundle\Generator\Generator;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class CustomerGenerator
@@ -102,6 +103,13 @@ class CustomerGenerator extends Generator
         $this->renderFile('customer/Extension.php.twig', $dir . '/DependencyInjection/' . $vendorName . $basename . 'Extension.php', $parameters);
         $this->renderFile('customer/Configuration.php.twig', $dir . '/DependencyInjection/Configuration.php', $parameters);
         $this->renderFile('customer/default_settings.yml.twig', $dir . '/Resources/config/default_settings.yml', $parameters);
+
+        $configFile = $targetDir . '/' . $vendorName . '/ProjectBundle/Resources/config/edgarezsb.yml';
+        $edgarezYaml = Yaml::parse(file_get_contents($configFile));
+        $customers = $edgarezYaml['parameters']['edgar_ez_site_builder.customer'];
+        $customers[] = strtolower($customerName);
+        $edgarezYaml['parameters']['edgar_ez_site_builder.customer'] = $customers;
+        file_put_contents($configFile, Yaml::dump($edgarezYaml));
 
         $this->filesystem->mkdir($targetDir . '/' . $vendorName . '/' . ProjectGenerator::CUSTOMERS . '/' . $customerName . '/' . self::SITES);
     }
