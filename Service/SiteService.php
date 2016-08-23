@@ -76,13 +76,15 @@ class SiteService
      * @param int $mediaModelLocationID media model content root location ID
      * @param int $mediaCustomerLocationID media customer content root location ID
      * @param string $siteName site name
-     * @return int site media root location ID
+     * @return array site media root location ID
      */
-     public function createMediaSiteContent($mediaModelLocationID,$mediaCustomerLocationID, $siteName)
+     public function createMediaSiteContent($mediaCustomerLocationID, $mediaModelLocationID, $siteName)
     {
         $mediaSiteLocationID = $this->content->copySubtree($mediaModelLocationID, $mediaCustomerLocationID, $siteName);
 
-        return $mediaSiteLocationID;
+        return array(
+            'mediaSiteLocationID' => $mediaSiteLocationID
+        );
     }
 
     /**
@@ -90,7 +92,7 @@ class SiteService
      *
      * @param \eZ\Publish\API\Repository\Values\User\Role $roleCreator eZ Role for user creator
      * @param \eZ\Publish\API\Repository\Values\User\Role $roleEditor eZ Role for user editor
-     * @param $siteaccessName siteaccess name
+     * @param string $siteaccessName siteaccess name
      */
     public function addSiteaccessLimitation(
         \eZ\Publish\API\Repository\Values\User\Role $roleCreator,
@@ -105,7 +107,12 @@ class SiteService
                 $limitations = $policy->getLimitations();
                 foreach ($limitations as $limitation) {
                     if ($limitation->getIdentifier() == Limitation::SITEACCESS) {
-                        $siteaccess = $limitation->limitationValues;
+                        $siteaccessLogin = $limitation->limitationValues;
+                        foreach ($siteaccessLogin as $s) {
+                            if (!empty($s)) {
+                                $siteaccess[] = $s;
+                            }
+                        }
                         $siteaccess[] = sprintf('%u', crc32($siteaccessName));
                     }
                 }
@@ -120,7 +127,12 @@ class SiteService
                 $limitations = $policy->getLimitations();
                 foreach ($limitations as $limitation) {
                     if ($limitation->getIdentifier() == Limitation::SITEACCESS) {
-                        $siteaccess = $limitation->limitationValues;
+                        $siteaccessLogin = $limitation->limitationValues;
+                        foreach ($siteaccessLogin as $s) {
+                            if (!empty($s)) {
+                                $siteaccess[] = $s;
+                            }
+                        }
                         $siteaccess[] = sprintf('%u', crc32($siteaccessName));
                     }
                 }

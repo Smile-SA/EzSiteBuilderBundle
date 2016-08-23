@@ -99,17 +99,15 @@ class SiteCommand extends BaseContainerAwareCommand
         $mediaLocationIDs = $this->askMediaSiteContent($input, $output);
         $this->askSiteaccessMapping($input, $output);
 
-        $this->createSiteContent(
-            $output,
-            $contentLocationIDs['customerLocationID'],
-            $contentLocationIDs['modelLocationID']
-        );
+        /** @var SiteService $siteSerice */
+        $siteSerice = $this->getContainer()->get('edgar_ez_site_builder.site.service');
 
-        $this->createMediaSiteContent(
-            $output,
-            $mediaLocationIDs['mediaCustomerLocationID'],
-            $mediaLocationIDs['mediaModelLocationID']
-        );
+        $returnValue = $siteSerice->createSiteContent($contentLocationIDs['customerLocationID'], $contentLocationIDs['modelLocationID'], $this->siteName);
+        $this->siteLocationID = $returnValue['siteLocationID'];
+        $this->excludeUriPrefixes = $returnValue['excludeUriPrefixes'];
+
+        $returnValue = $siteSerice->createMediaSiteContent($mediaLocationIDs['mediaCustomerLocationID'], $mediaLocationIDs['mediaModelLocationID'], $this->siteName);
+        $this->mediaSiteLocationID = $returnValue['mediaSiteLocationID'];
 
         /** @var SiteGenerator $generator */
         $generator = $this->getGenerator();
@@ -326,21 +324,6 @@ class SiteCommand extends BaseContainerAwareCommand
             'mediaCustomerLocationID' => $mediaCustomerLocationID,
             'mediaModelLocationID' => $mediaModelLocationID
         );
-    }
-
-    /**
-     * Create new media site structure
-     *
-     * @param OutputInterface $output output console
-     * @param int $mediaCustomerLocationID customer media root location ID
-     * @param int $mediaModelLocationID model media root location ID
-     */
-    protected function createMediaSiteContent(OutputInterface $output, $mediaCustomerLocationID, $mediaModelLocationID)
-    {
-        /** @var SiteService $siteSerice */
-        $siteSerice = $this->getContainer()->get('edgar_ez_site_builder.site.service');
-
-        $this->mediaSiteLocationID = $siteSerice->createMediaSiteContent($mediaModelLocationID, $mediaCustomerLocationID, $this->siteName);
     }
 
     /**
