@@ -39,9 +39,6 @@ class ModelService
     /** @var array $siteaccessGroups ezpublish siteaccess groups */
     private $siteaccessGroups;
 
-    /** @var array $customers */
-    private $customers;
-
     /** @var ContainerInterface $container */
     private $container;
 
@@ -64,7 +61,6 @@ class ModelService
         Content $content,
         \EdgarEz\ToolsBundle\Service\Role $role,
         array $siteaccessGroups,
-        array $customers,
         ContainerInterface $container
     )
     {
@@ -74,7 +70,6 @@ class ModelService
         $this->roleService = $roleService;
         $this->content = $content;
         $this->siteaccessGroups = $siteaccessGroups;
-        $this->customers = $customers;
         $this->role = $role;
         $this->container = $container;
     }
@@ -84,7 +79,7 @@ class ModelService
      *
      * @param string $modelName model name
      */
-    public function addSiteaccessLimitation($modelName)
+    public function addSiteaccessLimitation($modelName, array $customers)
     {
         $rolesCreator = array();
         foreach ($this->customers as $customer) {

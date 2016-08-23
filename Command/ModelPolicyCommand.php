@@ -52,7 +52,8 @@ class ModelPolicyCommand extends BaseContainerAwareCommand
 
         /** @var ModelService $modelService */
         $modelService = $this->getContainer()->get('edgar_ez_site_builder.model.service');
-        $modelService->addSiteaccessLimitation(Container::underscore($this->vendorName . $this->modelName));
+        $customers = $this->getContainer()->getParameter('edgar_ez_site_builder.customer');
+        $modelService->addSiteaccessLimitation(Container::underscore($this->vendorName . $this->modelName), $customers);
 
         $output->writeln(array(
             '',
