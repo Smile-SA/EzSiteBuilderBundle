@@ -11,7 +11,6 @@ use EdgarEz\SiteBuilderBundle\Form\Type\InstallType;
 use EdgarEz\SiteBuilderBundle\Values\Content\Install;
 use eZ\Publish\Core\MVC\Symfony\Security\User;
 use EzSystems\PlatformUIBundle\Controller\Controller;
-use EzSystems\RepositoryForms\Form\ActionDispatcher\ActionDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Acl\Exception\Exception;
 

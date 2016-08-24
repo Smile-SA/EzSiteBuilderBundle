@@ -10,6 +10,32 @@
 composer require edgarez/sitebuilderbundle
 ```
 
+### Ajout dépendance bundles
+
+Ajouter dans le fichier AppKernel.php
+
+```php
+class AppKernel extends Kernel
+{
+    public function registerBundles()
+    {
+        $bundles = array(
+            ...
+            new JMS\TranslationBundle\JMSTranslationBundle(),
+            new EdgarEz\ToolsBundle\EdgarEzToolsBundle(),
+            new EdgarEz\SiteBuilderBundle\EdgarEzSiteBuilderBundle()
+```
+
+### Ajout support Doctrine ORM
+
+Ajouter dans la configuration globale app/config/ezplatform.yml
+
+```yaml
+doctrine:
+    orm:
+        auto_mapping: true
+```
+
 ### Mise à jour des données
 
 ```console
@@ -24,17 +50,6 @@ Ajouter dans la configuration globale app/config/routing.yml
 edgarezsb_dashboard:
     resource: '@EdgarEzSiteBuilderBundle/Resources/config/routing.yml'
 ```
-
-### Ajout support Doctrine ORM
-
-Ajouter dans la configuration globale app/config/ezplatform.yml
-
-```yaml
-doctrine:
-    orm:
-        auto_mapping: true
-```
-
 
 ### Redéfinir les assets
 
