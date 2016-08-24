@@ -50,7 +50,6 @@ services:
             - @ezpublish.api.service.role
             - @edgar_ez_tools.content.service
             - @edgar_ez_tools.role.service
-            - %ezpublish.siteaccess.groups%
             - @service_container
 
     edgar_ez_site_builder.site.service:
@@ -91,6 +90,5 @@ services:
     edgar_ez_site_builder.controller.sb:
         class: %edgar_ez_site_builder.controller.sb.class%
         arguments:
-            - @ezrepoforms.action_dispatcher.install
             - %edgar_ez_site_builder.tabs%
         parent: ezsystems.platformui.controller.base

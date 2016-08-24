@@ -13,3 +13,4 @@ class Install extends ValueObject
 {
     protected $vendorName;
 }
+

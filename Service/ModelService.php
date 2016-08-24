@@ -36,9 +36,6 @@ class ModelService
     /** @var \EdgarEz\ToolsBundle\Service\Role EdgarEz Role Service */
     private $role;
 
-    /** @var array $siteaccessGroups ezpublish siteaccess groups */
-    private $siteaccessGroups;
-
     /** @var ContainerInterface $container */
     private $container;
 
@@ -60,7 +57,6 @@ class ModelService
         RoleService $roleService,
         Content $content,
         \EdgarEz\ToolsBundle\Service\Role $role,
-        array $siteaccessGroups,
         ContainerInterface $container
     )
     {
@@ -69,7 +65,6 @@ class ModelService
         $this->locationService = $locationService;
         $this->roleService = $roleService;
         $this->content = $content;
-        $this->siteaccessGroups = $siteaccessGroups;
         $this->role = $role;
         $this->container = $container;
     }
@@ -78,11 +73,12 @@ class ModelService
      * Add siteaccess limitation to user/login policy
      *
      * @param string $modelName model name
+     * @param array $customers customers name list
      */
     public function addSiteaccessLimitation($modelName, array $customers)
     {
         $rolesCreator = array();
-        foreach ($this->customers as $customer) {
+        foreach ($customers as $customer) {
             $parameter = 'edgarez_sb.customer.customers_' . $customer . '_sites.default.customer_user_creator_role_id';
             $roleCreatorID = $this->container->getParameter($parameter);
             $rolesCreator[] = $this->roleService->loadRole($roleCreatorID);
@@ -114,11 +110,10 @@ class ModelService
     }
 
     /**
-     * Create model content structure
      *
-     * @param int $modelsLocationID model root content location ID
-     * @param string $modelName model name
-     * @return array siteaccess path prefix and model root content location ID
+     * @param $modelsLocationID
+     * @param $modelName
+     * @return array
      */
     public function createModelContent($modelsLocationID, $modelName)
     {
@@ -137,13 +132,6 @@ class ModelService
         return $returnValue;
     }
 
-    /**
-     * Create model media structure
-     *
-     * @param int $mediaModelsLocationID model root media location ID
-     * @param string $modelName model name
-     * @return array model root media location ID
-     */
     public function createMediaModelContent($mediaModelsLocationID, $modelName)
     {
         $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediamodelcontent.yml')));

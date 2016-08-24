@@ -56,3 +56,4 @@ abstract class BaseTaskService
         return $this->message;
     }
 }
+

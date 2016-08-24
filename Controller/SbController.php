@@ -19,15 +19,9 @@ class SbController extends Controller
 {
     protected $tabItems;
 
-    /**
-     * @var ActionDispatcherInterface
-     */
-    private $actionDispatcher;
-
-    public function __construct(ActionDispatcherInterface $actionDispatcher, $tabItems)
+    public function __construct($tabItems)
     {
         $this->tabItems = $tabItems;
-        $this->actionDispatcher = $actionDispatcher;
     }
 
     public function sbAction()

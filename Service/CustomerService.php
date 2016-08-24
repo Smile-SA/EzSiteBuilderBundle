@@ -185,8 +185,6 @@ class CustomerService
         $customerUserEditorsGroupLocationID
     )
     {
-        $returnValue = array();
-
         /** @var \eZ\Publish\API\Repository\Values\User\Role $roleCreator */
         $roleCreator = $this->role->add('SiteBuilder ' . $customerName . ' creator');
 
