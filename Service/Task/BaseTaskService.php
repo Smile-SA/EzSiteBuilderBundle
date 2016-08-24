@@ -5,10 +5,24 @@ namespace EdgarEz\SiteBuilderBundle\Service\Task;
 use Sensio\Bundle\GeneratorBundle\Manipulator\KernelManipulator;
 use Symfony\Component\HttpKernel\KernelInterface;
 
+/**
+ * Class BaseTaskService
+ *
+ * @package EdgarEz\SiteBuilderBundle\Service\Task
+ */
 abstract class BaseTaskService
 {
+    /** @var string $message task logs  */
     protected $message;
 
+    /**
+     * Update Symfony Kernel with new Bundle generated
+     *
+     * @param KernelInterface $kernel symfony kernel interface
+     * @param string $namespace bundle namespace
+     * @param string $bundle bundle name
+     * @return array
+     */
     protected function updateKernel(
         KernelInterface $kernel,
         $namespace,
@@ -32,6 +46,11 @@ abstract class BaseTaskService
         }
     }
 
+    /**
+     * Return task logs
+     *
+     * @return string task logs
+     */
     public function getMessage()
     {
         return $this->message;

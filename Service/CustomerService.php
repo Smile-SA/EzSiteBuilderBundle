@@ -2,7 +2,6 @@
 
 namespace EdgarEz\SiteBuilderBundle\Service;
 
-use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\ToolsBundle\Service\Content;
 use EdgarEz\ToolsBundle\Service\Role;
 use eZ\Publish\API\Repository\ContentTypeService;
@@ -102,6 +101,13 @@ class CustomerService
         return $userPassword;
     }
 
+    /**
+     * Create Customer content structure
+     *
+     * @param int $parentLocationID root content location ID
+     * @param string $name customer name
+     * @return array customer content root location ID
+     */
     public function createContentStructure($parentLocationID, $name)
     {
         $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/customercontent.yml')));
@@ -114,6 +120,13 @@ class CustomerService
         );
     }
 
+    /**
+     * Create Customer media structure
+     *
+     * @param int $parentLocationID root media location ID
+     * @param string $name customer name
+     * @return array customer media root location ID
+     */
     public function createMediaContentStructure($parentLocationID, $name)
     {
         $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediacustomercontent.yml')));
@@ -126,6 +139,14 @@ class CustomerService
         );
     }
 
+    /**
+     * Create Customer user structure
+     *
+     * @param int $parentCreatorLocationID root user location ID for customer user group creator
+     * @param int $parentEditorLocationID root user location ID for customer user group editor
+     * @param string $name customer name
+     * @return array customer users root location IDs
+     */
     public function createUserGroups($parentCreatorLocationID, $parentEditorLocationID, $name)
     {
         $contents = array();
@@ -146,6 +167,16 @@ class CustomerService
         );
     }
 
+    /**
+     * Initialize customer roles for creators and editors
+     *
+     * @param string $customerName customer name
+     * @param int $customerLocationID customer root content location ID
+     * @param int $mediaCustomerLocationID customer root media location ID
+     * @param int $customerUserCreatorsGroupLocationID customer root user group creator location ID
+     * @param int $customerUserEditorsGroupLocationID customer root user group editor location ID
+     * @return array customer user roles IDs
+     */
     public function createRoles(
         $customerName,
         $customerLocationID,

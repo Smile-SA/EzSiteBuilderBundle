@@ -5,6 +5,11 @@ namespace EdgarEz\SiteBuilderBundle\Mail;
 use Swift_Mailer;
 use Swift_Message;
 
+/**
+ * Class Sender
+ *
+ * @package EdgarEz\SiteBuilderBundle\Mail
+ */
 class Sender
 {
     /** @var Swift_Mailer */

@@ -23,6 +23,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 class InstallService
 {
+    /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentTypeGroup $ctg */
     protected $ctg;
 
     /** @var Kernel $kernel symfony kernel interface */
@@ -329,8 +330,8 @@ class InstallService
     /**
      * Create content structure
      *
-     * @param OutputInterface $output output console
      * @param int $parentLocationID content root location ID
+     * @return array models and customers content root location IDs
      */
     public function createContentStructure($parentLocationID)
     {
@@ -346,8 +347,8 @@ class InstallService
     /**
      * Create media structure
      *
-     * @param OutputInterface $output
      * @param int $parentLocationID media root location ID
+     * @return array models and customers media root location IDs
      */
     public function createMediaContentStructure($parentLocationID)
     {
@@ -363,8 +364,8 @@ class InstallService
     /**
      * Create user structure
      *
-     * @param OutputInterface $output output console
      * @param int $userGroupParenttLocationID user root location ID
+     * @return array global user group, creator/Editor user group location IDs
      */
     public function createUserStructure($userGroupParenttLocationID)
     {

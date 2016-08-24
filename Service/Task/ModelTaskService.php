@@ -2,7 +2,6 @@
 
 namespace EdgarEz\SiteBuilderBundle\Service\Task;
 
-
 class ModelTaskService implements TaskInterface
 {
     private $message;

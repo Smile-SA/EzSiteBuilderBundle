@@ -2,7 +2,6 @@
 
 namespace EdgarEz\SiteBuilderBundle\Generator;
 
-
 use Sensio\Bundle\GeneratorBundle\Generator\Generator;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Filesystem\Filesystem;

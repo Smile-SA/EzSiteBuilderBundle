@@ -113,6 +113,13 @@ class ModelService
         }
     }
 
+    /**
+     * Create model content structure
+     *
+     * @param int $modelsLocationID model root content location ID
+     * @param string $modelName model name
+     * @return array siteaccess path prefix and model root content location ID
+     */
     public function createModelContent($modelsLocationID, $modelName)
     {
         $returnValue = array();
@@ -130,6 +137,13 @@ class ModelService
         return $returnValue;
     }
 
+    /**
+     * Create model media structure
+     *
+     * @param int $mediaModelsLocationID model root media location ID
+     * @param string $modelName model name
+     * @return array model root media location ID
+     */
     public function createMediaModelContent($mediaModelsLocationID, $modelName)
     {
         $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediamodelcontent.yml')));

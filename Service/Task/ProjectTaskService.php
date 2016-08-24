@@ -9,6 +9,11 @@ use eZ\Publish\API\Repository\LocationService;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
 
+/**
+ * Class ProjectTaskService
+ *
+ * @package EdgarEz\SiteBuilderBundle\Service\Task
+ */
 class ProjectTaskService extends BaseTaskService implements TaskInterface
 {
     /**
@@ -59,6 +64,15 @@ class ProjectTaskService extends BaseTaskService implements TaskInterface
     /** @var InstallService $installService */
     protected $installService;
 
+    /**
+     * ProjectTaskService constructor.
+     *
+     * @param Filesystem      $filesystem
+     * @param Kernel          $kernel
+     * @param LocationService $locationService
+     * @param InstallService  $installService
+     * @param                 $kernelRootDir
+     */
     public function __construct(
         Filesystem $filesystem,
         Kernel $kernel,
@@ -76,6 +90,12 @@ class ProjectTaskService extends BaseTaskService implements TaskInterface
         $this->message = false;
     }
 
+    /**
+     * Validate task parameters
+     *
+     * @param array $parameters
+     * @throws \Exception
+     */
     public function validateParameters($parameters)
     {
         if (!isset($parameters['vendorName'])) {
@@ -117,6 +137,13 @@ class ProjectTaskService extends BaseTaskService implements TaskInterface
         }
     }
 
+    /**
+     * Execute task
+     *
+     * @param string $command
+     * @param array $parameters
+     * @return bool
+     */
     public function execute($command, array $parameters)
     {
         switch ($command) {

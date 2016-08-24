@@ -170,7 +170,7 @@ abstract class BaseContainerAwareCommand extends GeneratorCommand
     }
 
     /**
-     * Return vendor name and directory bundles from parameters
+     * Initialize vendor name and directory bundles from parameters
      */
     protected function getVendorNameDir()
     {
