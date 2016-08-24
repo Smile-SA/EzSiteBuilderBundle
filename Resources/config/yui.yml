@@ -17,11 +17,4 @@ system:
                     requires: ['ez-serversideview']
                     path: %edgar_ez_site_builder.public_dir%/js/views/edgarezsb-sbview.js
 
-                edgarezsb-installviewservice:
-                    requires: ['ez-serversideviewservice']
-                    path: %edgar_ez_site_builder.public_dir%/js/views/services/edgarezsb-installviewservice.js
-                edgarezsb-installview:
-                    requires: ['ez-serversideview']
-                    path: %edgar_ez_site_builder.public_dir%/js/views/edgarezsb-installview.js
-
 

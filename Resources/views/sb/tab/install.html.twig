@@ -7,6 +7,14 @@
         {{ form_errors(params.installForm.vendorName) }}
         {{ form_widget(params.installForm.vendorName) }}
     </div>
+    <div class=pure-control-groupe">
+        <input type="hidden" id="edgarezsb_content_root_location_id" name="edgarezsb_content_root_location_id">
+        <button type="buttin" data-universaldiscovery-title="{{ "role.policy.limitation.location.udw_title"|trans({}, "ezrepoforms_role") }}"
+                class="ez-button-tree pure-button ez-font-icon ez-button edgarezsb-install-assign-content-button"
+                data-location-input-selector="#edgarezsb_content_root_location_id"
+                data-selected-location-list-selector="#edgarezsb_content_root_location_id-selected-location"
+        ></button>
+    </div>
 </fieldset>
 <div class=pure-controls">
     {{ form_widget(

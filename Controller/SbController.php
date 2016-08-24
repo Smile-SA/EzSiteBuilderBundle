@@ -34,7 +34,7 @@ class SbController extends Controller
             unset($tabItems[0]);
         }
 
-        return $this->render('EdgarEzSiteBuilderBundle:sb:dashboard.html.twig', [
+        return $this->render('EdgarEzSiteBuilderBundle:sb:index.html.twig', [
             'installed' => $installed,
             'tab_items' => $tabItems
         ]);
