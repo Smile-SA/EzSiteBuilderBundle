@@ -64,7 +64,10 @@ class SbController extends Controller
     public function postInstallAction(Request $request)
     {
         $install = new Install([
-            'vendorName' => 'Foo'
+            'vendorName' => 'Foo',
+            'contentLocationID' => 0,
+            'mediaLocationID' => 0,
+            'userLocationID' => 0
         ]);
         $installData = (new InstallMapper())->mapToFormData($install);
 
@@ -79,9 +82,9 @@ class SbController extends Controller
                 'command'    => 'install',
                 'parameters' => array(
                     'vendorName'        => $data->vendorName,
-                    'contentLocationID' => 2,
-                    'mediaLocationID'   => 43,
-                    'userLocationID'    => 5,
+                    'contentLocationID' => $data->contentLocationID,
+                    'mediaLocationID'   => $data->mediaLocationID,
+                    'userLocationID'    => $data->userLocationID,
                 )
             );
 

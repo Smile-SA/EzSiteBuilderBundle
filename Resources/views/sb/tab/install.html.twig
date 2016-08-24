@@ -8,12 +8,61 @@
         {{ form_widget(params.installForm.vendorName) }}
     </div>
     <div class=pure-control-groupe">
-        <input type="hidden" id="edgarezsb_content_root_location_id" name="edgarezsb_content_root_location_id">
-        <button type="buttin" data-universaldiscovery-title="{{ "role.policy.limitation.location.udw_title"|trans({}, "ezrepoforms_role") }}"
-                class="ez-button-tree pure-button ez-font-icon ez-button edgarezsb-install-assign-content-button"
-                data-location-input-selector="#edgarezsb_content_root_location_id"
-                data-selected-location-list-selector="#edgarezsb_content_root_location_id-selected-location"
-        ></button>
+        {{ form_label(params.installForm.contentLocationID) }}
+        {{ form_errors(params.installForm.contentLocationID) }}
+        {{ form_widget(params.installForm.contentLocationID) }}
+        <button type="button" data-universaldiscovery-title="{{ "install.content.location.udw_title"|trans({}, "ezrepoforms_role") }}"
+                class="ez-button-tree pure-button ez-font-icon ez-button edgarezsb-install-pick-location-content-button"
+                data-location-input-selector="#{{params.installForm.contentLocationID.vars.id}}"
+                data-selected-location-list-selector="#{{params.installForm.contentLocationID.vars.id}}-selected-location"
+        >{{ "install.content.location.udw_button"|trans({}, "ezrepoforms_role") }}</button>
+        <div>
+            <ul id="{{params.installForm.contentLocationID.vars.id}}-selected-location">
+                {% for limitationValue in params.installForm.contentLocationID.vars.value %}
+                    <li>
+                        {{ render( controller( "ez_content:view", {'contentId': limitationValue, 'viewType': '_platformui_content_name'} ) ) }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class=pure-control-groupe">
+        {{ form_label(params.installForm.mediaLocationID) }}
+        {{ form_errors(params.installForm.mediaLocationID) }}
+        {{ form_widget(params.installForm.mediaLocationID) }}
+        <button type="button" data-universaldiscovery-title="{{ "install.media.location.udw_title"|trans({}, "ezrepoforms_role") }}"
+                class="ez-button-tree pure-button ez-font-icon ez-button edgarezsb-install-pick-location-media-button"
+                data-location-input-selector="#{{params.installForm.mediaLocationID.vars.id}}"
+                data-selected-location-list-selector="#{{params.installForm.mediaLocationID.vars.id}}-selected-location"
+        >{{ "install.media.location.udw_button"|trans({}, "ezrepoforms_role") }}</button>
+        <div>
+            <ul id="{{params.installForm.mediaLocationID.vars.id}}-selected-location">
+                {% for limitationValue in params.installForm.mediaLocationID.vars.value %}
+                    <li>
+                        {{ render( controller( "ez_content:view", {'contentId': limitationValue, 'viewType': '_platformui_content_name'} ) ) }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class=pure-control-groupe">
+        {{ form_label(params.installForm.userLocationID) }}
+        {{ form_errors(params.installForm.userLocationID) }}
+        {{ form_widget(params.installForm.userLocationID) }}
+        <button type="button" data-universaldiscovery-title="{{ "install.user.location.udw_title"|trans({}, "ezrepoforms_role") }}"
+                class="ez-button-tree pure-button ez-font-icon ez-button edgarezsb-install-pick-location-user-button"
+                data-location-input-selector="#{{params.installForm.userLocationID.vars.id}}"
+                data-selected-location-list-selector="#{{params.installForm.userLocationID.vars.id}}-selected-location"
+        >{{ "install.user.location.udw_button"|trans({}, "ezrepoforms_role") }}</button>
+        <div>
+            <ul id="{{params.installForm.userLocationID.vars.id}}-selected-location">
+                {% for limitationValue in params.installForm.userLocationID.vars.value %}
+                    <li>
+                        {{ render( controller( "ez_content:view", {'contentId': limitationValue, 'viewType': '_platformui_content_name'} ) ) }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
 </fieldset>
 <div class=pure-controls">

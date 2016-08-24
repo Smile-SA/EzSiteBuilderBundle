@@ -1,19 +1,23 @@
 YUI.add('edgarezsb-sbview', function (Y) {
     Y.namespace('edgarEzSb');
 
-    var CONTENT_REST_ID = 'data-content-rest-id',
-        CONTENT_NAME = 'data-content-name';
+    var REST_ID = 'data-rest-id',
+        NAME = 'data-name';
 
     Y.edgarEzSb.SbView = Y.Base.create('edgarezsbSbView', Y.eZ.ServerSideView, [], {
         events: {
             '.edgarezsb-sb-location': {
-                // tap is 'fast click' (touch friendly)
                 'tap': '_navigateToLocation'
             },
-            '.edgarezsb-install-assign-content-button': {
-                'tap': '_pickContentLocation'
+            '.edgarezsb-install-pick-location-content-button': {
+                'tap': '_pickLocationLimitation'
             },
-
+            '.edgarezsb-install-pick-location-media-button': {
+                'tap': '_pickLocationLimitation'
+            },
+            '.edgarezsb-install-pick-location-user-button': {
+                'tap': '_pickLocationLimitation'
+            }
         },
 
         initializer: function () {
@@ -34,23 +38,59 @@ YUI.add('edgarezsb-sbview', function (Y) {
             });
         },
 
-        _pickContentLocation: function (e) {
+        _pickLocationLimitation: function (e) {
             var button = e.target,
-                unsetLoading = Y.bind(this._uiUnsetUDWButtonLoading, this, button),
-                that = this;
+                unsetLoading = Y.bind(this._uiUnsetUDWButtonLoading, this, button);
 
             e.preventDefault();
             this._uiSetUDWButtonLoading(button);
             this.fire('contentDiscover', {
                 config: {
-                    title: button.getAttribute('data-universaldiscovery-content-selection-title'),
+                    title: button.getAttribute('data-universaldiscovery-title'),
                     cancelDiscoverHandler: unsetLoading,
-                    multiple: true,
-                    contentDiscoveredHandler: function(e) {
-                        that._setContentLocation(button, this, e);
-                    }
+                    multiple: false,
+                    contentDiscoveredHandler: Y.bind(this._setLocationLimitation, this, button),
                 },
             });
+        },
+
+        _setLocationLimitation: function (button, e) {
+            this._emptyLocationList(button);
+            this._emptyLocationIdHiddenInput(button);
+
+            this._addLocationToDisplayList(button, e.selection.contentInfo);
+            this._addLocationIdToHiddenInput(button, e.selection.location.get('locationId'));
+
+            this._uiUnsetUDWButtonLoading(button);
+        },
+
+        _emptyLocationList: function (button) {
+            var selectedLocationList = this.get('container').one(button.getAttribute('data-selected-location-list-selector'));
+
+            selectedLocationList.empty();
+        },
+
+        _emptyLocationIdHiddenInput: function (button) {
+            var locationInput = this.get('container').one(button.getAttribute('data-location-input-selector'));
+
+            locationInput.setAttribute('value', '');
+        },
+
+        _addLocationToDisplayList: function (button, contentInfo) {
+            var selectedLocationList = this.get('container').one(button.getAttribute('data-selected-location-list-selector'));
+
+            selectedLocationList.appendChild(Y.Node.create('<li>' + Y.Escape.html(contentInfo.get('name')) + '</li>'));
+        },
+
+        _addLocationIdToHiddenInput: function (button, locationId) {
+            var locationInput = this.get('container').one(button.getAttribute('data-location-input-selector')),
+                existingLocationsStr = locationInput.getAttribute('value');
+
+            if (existingLocationsStr.length > 0) {
+                locationInput.setAttribute('value', existingLocationsStr.concat(',', locationId));
+            } else {
+                locationInput.setAttribute('value', locationId);
+            }
         },
 
         _uiSetUDWButtonLoading: function (button) {
@@ -59,37 +99,6 @@ YUI.add('edgarezsb-sbview', function (Y) {
 
         _uiUnsetUDWButtonLoading: function (button) {
             button.removeClass('is-loading').set('disabled', false);
-        },
-
-        _setContentLocation: function (button, udView, e) {
-            var unsetLoading = Y.bind(this._uiUnsetUDWButtonLoading, this, button),
-                selectedLocationsIds = Y.Array.map(e.selection, function(struct) {
-                    return struct.location.get('id');
-                }),
-                udwConfigData = {
-                    contentId: button.getAttribute(CONTENT_REST_ID),
-                    contentName: button.getAttribute(CONTENT_NAME),
-                    afterUpdateCallback: unsetLoading,
-                    selectionType: 'Content',
-                    subtreeIds: selectedLocationsIds,
-                },
-                udwAfterActiveChangeEvent = udView.onceAfter('activeChange', function() {
-                    udwAfterActiveChangeEvent.detach();
-                    setTimeout(Y.bind(function() {
-                        this._fireContentDiscover(button, unsetLoading, udwConfigData);
-                    }, this), 0);
-                }, this);
-        },
-
-        _fireContentDiscover: function (button, unsetLoading, data) {
-            this.fire('contentDiscover', {
-                config: {
-                    title: button.getAttribute('data-universaldiscovery-title'),
-                    cancelDiscoverHandler: unsetLoading,
-                    multiple: true,
-                    data: data,
-                },
-            });
         },
     });
 });

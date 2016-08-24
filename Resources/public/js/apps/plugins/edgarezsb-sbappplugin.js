@@ -6,7 +6,7 @@ YUI.add('edgarezsb-sbapplugin', function (Y) {
             var app = this.get('host');
 
             app.views.edgarezsbSbView = {
-                type: Y.edgarEzSb.SbView,
+                type: Y.edgarEzSb.SbView
             };
 
             app.route({
@@ -17,7 +17,7 @@ YUI.add('edgarezsb-sbapplugin', function (Y) {
                 sideViews: {'navigationHub': true, 'discoveryBar': false},
                 callbacks: ['open', 'checkUser', 'handleSideViews', 'handleMainView'],
             });
-        },
+        }
     }, {
         NS: 'edgarezsbTypeApp' // don't forget that
     });

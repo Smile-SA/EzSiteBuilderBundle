@@ -3,6 +3,7 @@
 namespace EdgarEz\SiteBuilderBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -29,6 +30,9 @@ class InstallType extends AbstractType
     {
         $builder
             ->add('vendorName', 'text')
+            ->add('contentLocationID', HiddenType::class)
+            ->add('mediaLocationID', HiddenType::class)
+            ->add('userLocationID', HiddenType::class)
             ->add('install', 'submit', ['label' => 'install.button']);
     }
 
