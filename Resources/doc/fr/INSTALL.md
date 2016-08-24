@@ -51,6 +51,18 @@ edgarezsb_dashboard:
     resource: '@EdgarEzSiteBuilderBundle/Resources/config/routing.yml'
 ```
 
+### Ajout paramètres par défaut
+
+Ajouter dans le fichier app/parameters.yml
+
+```yml
+parameters:
+    ...
+    edgar_ez_tools.adminid: 14
+    edgar_ez_site_builder.host: ezplatform.lxc
+    edgar_ez_site_builder.sysadminemail: emdro@smile.fr
+```
+
 ### Redéfinir les assets
 
 ```console
