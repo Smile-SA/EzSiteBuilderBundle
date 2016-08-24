@@ -59,8 +59,8 @@ Ajouter dans le fichier app/parameters.yml
 parameters:
     ...
     edgar_ez_tools.adminid: 14
-    edgar_ez_site_builder.host: ezplatform.lxc
-    edgar_ez_site_builder.sysadminemail: emdro@smile.fr
+    edgar_ez_site_builder.host: <your_host>
+    edgar_ez_site_builder.sysadminemail: <your_admin_email>
 ```
 
 ### Redéfinir les assets
@@ -129,27 +129,32 @@ class AppKernel extends Kernel
             ...
             new <VendorName>\ProjectBundle\<VendorName>ProjectBundle(),
         );
+        
 
         switch ($this->getEnvironment()) {
             ...
         }
+        
 
         // ### Ajouter l'appel à cette méthode ###
         $bundles = $this->siteBuilderBundles($bundles);
 
         return $bundles;
     }
+    
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load($this->getRootDir() . '/config/config_' . $this->getEnvironment() . '.yml');
     }
+    
 
     // ### Surcharge de la méthode de définition du dossier de cache
     public function getCacheDir()
     {
         return $this->rootDir.'/cache/'.$this->environment . ((getenv('SITEBUILDER_ENV')) ? '/' . getenv('SITEBUILDER_ENV') : '');
     }
+    
     
     // ### Ajouter cette méthode ###
     public function siteBuilderBundles($bundles)
