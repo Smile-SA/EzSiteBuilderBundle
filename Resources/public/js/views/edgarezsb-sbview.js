@@ -1,9 +1,6 @@
 YUI.add('edgarezsb-sbview', function (Y) {
     Y.namespace('edgarEzSb');
 
-    var REST_ID = 'data-rest-id',
-        NAME = 'data-name';
-
     Y.edgarEzSb.SbView = Y.Base.create('edgarezsbSbView', Y.eZ.ServerSideView, [], {
         events: {
             '.edgarezsb-sb-location': {
@@ -17,6 +14,9 @@ YUI.add('edgarezsb-sbview', function (Y) {
             },
             '.edgarezsb-install-pick-location-user-button': {
                 'tap': '_pickLocationLimitation'
+            },
+            'form': {
+                'submit': '_confirmSubmit'
             }
         },
 
@@ -99,6 +99,25 @@ YUI.add('edgarezsb-sbview', function (Y) {
 
         _uiUnsetUDWButtonLoading: function (button) {
             button.removeClass('is-loading').set('disabled', false);
+        },
+
+        /**
+         * Submit Install Form
+         */
+        _confirmSubmit: function (e) {
+            var focusedNode = e.target.get('ownerDocument').get('activeElement');
+
+            console.log('ZZZ0');
+            this._submitForm(e, focusedNode);
+        },
+
+        _submitForm: function (e, focusedNode) {
+            console.log('ZZZ1');
+            this.fire('submitForm', {
+                form: e.target,
+                formData: this._serializeForm(e.target, focusedNode),
+                originalEvent: e,
+            });
         },
     });
 });

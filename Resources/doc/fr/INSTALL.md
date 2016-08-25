@@ -47,7 +47,7 @@ php app/console doctrine:schema:update --force
 Ajouter dans la configuration globale app/config/routing.yml
 
 ```yaml
-edgarezsb_dashboard:
+edgarezsb_platform:
     resource: '@EdgarEzSiteBuilderBundle/Resources/config/routing.yml'
 ```
 

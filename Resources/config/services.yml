@@ -13,6 +13,11 @@ parameters:
 
     ezrepoforms.action_dispatcher.install.class: EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\InstallDispatcher
     edgar_ez_site_builder.controller.sb.class: EdgarEz\SiteBuilderBundle\Controller\SbController
+    edgar_ez_site_builder.controller.sb.install.class: EdgarEz\SiteBuilderBundle\Controller\InstallController
+    edgar_ez_site_builder.controller.sb.dashboard.class: EdgarEz\SiteBuilderBundle\Controller\DashboardController
+    edgar_ez_site_builder.controller.sb.customer.class: EdgarEz\SiteBuilderBundle\Controller\CustomerController
+    edgar_ez_site_builder.controller.sb.model.class: EdgarEz\SiteBuilderBundle\Controller\ModelController
+    edgar_ez_site_builder.controller.sb.site.class: EdgarEz\SiteBuilderBundle\Controller\SiteController
     edgar_ez_site_builder.tabs: [install, dashboard, customergenerate, modelgenerate, sitegenerate, siteactivate]
 
 services:
@@ -91,4 +96,24 @@ services:
         class: %edgar_ez_site_builder.controller.sb.class%
         arguments:
             - %edgar_ez_site_builder.tabs%
+        parent: ezsystems.platformui.controller.base
+
+    edgar_ez_site_builder.controller.sb.install:
+        class: %edgar_ez_site_builder.controller.sb.install.class%
+        parent: ezsystems.platformui.controller.base
+
+    edgar_ez_site_builder.controller.sb.dashboard:
+        class: %edgar_ez_site_builder.controller.sb.dashboard.class%
+        parent: ezsystems.platformui.controller.base
+
+    edgar_ez_site_builder.controller.sb.customer:
+        class: %edgar_ez_site_builder.controller.sb.customer.class%
+        parent: ezsystems.platformui.controller.base
+
+    edgar_ez_site_builder.controller.sb.model:
+        class: %edgar_ez_site_builder.controller.sb.model.class%
+        parent: ezsystems.platformui.controller.base
+
+    edgar_ez_site_builder.controller.sb.site:
+        class: %edgar_ez_site_builder.controller.sb.site.class%
         parent: ezsystems.platformui.controller.base

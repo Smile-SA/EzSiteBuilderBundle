@@ -1,14 +1,15 @@
 {% trans_default_domain "sitebuilder_install" %}
 
-{{ form_start(params.installForm, {"action": path("edgarezsb_install_post", {}), "attr": {"class": "pure-form pure-form-aligned"}}) }}
+{{ form_start(params.installForm, {"action": path("edgarezsb_install_post", {}), "attr": {"class": "pure-form pure-form-aligned ez-confirm-action"}}) }}
+
 <fieldset>
-    <div class=pure-control-groupe">
-        {{ form_label(params.installForm.vendorName) }}
+    <div class="pure-control-group">
+        <label for="{{ params.installForm.vendorName.vars.id }}">{{ form_label(params.installForm.vendorName) }}</label>
         {{ form_errors(params.installForm.vendorName) }}
         {{ form_widget(params.installForm.vendorName) }}
     </div>
-    <div class=pure-control-groupe">
-        {{ form_label(params.installForm.contentLocationID) }}
+    <div class="pure-control-group">
+        <label for="{{ params.installForm.contentLocationID.vars.id }}">{{ form_label(params.installForm.contentLocationID) }}</label>
         {{ form_errors(params.installForm.contentLocationID) }}
         {{ form_widget(params.installForm.contentLocationID) }}
         <button type="button" data-universaldiscovery-title="{{ "install.content.location.udw_title"|trans({}, "ezrepoforms_role") }}"
@@ -26,8 +27,8 @@
             </ul>
         </div>
     </div>
-    <div class=pure-control-groupe">
-        {{ form_label(params.installForm.mediaLocationID) }}
+    <div class="pure-control-group">
+        <label for="{{ params.installForm.mediaLocationID.vars.id }}">{{ form_label(params.installForm.mediaLocationID) }}</label>
         {{ form_errors(params.installForm.mediaLocationID) }}
         {{ form_widget(params.installForm.mediaLocationID) }}
         <button type="button" data-universaldiscovery-title="{{ "install.media.location.udw_title"|trans({}, "ezrepoforms_role") }}"
@@ -45,8 +46,8 @@
             </ul>
         </div>
     </div>
-    <div class=pure-control-groupe">
-        {{ form_label(params.installForm.userLocationID) }}
+    <div class="pure-control-group">
+        <label for="{{ params.installForm.userLocationID.vars.id }}">{{ form_label(params.installForm.userLocationID) }}</label>
         {{ form_errors(params.installForm.userLocationID) }}
         {{ form_widget(params.installForm.userLocationID) }}
         <button type="button" data-universaldiscovery-title="{{ "install.user.location.udw_title"|trans({}, "ezrepoforms_role") }}"
@@ -65,7 +66,8 @@
         </div>
     </div>
 </fieldset>
-<div class=pure-controls">
+
+<div class="pure-controls">
     {{ form_widget(
     params.installForm.install,
     {
@@ -74,5 +76,6 @@
     }
     ) }}
 </div>
+
 {{ form_end(params.installForm) }}
 

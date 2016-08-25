@@ -2,8 +2,12 @@
 
 namespace EdgarEz\SiteBuilderBundle\Form\Type;
 
+use EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\LocationIDConstraint;
+use EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\VendorNameConstraint;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -29,11 +33,20 @@ class InstallType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('vendorName', 'text')
-            ->add('contentLocationID', HiddenType::class)
-            ->add('mediaLocationID', HiddenType::class)
-            ->add('userLocationID', HiddenType::class)
-            ->add('install', 'submit', ['label' => 'install.button']);
+            ->add('vendorName', TextType::class, array(
+                'required' => true,
+                'constraints' => array(new VendorNameConstraint())
+            ))
+            ->add('contentLocationID', HiddenType::class, array(
+                'constraints' => array(new LocationIDConstraint())
+            ))
+            ->add('mediaLocationID', HiddenType::class, array(
+                'constraints' => array(new LocationIDConstraint())
+            ))
+            ->add('userLocationID', HiddenType::class, array(
+                'constraints' => array(new LocationIDConstraint())
+            ))
+            ->add('install', SubmitType::class, ['label' => 'install.button']);
     }
 
     /**
