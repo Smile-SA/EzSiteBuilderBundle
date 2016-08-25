@@ -6,7 +6,6 @@
 * catch and throw exceptions
 * finalize user guide
 * translate user guide
-* finalize command and services to handle sitebuilder_task actions
 
 ## Installation
 
@@ -20,16 +19,43 @@
 
 ## eZPlatform  SiteBuilder interface
 
-* interface for system admin 
-  * pre-activate site after generation before activation
-* interface for creator : create site
-  * accessible only for ez admin and sitebuilder user creator
-  * register site request
-  * cronjob which execute site:generate task if one request exists
-* interface for creator : list sites
-  * accessible only for ez admin and sitebuilder user creator
-  * for sitebuilder user creator, display only own customer sites
-  * activate site (only accessible when pre-activated)
+* install interface
+  * <s>interface (vendor name, content location id, media location id, user location id)</s>
+  * manage security access
+  * manage form constraints
+  * manage notifications
+* dashboard interface
+  * <s>interface</s>
+* customer generator inerface
+  * interface (customer name, user first name, user last name, user email)
+  * manage security access
+  * manage form constraints
+  * manage notifications
+* model generator interface
+  * interface (model name)
+  * manage security access
+  * manage form constraints
+  * manage notifications
+* site generator interface
+  * interface (site name, model)
+  * manage security access
+  * manage form constraints
+  * manage notifications
+* site activator interface
+  * interface
+  * manage security access
+  * manage form constraints
+  * manage notifications
+* translations
+* cronjob documentation
+* tasks
+  * <s>install</s>
+  * customer generate
+  * model generate
+  * model policy
+  * site generate
+  * site policy
+  * site activate
 
 
 
