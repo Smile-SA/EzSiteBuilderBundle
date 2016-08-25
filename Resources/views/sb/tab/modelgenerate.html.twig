@@ -1,2 +1,23 @@
+{% trans_default_domain "sitebuilder_model" %}
 
+{{ form_start(params.modelForm, {"action": path("edgarezsb_model_post", {}), "attr": {"class": "pure-form pure-form-aligned ez-confirm-action"}}) }}
 
+<fieldset>
+    <div class="pure-control-group">
+        <label for="{{ params.modelForm.modelName.vars.id }}">{{ form_label(params.modelForm.modelName) }}</label>
+        {{ form_errors(params.modelForm.modelName) }}
+        {{ form_widget(params.modelForm.modelName) }}
+    </div>
+</fieldset>
+
+<div class="pure-controls">
+    {{ form_widget(
+    params.modelForm.model,
+    {
+        "disabled": false,
+        "attr": {"class": "pure-button ez-button ez-model-button ez-font-icon ez-button-model"}
+    }
+    ) }}
+</div>
+
+{{ form_end(params.modelForm) }}

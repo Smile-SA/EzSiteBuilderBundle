@@ -4,6 +4,7 @@ namespace EdgarEz\SiteBuilderBundle\Controller;
 
 use EdgarEz\SiteBuilderBundle\Form\Type\CustomerType;
 use EdgarEz\SiteBuilderBundle\Form\Type\InstallType;
+use EdgarEz\SiteBuilderBundle\Form\Type\ModelType;
 use EzSystems\PlatformUIBundle\Controller\Controller;
 
 class SbController extends Controller
@@ -48,6 +49,11 @@ class SbController extends Controller
             case 'customergenerate':
                 $params['customerForm'] = $this->createForm(
                     new CustomerType()
+                )->createView();
+                break;
+            case 'modelgenerate':
+                $params['modelForm'] = $this->createForm(
+                    new ModelType()
                 )->createView();
                 break;
             default:
