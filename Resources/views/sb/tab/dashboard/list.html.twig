@@ -1,0 +1,25 @@
+
+{% if not datas %}
+    <tr class="ez-block-row">
+        <td class=".ez-block-cell-no-result" colspan="6">
+            {{ 'sb.dashboard.nodata'|trans }}
+        </td>
+    </tr>
+{% else %}
+    {% for data in datas %}
+        <tr class="ez-block-row">
+            <td class="ez-block-cell">{{ data.action.service }}</td>
+            <td class="ez-block-cell">{{ data.action.command }}</td>
+            <td class="ez-block-cell">
+                <ul>
+                    {% for key, parameter in data.action.parameters %}
+                        <li>{{ key }} : {{ parameter }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+            <td class="ez-block-cell">{{ data.postedAt.date }}</td>
+            <td class="ez-block-cell">{% if data.executedAt %}{{ data.executedAt.date }}{% endif %}</td>
+            <td class="ez-block-cell">{{ data.status }}</td>
+        </tr>
+    {% endfor %}
+{% endif %}

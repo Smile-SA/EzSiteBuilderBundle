@@ -104,6 +104,8 @@ services:
 
     edgar_ez_site_builder.controller.sb.dashboard:
         class: %edgar_ez_site_builder.controller.sb.dashboard.class%
+        arguments:
+            - @doctrine
         parent: ezsystems.platformui.controller.base
 
     edgar_ez_site_builder.controller.sb.customer:

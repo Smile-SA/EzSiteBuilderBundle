@@ -1,0 +1,25 @@
+{% trans_default_domain "sitebuilder_dashboard" %}
+
+<div class="ez-view-edgarezsb-dashboardview">
+    <div class="ez-block-wrapper ez-font-icon">
+        <table class="ez-block-items-table">
+            <thead class="ez-block-header">
+                <tr>
+                    <th class="ez-block-head-service">{{ 'sb.dashboard.th.service'|trans }}</th>
+                    <th class="ez-block-head-command">{{ 'sb.dashboard.th.command'|trans }}</th>
+                    <th class="ez-block-head-parameters">{{ 'sb.dashboard.th.parameters'|trans }}</th>
+                    <th class="ez-block-head-postedat">{{ 'sb.dashboard.th.postedat'|trans }}</th>
+                    <th class="ez-block-head-executedat">{{ 'sb.dashboard.th.executedat'|trans }}</th>
+                    <th class="ez-block-head-status">{{ 'sb.dashboard.th.status'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody class="ez-block-content">
+
+                {{ render( controller('edgar_ez_site_builder.controller.sb.dashboard:listAction', {
+                    'userID': params.user_id
+                } ) ) }}
+
+            </tbody>
+        </table>
+    </div>
+</div>

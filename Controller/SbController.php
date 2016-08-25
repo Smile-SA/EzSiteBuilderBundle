@@ -41,6 +41,9 @@ class SbController extends Controller
                     new InstallType()
                 )->createView();
                 break;
+            case 'dashboard':
+                $params['user_id'] = $this->getUser()->getAPIUser()->getUserId();
+                break;
             default:
                 break;
         }
