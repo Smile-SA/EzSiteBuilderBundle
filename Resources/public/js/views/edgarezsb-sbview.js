@@ -102,17 +102,15 @@ YUI.add('edgarezsb-sbview', function (Y) {
         },
 
         /**
-         * Submit Install Form
+         * Submit Form
          */
         _confirmSubmit: function (e) {
             var focusedNode = e.target.get('ownerDocument').get('activeElement');
 
-            console.log('ZZZ0');
             this._submitForm(e, focusedNode);
         },
 
         _submitForm: function (e, focusedNode) {
-            console.log('ZZZ1');
             this.fire('submitForm', {
                 form: e.target,
                 formData: this._serializeForm(e.target, focusedNode),

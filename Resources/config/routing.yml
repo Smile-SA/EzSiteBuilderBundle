@@ -10,5 +10,11 @@ edgarezsb_install_post:
     defaults:
         _controller: edgar_ez_site_builder.controller.sb.install:installAction
 
+edgarezsb_customer_post:
+    path: /sb/tab/customer
+    methods: [POST]
+    defaults:
+        _controller: edgar_ez_site_builder.controller.sb.customer:generateAction
+
 
 

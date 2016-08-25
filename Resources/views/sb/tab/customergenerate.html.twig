@@ -1,0 +1,38 @@
+{% trans_default_domain "sitebuilder_customerl" %}
+
+{{ form_start(params.customerForm, {"action": path("edgarezsb_customer_post", {}), "attr": {"class": "pure-form pure-form-aligned ez-confirm-action"}}) }}
+
+<fieldset>
+    <div class="pure-control-group">
+        <label for="{{ params.customerForm.customerName.vars.id }}">{{ form_label(params.customerForm.customerName) }}</label>
+        {{ form_errors(params.customerForm.customerName) }}
+        {{ form_widget(params.customerForm.customerName) }}
+    </div>
+    <div class="pure-control-group">
+        <label for="{{ params.customerForm.userFirstName.vars.id }}">{{ form_label(params.customerForm.userFirstName) }}</label>
+        {{ form_errors(params.customerForm.userFirstName) }}
+        {{ form_widget(params.customerForm.userFirstName) }}
+    </div>
+    <div class="pure-control-group">
+        <label for="{{ params.customerForm.userLastName.vars.id }}">{{ form_label(params.customerForm.userLastName) }}</label>
+        {{ form_errors(params.customerForm.userLastName) }}
+        {{ form_widget(params.customerForm.userLastName) }}
+    </div>
+    <div class="pure-control-group">
+        <label for="{{ params.customerForm.userEmail.vars.id }}">{{ form_label(params.customerForm.userEmail) }}</label>
+        {{ form_errors(params.customerForm.userEmail) }}
+        {{ form_widget(params.customerForm.userEmail) }}
+    </div>
+</fieldset>
+
+<div class="pure-controls">
+    {{ form_widget(
+    params.customerForm.customer,
+    {
+        "disabled": false,
+        "attr": {"class": "pure-button ez-button ez-customer-button ez-font-icon ez-button-customer"}
+    }
+    ) }}
+</div>
+
+{{ form_end(params.customerForm) }}

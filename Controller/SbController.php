@@ -2,6 +2,7 @@
 
 namespace EdgarEz\SiteBuilderBundle\Controller;
 
+use EdgarEz\SiteBuilderBundle\Form\Type\CustomerType;
 use EdgarEz\SiteBuilderBundle\Form\Type\InstallType;
 use EzSystems\PlatformUIBundle\Controller\Controller;
 
@@ -43,6 +44,11 @@ class SbController extends Controller
                 break;
             case 'dashboard':
                 $params['user_id'] = $this->getUser()->getAPIUser()->getUserId();
+                break;
+            case 'customergenerate':
+                $params['customerForm'] = $this->createForm(
+                    new CustomerType()
+                )->createView();
                 break;
             default:
                 break;
