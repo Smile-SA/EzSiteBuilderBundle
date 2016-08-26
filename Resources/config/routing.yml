@@ -22,5 +22,9 @@ edgarezsb_model_post:
     defaults:
         _controller: edgar_ez_site_builder.controller.sb.model:generateAction
 
-
+edgarezsb_site_post:
+    path: /sb/tab/site
+    methods: [POST]
+    defaults:
+        _controller: edgar_ez_site_builder.controller.sb.site:generateAction
 

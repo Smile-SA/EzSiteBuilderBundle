@@ -118,4 +118,7 @@ services:
 
     edgar_ez_site_builder.controller.sb.site:
         class: %edgar_ez_site_builder.controller.sb.site.class%
+        arguments:
+            - @ezpublish.api.service.location
+            - @ezpublish.api.service.search
         parent: ezsystems.platformui.controller.base

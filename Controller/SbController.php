@@ -5,6 +5,7 @@ namespace EdgarEz\SiteBuilderBundle\Controller;
 use EdgarEz\SiteBuilderBundle\Form\Type\CustomerType;
 use EdgarEz\SiteBuilderBundle\Form\Type\InstallType;
 use EdgarEz\SiteBuilderBundle\Form\Type\ModelType;
+use EdgarEz\SiteBuilderBundle\Form\Type\SiteType;
 use EzSystems\PlatformUIBundle\Controller\Controller;
 
 class SbController extends Controller
@@ -54,6 +55,15 @@ class SbController extends Controller
             case 'modelgenerate':
                 $params['modelForm'] = $this->createForm(
                     new ModelType()
+                )->createView();
+                break;
+            case 'sitegenerate':
+                $params['siteForm'] = $this->createForm(
+                    new SiteType(
+                        $this->container->get('ezpublish.api.service.location'),
+                        $this->container->get('ezpublish.api.service.search'),
+                        $this->container->getParameter('edgarez_sb.project.default.models_location_id')
+                    )
                 )->createView();
                 break;
             default:
