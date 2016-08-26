@@ -130,5 +130,6 @@ services:
         arguments:
             - @security.token_storage
             - @security.authorization_checker
+            - @ezpublish.api.service.role
         tags:
             - { name: twig.extension }
