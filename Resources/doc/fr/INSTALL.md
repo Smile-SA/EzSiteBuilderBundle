@@ -111,7 +111,17 @@ Notes :
 
 #### Mode Back-office
 
-en développement
+![Install Form](/Resources/doc/images/install.png)
+
+Le formulaire d'initialisation ou installation de l'outil SiteBuilder est limité en accès par les politiques de sécurité.
+Les champs du formulaire à renseigner sont :
+
+* Vendor name : nom du vendor utilisé pour la construction des bundle et namespace
+* Content location id : choisir au moyen du widget eZ Platform le noeud racine des futurs contenus (Clients/Modèles)
+* Media location id : choisir au moyen du widget eZ Platform le noeud racine des futurs contenus media (Clients/Modèles)
+* User location id : choisir au moyen du widget eZ Platform le noeud racine des futurs groupes utilisateur SiteBuilder
+
+Après validation du formulaire, vous êtes redirigé sur l'onglet Dashboard résumant les tâches effectuées, en cours ou programmées, dont celle que vous venez de soumettre.
 
 ### Adaptation app/AppKernel.php
 

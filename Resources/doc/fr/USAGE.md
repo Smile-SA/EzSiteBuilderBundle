@@ -52,7 +52,14 @@ Le mode interactif de cette installation vous demande les informations suivantes
 
 ### interface Back-Office
 
-en développement
+![Model Form](/Resources/doc/images/model.png)
+
+Le formulaire d'initialisation d'un modèle est limité en accès par les politiques de sécurité.
+Les champs du formulaire à renseigner sont :
+
+* Model name : nom du modèle
+
+Après validation du formulaire, vous êtes redirigé sur l'onglet Dashboard résumant les tâches effectuées, en cours ou programmées, dont celle que vous venez de soumettre.
 
 ## Initialisation client
 
@@ -97,7 +104,17 @@ Notes :
 
 ### interface Back-Office
 
-en développement
+![Customer Form](/Resources/doc/images/customer.png)
+
+Le formulaire d'initialisation d'un client est limité en accès par les politiques de sécurité.
+Les champs du formulaire à renseigner sont :
+
+* Customer name : nom du client
+* User first name : prénom du premier utilisateur client
+* User last name : nom du premier utilisateur client
+* User email : addresse mail du premier utilisateur client
+
+Après validation du formulaire, vous êtes redirigé sur l'onglet Dashboard résumant les tâches effectuées, en cours ou programmées, dont celle que vous venez de soumettre.
 
 ## Initialisation site'
 
@@ -166,6 +183,17 @@ Le mode interactif de cette installation vous demande les informations suivantes
 
 ### interface Back-Office
 
-en développement
+![Site Form](/Resources/doc/images/site.png)
+
+Le formulaire d'initialisation d'un site est limité en accès par les politiques de sécurité.
+Les champs du formulaire à renseigner sont :
+
+* Site name : nom du site
+* Model : choix du modèle à utiliser pour créer le site
+* Host : domaine d'accès à votre site
+* Mapuri : sélectionner si vous souhaitez ajouter un suffix d'accès pour votre site
+* Suffix : suffix d'accès à votre site
+
+Après validation du formulaire, vous êtes redirigé sur l'onglet Dashboard résumant les tâches effectuées, en cours ou programmées, dont celle que vous venez de soumettre.
 
 
