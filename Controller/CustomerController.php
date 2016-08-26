@@ -76,7 +76,7 @@ class CustomerController extends Controller
             $task->setStatus(TaskCommand::STATUS_SUBMITTED);
             $task->setPostedAt(new \DateTime());
         } catch (\Exception $e) {
-            $task->setLogs('Fail to generate customer');
+            $task->setLogs('Fail to generate task');
             $task->setStatus(TaskCommand::STATUS_FAIL);
         } finally {
             /** @var User $user */

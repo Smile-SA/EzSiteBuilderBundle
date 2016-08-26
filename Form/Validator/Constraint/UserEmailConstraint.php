@@ -2,6 +2,7 @@
 
 namespace EdgarEz\SiteBuilderBundle\Form\Validator\Constraint;
 
+
 use Symfony\Component\Validator\Constraint;
 
 class UserEmailConstraint extends Constraint

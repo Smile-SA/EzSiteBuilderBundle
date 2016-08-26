@@ -9,7 +9,7 @@ class VendorNameConstraintValidator extends ConstraintValidator
 {
     public function validate($value, Constraint $constraint)
     {
-        if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $value)) {
+        if (!preg_match('/^[A-Z][a-zA-Z]*$/', $value)) {
             $this->context->addViolation(
                 $constraint->message,
                 array('%string%' => $value)

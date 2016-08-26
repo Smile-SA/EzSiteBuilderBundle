@@ -33,7 +33,7 @@ class Validators
      */
     public static function validateVendorName($vendorName)
     {
-        if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $vendorName)) {
+        if (!preg_match('/^[A-Z][a-zA-Z]*$/', $vendorName)) {
             throw new \InvalidArgumentException('The vendor name contains invalid characters.');
         }
 
@@ -48,7 +48,7 @@ class Validators
      */
     public static function validateModelName($modelName)
     {
-        if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $modelName)) {
+        if (!preg_match('/^[A-Z][a-zA-Z]*$/', $modelName)) {
             throw new \InvalidArgumentException('The model name contains invalid characters.');
         }
 

@@ -95,7 +95,7 @@ class ModelController extends Controller
             $task->setStatus(TaskCommand::STATUS_SUBMITTED);
             $task->setPostedAt($postedAt);
         } catch (\Exception $e) {
-            $task->setLogs('Fail to generate model');
+            $task->setLogs('Fail to generate task');
             $task->setStatus(TaskCommand::STATUS_FAIL);
         } finally {
             /** @var User $user */

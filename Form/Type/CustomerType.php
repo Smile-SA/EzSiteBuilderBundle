@@ -6,6 +6,7 @@ use EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\CustomerNameConstraint;
 use EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\UserEmailConstraint;
 use EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\UserNameConstraint;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -44,7 +45,7 @@ class CustomerType extends AbstractType
                 'required' => true,
                 'constraints' => array(new UserNameConstraint())
             ))
-            ->add('userEmail', TextType::class, array(
+            ->add('userEmail', EmailType::class, array(
                 'required' => true,
                 'constraints' => array(new UserEmailConstraint())
             ))
