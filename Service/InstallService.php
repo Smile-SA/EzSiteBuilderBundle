@@ -288,7 +288,7 @@ class InstallService
      */
     public function createRole($userGroupLocationID, array $locationIDs)
     {
-        /** @var \eZ\Publish\API\Repository\Values\User\Role $roleCreator */
+        /** @var \eZ\Publish\API\Repository\Values\User\Role $role */
         $role = $this->role->add('SiteBuilder');
 
         $userGroupLocation = $this->locationService->loadLocation($userGroupLocationID);

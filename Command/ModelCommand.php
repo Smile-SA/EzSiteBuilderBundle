@@ -82,6 +82,9 @@ class ModelCommand extends BaseContainerAwareCommand
         $returnValue = $modelService->createMediaModelContent($mediaModelsLocationID, $this->modelName);
         $this->mediaModelLocationID = $returnValue['mediaModelLocationID'];
 
+
+        $modelService->updateGlobalRole($this->modelLocationID);
+
         /** @var ModelGenerator $generator */
         $generator = $this->getGenerator();
         $generator->generate(

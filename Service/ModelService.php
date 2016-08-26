@@ -7,7 +7,10 @@ use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\RoleService;
 use eZ\Publish\API\Repository\URLAliasService;
 use eZ\Publish\API\Repository\Values\User\Limitation;
-use eZ\Publish\API\Repository\Values\User\Policy;
+use eZ\Publish\API\Repository\Values\User\Role;
+use eZ\Publish\Core\Repository\Values\User\Policy;
+use eZ\Publish\Core\Repository\Values\User\PolicyDraft;
+use eZ\Publish\Core\Repository\Values\User\PolicyUpdateStruct;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Yaml\Yaml;
@@ -110,9 +113,10 @@ class ModelService
     }
 
     /**
+     * Create Model content structure
      *
-     * @param $modelsLocationID
-     * @param $modelName
+     * @param int $modelsLocationID model root location ID
+     * @param string $modelName model name
      * @return array
      */
     public function createModelContent($modelsLocationID, $modelName)
@@ -132,6 +136,13 @@ class ModelService
         return $returnValue;
     }
 
+    /**
+     * Create Model media structure
+     *
+     * @param int $mediaModelsLocationID model media root location ID
+     * @param string $modelName model name
+     * @return array
+     */
     public function createMediaModelContent($mediaModelsLocationID, $modelName)
     {
         $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediamodelcontent.yml')));
@@ -142,5 +153,41 @@ class ModelService
         return array(
             'mediaModelLocationID' => $contentAdded->contentInfo->mainLocationId
         );
+    }
+
+    public function updateGlobalRole($modelLocationID)
+    {
+        /** @var Role $role */
+        $role = $this->roleService->loadRoleByIdentifier('SiteBuilder');
+
+        $roleDraft = $this->roleService->createRoleDraft($role);
+
+        /** @var Policy[] $policies */
+        $policies = $roleDraft->policies;
+        foreach ($policies as $policy) {
+            if ($policy->module == 'content' && $policy->function == 'read') {
+                /** @var Limitation[] $limitations */
+                $limitations = $policy->getLimitations();
+                foreach ($limitations as $limitation) {
+                    if ($limitation->getIdentifier() == 'Node') {
+                        $limitationValues = $limitation->limitationValues;
+                        $limitationValues[] = $modelLocationID;
+                        $limitation->limitationValues = $limitationValues;
+
+                        $policyUpdateStruct = new PolicyUpdateStruct();
+                        $policyUpdateStruct->addLimitation($limitation);
+
+                        $policyDraft = new PolicyDraft(['innerPolicy' => new Policy(['id' => $policy->id, 'module' => 'content', 'function' => 'read', 'roleId' => $roleDraft->id])]);
+
+                        $this->roleService->updatePolicyByRoleDraft(
+                            $roleDraft,
+                            $policyDraft,
+                            $policyUpdateStruct
+                        );
+                        $this->roleService->publishRoleDraft($roleDraft);
+                    }
+                }
+            }
+        }
     }
 }
