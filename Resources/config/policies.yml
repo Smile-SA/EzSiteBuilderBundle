@@ -1,8 +1,8 @@
 sitebuilder:
-    initialize: ~
-    customercreate: ~
-    modelcreate: ~
-    sitecreate: ~
-    sitepreactivate: ~
+    install: ~
+    dashboard: ~
+    customergenerate: ~
+    modelgenerate: ~
+    sitegenerate: ~
     siteactivate: ~
 

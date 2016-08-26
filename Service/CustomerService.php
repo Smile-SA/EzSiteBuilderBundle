@@ -193,7 +193,8 @@ class CustomerService
         $this->role->addPolicy($roleCreator->id, 'content', 'edit');
         $this->role->addPolicy($roleCreator->id, 'user', 'login');
 
-        $this->role->addPolicy($roleCreator->id, 'sitebuilder', 'sitecreate');
+        $this->role->addPolicy($roleCreator->id, 'sitebuilder', 'dashboard');
+        $this->role->addPolicy($roleCreator->id, 'sitebuilder', 'sitegenerate');
         $this->role->addPolicy($roleCreator->id, 'sitebuilder', 'siteactivate');
 
         /** @var \eZ\Publish\API\Repository\Values\User\Role $roleEditor */

@@ -13,24 +13,28 @@
 
         <ul class="ez-tabs-list">
             {% for tab_item in tab_items %}
-                <li class="ez-tabs-label{% if tab_item == tab_item_selected %} is-tab-selected{% endif %}"><a href="#ez-tabs-{{ tab_item }}">{{ tab_item|trans }}</a></li>
+                {% if sb_can(tab_item) %}
+                    <li class="ez-tabs-label{% if tab_item == tab_item_selected %} is-tab-selected{% endif %}"><a href="#ez-tabs-{{ tab_item }}">{{ tab_item|trans }}</a></li>
+                {% endif %}
             {% endfor %}
         </ul>
 
         <div class="ez-tabs-panels">
             {% for tab_item in tab_items %}
-                <div class="ez-tabs-panel{% if tab_item == tab_item_selected %} is-tab-selected{% endif %}" id="ez-tabs-{{ tab_item }}">
-                    <div class="ez-view-container pure-u yui3-app-views">
-                        <div class="ez-view-serversideview">
-                            <section class="ez-serverside-content">
-                                {{ render( controller(
-                                'edgar_ez_site_builder.controller.sb:tabAction', {
-                                    'tabItem': tab_item
-                                } ) ) }}
-                            </section>
+                {% if sb_can(tab_item) %}
+                    <div class="ez-tabs-panel{% if tab_item == tab_item_selected %} is-tab-selected{% endif %}" id="ez-tabs-{{ tab_item }}">
+                        <div class="ez-view-container pure-u yui3-app-views">
+                            <div class="ez-view-serversideview">
+                                <section class="ez-serverside-content">
+                                    {{ render( controller(
+                                    'edgar_ez_site_builder.controller.sb:tabAction', {
+                                        'tabItem': tab_item
+                                    } ) ) }}
+                                </section>
+                            </div>
                         </div>
                     </div>
-                </div>
+                {% endif %}
             {% endfor %}
         </div>
 

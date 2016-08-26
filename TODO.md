@@ -27,17 +27,17 @@
 * dashboard interface
   * <s>interface</s>
 * customer generator inerface
-  * interface (customer name, user first name, user last name, user email)
+  * <s>interface (customer name, user first name, user last name, user email)</s>
   * manage security access
   * manage form constraints
   * manage notifications
 * model generator interface
-  * interface (model name)
+  * <s>interface (model name)</s>
   * manage security access
   * manage form constraints
   * manage notifications
 * site generator interface
-  * interface (site name, model)
+  * <s>interface (site name, model)</s>
   * manage security access
   * manage form constraints
   * manage notifications
