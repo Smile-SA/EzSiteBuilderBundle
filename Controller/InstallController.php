@@ -8,6 +8,7 @@ use EdgarEz\SiteBuilderBundle\Command\TaskCommand;
 use EdgarEz\SiteBuilderBundle\Data\Install\InstallData;
 use EdgarEz\SiteBuilderBundle\Data\Mapper\InstallMapper;
 use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
+use EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\InstallDispatcher;
 use EdgarEz\SiteBuilderBundle\Form\Type\InstallType;
 use EdgarEz\SiteBuilderBundle\Values\Content\Install;
 use eZ\Publish\Core\MVC\Symfony\Security\User;
@@ -17,18 +18,57 @@ use Symfony\Component\HttpFoundation\Request;
 
 class InstallController extends Controller
 {
+    /** @var InstallDispatcher $actionDispatcher */
+    protected $actionDispatcher;
+
+    /** @var InstallData $data */
+    protected $data;
+
+    public function __construct(InstallDispatcher $actionDispatcher)
+    {
+        $this->actionDispatcher = $actionDispatcher;
+    }
+
     public function installAction(Request $request)
     {
         $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
         $form = $this->getForm($request);
         $form->handleRequest($request);
         if ($form->isValid()) {
+            $this->actionDispatcher->dispatchFormAction(
+                $form,
+                $this->data,
+                $form->getClickedButton() ? $form->getClickedButton()->getName() : null,
+                array(
+                    'vendorName' => $this->data->vendorName,
+                    'contentLocationID' => $this->data->contentLocationID,
+                    'mediaLocationID' => $this->data->mediaLocationID,
+                    'userLocationID' => $this->data->userLocationID,
+                )
+            );
+
+            if ($response = $this->actionDispatcher->getResponse()) {
+                return $response;
+            }
+
             $this->initTask($form);
+
+            foreach ($form->getErrors(true) as $error) {
+                $this->notifyErrorPlural(
+                    $error->getMessageTemplate(),
+                    $error->getMessagePluralization(),
+                    $error->getMessageParameters(),
+                    'edgarezsb_form_install'
+                );
+            }
+
             return $this->redirectAfterFormPost($actionUrl);
         }
 
         return $this->render('EdgarEzSiteBuilderBundle:sb:tab/install.html.twig', [
-            'form' => $form->createView(),
+            'params' => array(
+                'installForm' => $form->createView(),
+            )
         ]);
     }
 
@@ -40,9 +80,9 @@ class InstallController extends Controller
             'mediaLocationID' => 0,
             'userLocationID' => 0
         ]);
-        $installData = (new InstallMapper())->mapToFormData($install);
+        $this->data = (new InstallMapper())->mapToFormData($install);
 
-        return $this->createForm(new InstallType(), $installData);
+        return $this->createForm(new InstallType(), $this->data);
     }
 
     protected function initTask(Form $form)

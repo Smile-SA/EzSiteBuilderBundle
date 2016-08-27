@@ -16,7 +16,7 @@ class ModelType extends AbstractType
      */
     public function getName()
     {
-        return 'edgarezsb_forms_model';
+        return 'edgarezsb_form_model';
     }
 
     /**
@@ -27,6 +27,7 @@ class ModelType extends AbstractType
     {
         $builder
             ->add('modelName', TextType::class, array(
+                'label' => 'form.model.label',
                 'required' => true,
                 'constraints' => array(new ModelNameConstraint())
             ))
@@ -38,6 +39,9 @@ class ModelType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(['translation_domain' => 'sitebuilder_model']);
+        $resolver->setDefaults([
+            'data_class' => '\EdgarEz\SiteBuilderBundle\Values\Content\ModelStruct',
+            'translation_domain' => 'edgarezsb_form_model',
+        ]);
     }
 }

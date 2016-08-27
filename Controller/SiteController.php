@@ -8,6 +8,7 @@ use EdgarEz\SiteBuilderBundle\Command\TaskCommand;
 use EdgarEz\SiteBuilderBundle\Data\Mapper\SiteMapper;
 use EdgarEz\SiteBuilderBundle\Data\Site\SiteData;
 use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
+use EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\SiteDispatcher;
 use EdgarEz\SiteBuilderBundle\Form\Type\SiteType;
 use EdgarEz\SiteBuilderBundle\Values\Content\Site;
 use eZ\Publish\API\Repository\LocationService;
@@ -25,13 +26,21 @@ class SiteController extends Controller
     /** @var SearchService $searchService */
     protected $searchService;
 
+    /** @var SiteDispatcher $actionDispatcher */
+    protected $actionDispatcher;
+
+    /** @var SiteData $data */
+    protected $data;
+
     public function __construct(
         LocationService $locationService,
-        SearchService $searchService
+        SearchService $searchService,
+        SiteDispatcher $actionDispatcher
     )
     {
         $this->locationService = $locationService;
         $this->searchService = $searchService;
+        $this->actionDispatcher = $actionDispatcher;
     }
 
     public function generateAction(Request $request)
@@ -40,12 +49,40 @@ class SiteController extends Controller
         $form = $this->getForm($request);
         $form->handleRequest($request);
         if ($form->isValid()) {
+            $this->actionDispatcher->dispatchFormAction(
+                $form,
+                $this->data,
+                $form->getClickedButton() ? $form->getClickedButton()->getName() : null,
+                array(
+                    'siteName' => $this->data->siteName,
+                    'host' => $this->data->host,
+                    'mapuri' => $this->data->mapuri,
+                    'suffix' => $this->data->suffix,
+                )
+            );
+
+            if ($response = $this->actionDispatcher->getResponse()) {
+                return $response;
+            }
+
             $this->initTask($form);
+
+            foreach ($form->getErrors(true) as $error) {
+                $this->notifyErrorPlural(
+                    $error->getMessageTemplate(),
+                    $error->getMessagePluralization(),
+                    $error->getMessageParameters(),
+                    'edgarezsb_form_site'
+                );
+            }
+
             return $this->redirectAfterFormPost($actionUrl);
         }
 
         return $this->render('EdgarEzSiteBuilderBundle:sb:tab/sitegenerate.html.twig', [
-            'form' => $form->createView(),
+            'params' => array(
+                'siteForm' => $form->createView(),
+            )
         ]);
     }
 

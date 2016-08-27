@@ -8,6 +8,7 @@ use EdgarEz\SiteBuilderBundle\Command\TaskCommand;
 use EdgarEz\SiteBuilderBundle\Data\Mapper\ModelMapper;
 use EdgarEz\SiteBuilderBundle\Data\Model\ModelData;
 use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
+use EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\ModelDispatcher;
 use EdgarEz\SiteBuilderBundle\Form\Type\ModelType;
 use EdgarEz\SiteBuilderBundle\Values\Content\Model;
 use eZ\Publish\Core\MVC\Symfony\Security\User;
@@ -17,30 +18,64 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ModelController extends Controller
 {
+    /** @var ModelDispatcher $actionDispatcher */
+    protected $actionDispatcher;
+
+    /** @var ModelData $data */
+    protected $data;
+
+    public function __construct(ModelDispatcher $actionDispatcher)
+    {
+        $this->actionDispatcher = $actionDispatcher;
+    }
+
     public function generateAction(Request $request)
     {
         $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
         $form = $this->getForm($request);
         $form->handleRequest($request);
         if ($form->isValid()) {
+            $this->actionDispatcher->dispatchFormAction(
+                $form,
+                $this->data,
+                $form->getClickedButton() ? $form->getClickedButton()->getName() : null,
+                array('modelName' => $this->data->modelName)
+            );
+
+            if ($response = $this->actionDispatcher->getResponse()) {
+                return $response;
+            }
+
             $this->initTask($form);
             $this->initPolicyTask($form);
+
+            foreach ($form->getErrors(true) as $error) {
+                $this->notifyErrorPlural(
+                    $error->getMessageTemplate(),
+                    $error->getMessagePluralization(),
+                    $error->getMessageParameters(),
+                    'edgarezsb_form_model'
+                );
+            }
+
             return $this->redirectAfterFormPost($actionUrl);
         }
 
         return $this->render('EdgarEzSiteBuilderBundle:sb:tab/modelgenerate.html.twig', [
-            'form' => $form->createView(),
+            'params' => array(
+                'modelForm' => $form->createView(),
+            )
         ]);
     }
 
     protected function getForm(Request $request)
     {
         $model = new Model([
-            'modelName' => '',
+            'modelName' => 'Foo',
         ]);
-        $modelData = (new ModelMapper())->mapToFormData($model);
+        $this->data = (new ModelMapper())->mapToFormData($model);
 
-        return $this->createForm(new ModelType(), $modelData);
+        return $this->createForm(new ModelType(), $this->data);
     }
 
     protected function initTask(Form $form)
