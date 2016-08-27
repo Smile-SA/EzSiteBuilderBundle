@@ -2,11 +2,8 @@
 
 namespace EdgarEz\SiteBuilderBundle\Twig\Extension;
 
-use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\RoleService;
 use eZ\Publish\API\Repository\Values\User\Policy;
-use eZ\Publish\API\Repository\Values\User\Role;
-use eZ\Publish\API\Repository\Values\User\UserGroup;
 use eZ\Publish\Core\MVC\Symfony\Security\Authorization\Attribute;
 use eZ\Publish\Core\MVC\Symfony\Security\User;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;

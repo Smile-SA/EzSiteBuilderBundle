@@ -3,7 +3,6 @@
 namespace EdgarEz\SiteBuilderBundle\Controller;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\ORM\EntityRepository;
 use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
 use EzSystems\PlatformUIBundle\Controller\Controller;
 
@@ -30,8 +29,6 @@ class DashboardController extends Controller
 
     protected function getTasks($userID)
     {
-        $doctrineManager = $this->doctrineRegistry->getManager();
-        /** @var EntityRepository $repository */
         $repository = $this->doctrineRegistry->getRepository('EdgarEzSiteBuilderBundle:SiteBuilderTask');
 
         $query = $repository->createQueryBuilder('t')
