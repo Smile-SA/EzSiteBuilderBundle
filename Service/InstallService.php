@@ -104,7 +104,7 @@ class InstallService
         try {
             /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentTypeGroup ctg */
             $this->ctg = $this->contentTypeGroup->add('SiteBuilder');
-        } catch (RuntimeException $e) {
+        } catch (\RuntimeException $e) {
             throw $e;
         }
     }
