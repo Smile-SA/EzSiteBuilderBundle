@@ -7,7 +7,10 @@ use EdgarEz\ToolsBundle\Service\ContentType;
 use EdgarEz\ToolsBundle\Service\ContentTypeGroup;
 use EdgarEz\ToolsBundle\Service\Role;
 use eZ\Publish\API\Repository\ContentTypeService;
+use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
+use eZ\Publish\API\Repository\Exceptions\LimitationValidationException;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
+use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\RoleService;
 use eZ\Publish\API\Repository\UserService;
@@ -146,14 +149,22 @@ class InstallService
         $contentTypes = array();
         $identifiers = array('customer', 'customersroot', 'model', 'modelsroot');
 
-        foreach ($identifiers as $identifier) {
-            $contentTypeDefinition = $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediacontenttype_' . $identifier . '.yml');
-            $contentTypeDefinition = Yaml::parse(file_get_contents($contentTypeDefinition));
-            $contentTypeDefinition['contentTypeGroup'] = $contentTypeGroup;
-            $this->contentType->add($contentTypeDefinition);
-        }
+        try {
+            foreach ($identifiers as $identifier) {
+                $contentTypeDefinition = $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediacontenttype_' . $identifier . '.yml');
+                $contentTypeDefinition = Yaml::parse(file_get_contents($contentTypeDefinition));
+                $contentTypeDefinition['contentTypeGroup'] = $contentTypeGroup;
+                $this->contentType->add($contentTypeDefinition);
+            }
 
-        return $contentTypes;
+            return $contentTypes;
+        } catch (ParseException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (\InvalidArgumentException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (\RuntimeException $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -218,36 +229,44 @@ class InstallService
         $contents = array();
         $identifiers = array('customersroot', 'modelsroot');
 
-        foreach ($identifiers as $identifier) {
-            $contentDefinition = $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediacontent_' . $identifier . '.yml');
-            $contentDefinition = Yaml::parse(file_get_contents($contentDefinition));
-            $contentDefinition['parentLocationID'] = $parentLocationID;
-            $contentAdded = $this->content->add($contentDefinition);
-            $contents[] = $contentAdded;
-        }
-
-        $mediaModelsLocationID = false;
-        $mediaCustomersLocationID = false;
-        foreach ($contents as $content) {
-            /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentType $contentType */
-            $contentType = $this->contentTypeService->loadContentType($content->contentInfo->contentTypeId);
-            switch ($contentType->identifier) {
-                case 'edgar_ez_sb_mediamodelsroot':
-                    $mediaModelsLocationID = $content->contentInfo->mainLocationId;
-                    break;
-                case 'edgar_ez_sb_mediacustomersroot':
-                    $mediaCustomersLocationID = $content->contentInfo->mainLocationId;
-                    break;
-                default:
-                    break;
+        try {
+            foreach ($identifiers as $identifier) {
+                $contentDefinition = $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediacontent_' . $identifier . '.yml');
+                $contentDefinition = Yaml::parse(file_get_contents($contentDefinition));
+                $contentDefinition['parentLocationID'] = $parentLocationID;
+                $contentAdded = $this->content->add($contentDefinition);
+                $contents[] = $contentAdded;
             }
-        }
 
-        return array(
-            'contents' => $contents,
-            'modelsLocationID' => $mediaModelsLocationID,
-            'customersLocationID' => $mediaCustomersLocationID
-        );
+            $mediaModelsLocationID = false;
+            $mediaCustomersLocationID = false;
+            foreach ($contents as $content) {
+                /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentType $contentType */
+                $contentType = $this->contentTypeService->loadContentType($content->contentInfo->contentTypeId);
+                switch ($contentType->identifier) {
+                    case 'edgar_ez_sb_mediamodelsroot':
+                        $mediaModelsLocationID = $content->contentInfo->mainLocationId;
+                        break;
+                    case 'edgar_ez_sb_mediacustomersroot':
+                        $mediaCustomersLocationID = $content->contentInfo->mainLocationId;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return array(
+                'contents' => $contents,
+                'modelsLocationID' => $mediaModelsLocationID,
+                'customersLocationID' => $mediaCustomersLocationID
+            );
+        } catch (ParseException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (NotFoundException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (\RuntimeException $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -258,47 +277,55 @@ class InstallService
      */
     public function createUserGroups($parentLocationID)
     {
-        $userGroupDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/usergrouproot.yml')));
-        $userGroupDefinition['parentLocationID'] = $parentLocationID;
-        /** @var \eZ\Publish\API\Repository\Values\Content\Content $userGroup */
-        $userGroup = $this->content->add($userGroupDefinition);
+        try {
+            $userGroupDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/usergrouproot.yml')));
+            $userGroupDefinition['parentLocationID'] = $parentLocationID;
+            /** @var \eZ\Publish\API\Repository\Values\Content\Content $userGroup */
+            $userGroup = $this->content->add($userGroupDefinition);
 
-        $contents = array();
-        $userGroupParenttLocationID = $userGroup->contentInfo->mainLocationId;
-        $identifiers = array('creator', 'editor');
+            $contents = array();
+            $userGroupParenttLocationID = $userGroup->contentInfo->mainLocationId;
+            $identifiers = array('creator', 'editor');
 
-        foreach ($identifiers as $identifier) {
-            $userGroupDefinition = $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/usergroup_' . $identifier . '.yml');
-            $userGroupDefinition = Yaml::parse(file_get_contents($userGroupDefinition));
-            $userGroupDefinition['parentLocationID'] = $userGroupParenttLocationID;
-            /** @var \eZ\Publish\Core\REST\Client\Values\Content\Content $contentAdded */
-            $contentAdded = $this->content->add($userGroupDefinition);
-            $contents[] = $contentAdded;
-        }
-
-        $userCreatorsLocationID = false;
-        $userEditorsLocationID = false;
-        foreach ($contents as $content) {
-            /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentType $contentType */
-            $contentType = $this->contentTypeService->loadContentType($content->contentInfo->contentTypeId);
-            switch ($contentType->identifier) {
-                case 'user_group':
-                    if ($content->contentInfo->name == 'Creators') {
-                        $userCreatorsLocationID = $content->contentInfo->mainLocationId;
-                    } else {
-                        $userEditorsLocationID = $content->contentInfo->mainLocationId;
-                    }
-                    break;
-                default:
-                    break;
+            foreach ($identifiers as $identifier) {
+                $userGroupDefinition = $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/usergroup_' . $identifier . '.yml');
+                $userGroupDefinition = Yaml::parse(file_get_contents($userGroupDefinition));
+                $userGroupDefinition['parentLocationID'] = $userGroupParenttLocationID;
+                /** @var \eZ\Publish\Core\REST\Client\Values\Content\Content $contentAdded */
+                $contentAdded = $this->content->add($userGroupDefinition);
+                $contents[] = $contentAdded;
             }
-        }
 
-        return array(
-            'userGroupParenttLocationID' => $userGroupParenttLocationID,
-            'userCreatorsLocationID' => $userCreatorsLocationID,
-            'userEditorsLocationID' => $userEditorsLocationID
-        );
+            $userCreatorsLocationID = false;
+            $userEditorsLocationID = false;
+            foreach ($contents as $content) {
+                /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentType $contentType */
+                $contentType = $this->contentTypeService->loadContentType($content->contentInfo->contentTypeId);
+                switch ($contentType->identifier) {
+                    case 'user_group':
+                        if ($content->contentInfo->name == 'Creators') {
+                            $userCreatorsLocationID = $content->contentInfo->mainLocationId;
+                        } else {
+                            $userEditorsLocationID = $content->contentInfo->mainLocationId;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return array(
+                'userGroupParenttLocationID' => $userGroupParenttLocationID,
+                'userCreatorsLocationID' => $userCreatorsLocationID,
+                'userEditorsLocationID' => $userEditorsLocationID
+            );
+        } catch (ParseException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (NotFoundException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (\RuntimeException $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -309,43 +336,55 @@ class InstallService
      */
     public function createRole($userGroupLocationID, array $locationIDs)
     {
-        /** @var \eZ\Publish\API\Repository\Values\User\Role $role */
-        $role = $this->role->add('SiteBuilder');
+        try {
+            /** @var \eZ\Publish\API\Repository\Values\User\Role $role */
+            $role = $this->role->add('SiteBuilder');
 
-        $userGroupLocation = $this->locationService->loadLocation($userGroupLocationID);
-        $userGroup = $this->userService->loadUserGroup($userGroupLocation->contentId);
+            $userGroupLocation = $this->locationService->loadLocation($userGroupLocationID);
+            $userGroup = $this->userService->loadUserGroup($userGroupLocation->contentId);
 
-        $this->role->addPolicy($role->id, 'content', 'read');
+            $this->role->addPolicy($role->id, 'content', 'read');
 
-        $roleDraft = $this->roleService->createRoleDraft($role);
+            $roleDraft = $this->roleService->createRoleDraft($role);
 
-        /** @var Policy[] $policies */
-        $policies = $roleDraft->policies;
-        foreach ($policies as $policy) {
-            if ($policy->module == 'content' && $policy->function == 'read') {
-                $locationLimitation = new LocationLimitation(
-                    array(
-                        'limitationValues' => $locationIDs
-                    )
-                );
+            /** @var Policy[] $policies */
+            $policies = $roleDraft->policies;
+            foreach ($policies as $policy) {
+                if ($policy->module == 'content' && $policy->function == 'read') {
+                    $locationLimitation = new LocationLimitation(
+                        array(
+                            'limitationValues' => $locationIDs
+                        )
+                    );
 
-                $policyUpdateStruct = new PolicyUpdateStruct();
-                $policyUpdateStruct->addLimitation($locationLimitation);
-                $policyDraft = new PolicyDraft(['innerPolicy' => new Policy(['id' => $policy->id, 'module' => 'content', 'function' => 'read', 'roleId' => $roleDraft->id])]);
+                    $policyUpdateStruct = new PolicyUpdateStruct();
+                    $policyUpdateStruct->addLimitation($locationLimitation);
+                    $policyDraft = new PolicyDraft(['innerPolicy' => new Policy(['id' => $policy->id, 'module' => 'content', 'function' => 'read', 'roleId' => $roleDraft->id])]);
 
-                $this->roleService->updatePolicyByRoleDraft(
-                    $roleDraft,
-                    $policyDraft,
-                    $policyUpdateStruct
-                );
-                $this->roleService->publishRoleDraft($roleDraft);
+                    $this->roleService->updatePolicyByRoleDraft(
+                        $roleDraft,
+                        $policyDraft,
+                        $policyUpdateStruct
+                    );
+                    $this->roleService->publishRoleDraft($roleDraft);
+                }
             }
-        }
 
-        $this->roleService->assignRoleToUserGroup(
-            $role,
-            $userGroup
-        );
+            $this->roleService->assignRoleToUserGroup(
+                $role,
+                $userGroup
+            );
+        } catch (UnauthorizedException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (NotFoundException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (InvalidArgumentException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (LimitationValidationException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (\RuntimeException $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -377,13 +416,17 @@ class InstallService
      */
     public function createMediaContentStructure($parentLocationID)
     {
-        $this->createMediaContentTypes($this->ctg);
-        $contents = $this->createMediaContents($parentLocationID);
+        try {
+            $this->createMediaContentTypes($this->ctg);
+            $contents = $this->createMediaContents($parentLocationID);
 
-        return array(
-            'mediaModelsLocationID' => $contents['modelsLocationID'],
-            'mediaCustomersLocationID' => $contents['customersLocationID']
-        );
+            return array(
+                'mediaModelsLocationID' => $contents['modelsLocationID'],
+                'mediaCustomersLocationID' => $contents['customersLocationID']
+            );
+        } catch (\RuntimeException $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -394,13 +437,17 @@ class InstallService
      */
     public function createUserStructure($userGroupParenttLocationID)
     {
-        /** @var int[] $userGroups */
-        $userGroups = $this->createUserGroups($userGroupParenttLocationID);
+        try {
+            /** @var int[] $userGroups */
+            $userGroups = $this->createUserGroups($userGroupParenttLocationID);
 
-        return array(
-            'userGroupParenttLocationID' => $userGroups['userGroupParenttLocationID'],
-            'userCreatorsLocationID' => $userGroups['userCreatorsLocationID'],
-            'userEditorsLocationID' => $userGroups['userEditorsLocationID']
-        );
+            return array(
+                'userGroupParenttLocationID' => $userGroups['userGroupParenttLocationID'],
+                'userCreatorsLocationID' => $userGroups['userCreatorsLocationID'],
+                'userEditorsLocationID' => $userGroups['userEditorsLocationID']
+            );
+        } catch (\RuntimeException $e) {
+            throw $e;
+        }
     }
 }

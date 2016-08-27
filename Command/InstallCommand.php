@@ -155,7 +155,7 @@ class InstallCommand extends BaseContainerAwareCommand
                 ''
             ));
         } catch (\RuntimeException $e) {
-
+            $output->write('<error>' . $e->getMessage() . '</error');
         }
     }
 
