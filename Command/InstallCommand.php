@@ -7,6 +7,8 @@ use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
+use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
@@ -104,53 +106,57 @@ class InstallCommand extends BaseContainerAwareCommand
         /** @var InstallService $installService */
         $installService = $this->getContainer()->get('edgar_ez_site_builder.install.service');
 
-        $installService->createContentTypeGroup();
+        try {
+            $installService->createContentTypeGroup();
 
-        $returnValue = $installService->createContentStructure($contentParentLocationID);
-        $this->modelsLocationID = $returnValue['modelsLocationID'];
-        $this->customersLocationID = $returnValue['customersLocationID'];
+            $returnValue = $installService->createContentStructure($contentParentLocationID);
+            $this->modelsLocationID = $returnValue['modelsLocationID'];
+            $this->customersLocationID = $returnValue['customersLocationID'];
 
-        $returnValue = $installService->createMediaContentStructure($mediaParentLocationID);
-        $this->mediaModelsLocationID = $returnValue['mediaModelsLocationID'];
-        $this->mediaCustomersLocationID = $returnValue['mediaCustomersLocationID'];
+            $returnValue = $installService->createMediaContentStructure($mediaParentLocationID);
+            $this->mediaModelsLocationID = $returnValue['mediaModelsLocationID'];
+            $this->mediaCustomersLocationID = $returnValue['mediaCustomersLocationID'];
 
-        $returnValue = $installService->createUserStructure($userGroupLocationID);
-        $this->userGroupParenttLocationID = $returnValue['userGroupParenttLocationID'];
-        $this->userCreatorsLocationID = $returnValue['userCreatorsLocationID'];
-        $this->userEditorsLocationID = $returnValue['userEditorsLocationID'];
+            $returnValue = $installService->createUserStructure($userGroupLocationID);
+            $this->userGroupParenttLocationID = $returnValue['userGroupParenttLocationID'];
+            $this->userCreatorsLocationID = $returnValue['userCreatorsLocationID'];
+            $this->userEditorsLocationID = $returnValue['userEditorsLocationID'];
 
-        $locationIDs = array(
-            $this->rootContentLocationID,
-            $this->rootMediaLocationID,
-            $this->customersLocationID,
-            $this->mediaCustomersLocationID,
-            $this->modelsLocationID,
-            $this->mediaModelsLocationID
-        );
-        $installService->createRole($this->userGroupParenttLocationID, $locationIDs);
+            $locationIDs = array(
+                $this->rootContentLocationID,
+                $this->rootMediaLocationID,
+                $this->customersLocationID,
+                $this->mediaCustomersLocationID,
+                $this->modelsLocationID,
+                $this->mediaModelsLocationID
+            );
+            $installService->createRole($this->userGroupParenttLocationID, $locationIDs);
 
-        /** @var ProjectGenerator $generator */
-        $generator = $this->getGenerator();
-        $generator->generate(
-            $this->modelsLocationID,
-            $this->customersLocationID,
-            $this->mediaModelsLocationID,
-            $this->mediaCustomersLocationID,
-            $this->userCreatorsLocationID,
-            $this->userEditorsLocationID,
-            $this->vendorName,
-            $this->dir
-        );
+            /** @var ProjectGenerator $generator */
+            $generator = $this->getGenerator();
+            $generator->generate(
+                $this->modelsLocationID,
+                $this->customersLocationID,
+                $this->mediaModelsLocationID,
+                $this->mediaCustomersLocationID,
+                $this->userCreatorsLocationID,
+                $this->userEditorsLocationID,
+                $this->vendorName,
+                $this->dir
+            );
 
-        $namespace = $this->vendorName . '\\' . ProjectGenerator::BUNDLE;
-        $bundle = $this->vendorName . ProjectGenerator::BUNDLE;
-        $this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle);
+            $namespace = $this->vendorName . '\\' . ProjectGenerator::BUNDLE;
+            $bundle = $this->vendorName . ProjectGenerator::BUNDLE;
+            $this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle);
 
-        $output->writeln(array(
-            '',
-            $this->getHelper('formatter')->formatBlock('SiteBuilder Contents and Structure generated', 'bg=blue;fg=white', true),
-            ''
-        ));
+            $output->writeln(array(
+                '',
+                $this->getHelper('formatter')->formatBlock('SiteBuilder Contents and Structure generated', 'bg=blue;fg=white', true),
+                ''
+            ));
+        } catch (\RuntimeException $e) {
+
+        }
     }
 
     /**
@@ -181,13 +187,15 @@ class InstallCommand extends BaseContainerAwareCommand
         );
 
         while (!$parentLocationID) {
-            $parentLocationID = $questionHelper->ask($input, $output, $question);
-
             try {
+                $parentLocationID = $questionHelper->ask($input, $output, $question);
                 $locationService->loadLocation($parentLocationID);
                 if (!$parentLocationID || empty($parentLocationID)) {
                     $output->writeln("<error>Parent Location ID is not valid</error>");
                 }
+            } catch (InvalidArgumentException $e) {
+                $output->writeln('<error>' . $e->getMessage() . '</error>');
+                $parentLocationID = false;
             } catch (NotFoundException $e) {
                 $output->writeln("<error>No location found with id $parentLocationID</error>");
                 $parentLocationID = false;
@@ -227,13 +235,15 @@ class InstallCommand extends BaseContainerAwareCommand
         );
 
         while (!$parentLocationID) {
-            $parentLocationID = $questionHelper->ask($input, $output, $question);
-
             try {
+                $parentLocationID = $questionHelper->ask($input, $output, $question);
                 $locationService->loadLocation($parentLocationID);
                 if (!$parentLocationID || empty($parentLocationID)) {
                     $output->writeln("<error>Parent Location ID is not valid</error>");
                 }
+            } catch (InvalidArgumentException $e) {
+                $output->writeln('<error>' . $e->getMessage() . '</error');
+                $parentLocationID = false;
             } catch (NotFoundException $e) {
                 $output->writeln("<error>No location found with id $parentLocationID</error>");
                 $parentLocationID = false;
@@ -273,18 +283,22 @@ class InstallCommand extends BaseContainerAwareCommand
         );
 
         while (!$userGroupParenttLocationID) {
-            $userGroupParenttLocationID = $questionHelper->ask($input, $output, $question);
-
             try {
+                $userGroupParenttLocationID = $questionHelper->ask($input, $output, $question);
                 $locationService->loadLocation($userGroupParenttLocationID);
                 if (!$userGroupParenttLocationID || empty($userGroupParenttLocationID)) {
                     $output->writeln("<error>User Parent Location ID is not valid</error>");
                 }
+            } catch (InvalidArgumentException $e) {
+                $output->writeln('<eror>' . $e->getMessage() . '</error>');
+                $userGroupParenttLocationID = false;
             } catch (NotFoundException $e) {
                 $output->writeln("<error>No user location found with id $userGroupParenttLocationID</error>");
                 $userGroupParenttLocationID = false;
             }
         }
+
+        $this->userGroupParenttLocationID = $userGroupParenttLocationID;
 
         return $userGroupParenttLocationID;
     }

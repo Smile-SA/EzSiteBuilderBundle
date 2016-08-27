@@ -7,6 +7,7 @@ use EdgarEz\ToolsBundle\Service\ContentType;
 use EdgarEz\ToolsBundle\Service\ContentTypeGroup;
 use EdgarEz\ToolsBundle\Service\Role;
 use eZ\Publish\API\Repository\ContentTypeService;
+use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\RoleService;
 use eZ\Publish\API\Repository\UserService;
@@ -14,7 +15,9 @@ use eZ\Publish\API\Repository\Values\User\Limitation\LocationLimitation;
 use eZ\Publish\Core\Repository\Values\User\Policy;
 use eZ\Publish\Core\Repository\Values\User\PolicyDraft;
 use eZ\Publish\Core\Repository\Values\User\PolicyUpdateStruct;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -92,13 +95,15 @@ class InstallService
 
     /**
      * Create ContentType Group
-     *
-     * @return \eZ\Publish\API\Repository\Values\ContentType\ContentTypeGroup
      */
     public function createContentTypeGroup()
     {
-        /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentTypeGroup ctg */
-        $this->ctg = $this->contentTypeGroup->add('SiteBuilder');
+        try {
+            /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentTypeGroup ctg */
+            $this->ctg = $this->contentTypeGroup->add('SiteBuilder');
+        } catch (RuntimeException $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -112,14 +117,22 @@ class InstallService
         $contentTypes = array();
         $identifiers = array('customer', 'customersroot', 'model', 'modelsroot', 'user');
 
-        foreach ($identifiers as $identifier) {
-            $contentTypeDefinition = $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/contenttype_' . $identifier . '.yml');
-            $contentTypeDefinition = Yaml::parse(file_get_contents($contentTypeDefinition));
-            $contentTypeDefinition['contentTypeGroup'] = $contentTypeGroup;
-            $this->contentType->add($contentTypeDefinition);
-        }
+        try {
+            foreach ($identifiers as $identifier) {
+                $contentTypeDefinition = $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/contenttype_' . $identifier . '.yml');
+                $contentTypeDefinition = Yaml::parse(file_get_contents($contentTypeDefinition));
+                $contentTypeDefinition['contentTypeGroup'] = $contentTypeGroup;
+                $this->contentType->add($contentTypeDefinition);
+            }
 
-        return $contentTypes;
+            return $contentTypes;
+        } catch (\InvalidArgumentException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (ParseException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (\RuntimeException $e) {
+            throw new \RuntimeException($e->getMessage());
+        }
     }
 
     /**
@@ -154,36 +167,44 @@ class InstallService
         $contents = array();
         $identifiers = array('customersroot', 'modelsroot');
 
-        foreach ($identifiers as $identifier) {
-            $contentDefinition = $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/content_' . $identifier . '.yml');
-            $contentDefinition = Yaml::parse(file_get_contents($contentDefinition));
-            $contentDefinition['parentLocationID'] = $parentLocationID;
-            $contentAdded = $this->content->add($contentDefinition);
-            $contents[] = $contentAdded;
-        }
-
-        $modelsLocationID = false;
-        $customersLocationID = false;
-        foreach ($contents as $content) {
-            /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentType $contentType */
-            $contentType = $this->contentTypeService->loadContentType($content->contentInfo->contentTypeId);
-            switch ($contentType->identifier) {
-                case 'edgar_ez_sb_modelsroot':
-                    $modelsLocationID = $content->contentInfo->mainLocationId;
-                    break;
-                case 'edgar_ez_sb_customersroot':
-                    $customersLocationID = $content->contentInfo->mainLocationId;
-                    break;
-                default:
-                    break;
+        try {
+            foreach ($identifiers as $identifier) {
+                $contentDefinition = $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/content_' . $identifier . '.yml');
+                $contentDefinition = Yaml::parse(file_get_contents($contentDefinition));
+                $contentDefinition['parentLocationID'] = $parentLocationID;
+                $contentAdded = $this->content->add($contentDefinition);
+                $contents[] = $contentAdded;
             }
-        }
 
-        return array(
-            'contents' => $contents,
-            'modelsLocationID' => $modelsLocationID,
-            'customersLocationID' => $customersLocationID
-        );
+            $modelsLocationID = false;
+            $customersLocationID = false;
+            foreach ($contents as $content) {
+                /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentType $contentType */
+                $contentType = $this->contentTypeService->loadContentType($content->contentInfo->contentTypeId);
+                switch ($contentType->identifier) {
+                    case 'edgar_ez_sb_modelsroot':
+                        $modelsLocationID = $content->contentInfo->mainLocationId;
+                        break;
+                    case 'edgar_ez_sb_customersroot':
+                        $customersLocationID = $content->contentInfo->mainLocationId;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return array(
+                'contents' => $contents,
+                'modelsLocationID' => $modelsLocationID,
+                'customersLocationID' => $customersLocationID
+            );
+        }  catch (ParseException $e) {
+            throw new \RuntimeException($e);
+        } catch (NotFoundException $e) {
+            throw new \RuntimeException($e);
+        } catch (\RuntimeException $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -335,13 +356,17 @@ class InstallService
      */
     public function createContentStructure($parentLocationID)
     {
-        $this->createContentTypes($this->ctg);
-        $contents = $this->createContents($parentLocationID);
+        try {
+            $this->createContentTypes($this->ctg);
+            $contents = $this->createContents($parentLocationID);
 
-        return array(
-            'modelsLocationID' => $contents['modelsLocationID'],
-            'customersLocationID' => $contents['customersLocationID']
-        );
+            return array(
+                'modelsLocationID' => $contents['modelsLocationID'],
+                'customersLocationID' => $contents['customersLocationID']
+            );
+        } catch (\RuntimeException $e) {
+            throw $e;
+        }
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace EdgarEz\SiteBuilderBundle\Command;
 
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
+use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
 use Sensio\Bundle\GeneratorBundle\Command\GeneratorCommand;
 use Sensio\Bundle\GeneratorBundle\Command\Helper\QuestionHelper;
 use Sensio\Bundle\GeneratorBundle\Manipulator\KernelManipulator;
@@ -102,6 +103,7 @@ abstract class BaseContainerAwareCommand extends GeneratorCommand
      *
      * @param InputInterface $input input console
      * @param OutputInterface $output output console
+     * @return bool|string
      */
     protected function getVendorName(InputInterface $input, OutputInterface $output)
     {
@@ -117,10 +119,14 @@ abstract class BaseContainerAwareCommand extends GeneratorCommand
         );
 
         while (!$vendorName) {
-            $vendorName = $questionHelper->ask($input, $output, $question);
+            try {
+                $vendorName = $questionHelper->ask($input, $output, $question);
+            } catch (InvalidArgumentException $e) {
+                $output->write('<error>' . $e->getMessage() . '</error>');
+            }
         }
 
-        $this->vendorName = $vendorName;
+        return $vendorName;
     }
 
     /**
@@ -128,33 +134,39 @@ abstract class BaseContainerAwareCommand extends GeneratorCommand
      *
      * @param InputInterface $input input console
      * @param OutputInterface $output output console
+     * @return bool|string
      */
     protected function getDir(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
 
         $dir = false;
+        $dirSuggest = dirname($this->getContainer()->getParameter('kernel.root_dir')).'/src';
+
+        $output->writeln(array(
+            '',
+            'The bundle can be generated anywhere. The suggested default directory uses',
+            'the standard conventions.',
+            '',
+        ));
+
+        $question = new Question($questionHelper->getQuestion('Target directory', $dirSuggest), $dirSuggest);
+        $question->setValidator(
+            array(
+                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'validateTargetDir'
+            )
+        );
+
         while (!$dir) {
-            $dir = dirname($this->getContainer()->getParameter('kernel.root_dir')).'/src';
-
-            $output->writeln(array(
-                '',
-                'The bundle can be generated anywhere. The suggested default directory uses',
-                'the standard conventions.',
-                '',
-            ));
-
-            $question = new Question($questionHelper->getQuestion('Target directory', $dir), $dir);
-            $question->setValidator(
-                array(
-                    'EdgarEz\SiteBuilderBundle\Command\Validators',
-                    'validateTargetDir'
-                )
-            );
-            $dir = $questionHelper->ask($input, $output, $question);
+            try {
+                $dir = $questionHelper->ask($input, $output, $question);
+            } catch (InvalidArgumentException $e) {
+                $output->write('<error>' . $e->getMessage() . '</error>');
+            }
         }
 
-        $this->dir = $dir;
+        return $dir;
     }
 
     /**
@@ -165,8 +177,8 @@ abstract class BaseContainerAwareCommand extends GeneratorCommand
      */
     protected function init(InputInterface $input, OutputInterface $output)
     {
-        $this->getVendorName($input, $output);
-        $this->getDir($input, $output);
+        $this->vendorName = $this->getVendorName($input, $output);
+        $this->dir = $this->getDir($input, $output);
     }
 
     /**
