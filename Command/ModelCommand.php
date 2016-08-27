@@ -71,41 +71,45 @@ class ModelCommand extends BaseContainerAwareCommand
         /** @var ModelService $modelService */
         $modelService = $this->getContainer()->get('edgar_ez_site_builder.model.service');
 
-        $basename = ProjectGenerator::MAIN ;
+        try {
+            $basename = ProjectGenerator::MAIN ;
 
-        $modelsLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.models_location_id');
-        $returnValue = $modelService->createModelContent($modelsLocationID, $this->modelName);
-        $this->excludeUriPrefixes = $returnValue['excludeUriPrefixes'];
-        $this->modelLocationID = $returnValue['modelLocationID'];
+            $modelsLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.models_location_id');
+            $returnValue = $modelService->createModelContent($modelsLocationID, $this->modelName);
+            $this->excludeUriPrefixes = $returnValue['excludeUriPrefixes'];
+            $this->modelLocationID = $returnValue['modelLocationID'];
 
-        $mediaModelsLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.media_models_location_id');
-        $returnValue = $modelService->createMediaModelContent($mediaModelsLocationID, $this->modelName);
-        $this->mediaModelLocationID = $returnValue['mediaModelLocationID'];
+            $mediaModelsLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.media_models_location_id');
+            $returnValue = $modelService->createMediaModelContent($mediaModelsLocationID, $this->modelName);
+            $this->mediaModelLocationID = $returnValue['mediaModelLocationID'];
 
 
-        $modelService->updateGlobalRole($this->modelLocationID);
+            $modelService->updateGlobalRole($this->modelLocationID);
 
-        /** @var ModelGenerator $generator */
-        $generator = $this->getGenerator();
-        $generator->generate(
-            $this->vendorName,
-            $this->modelName,
-            $this->modelLocationID,
-            $this->mediaModelLocationID,
-            $this->excludeUriPrefixes,
-            $this->getContainer()->getParameter('edgar_ez_site_builder.host'),
-            $this->dir
-        );
+            /** @var ModelGenerator $generator */
+            $generator = $this->getGenerator();
+            $generator->generate(
+                $this->vendorName,
+                $this->modelName,
+                $this->modelLocationID,
+                $this->mediaModelLocationID,
+                $this->excludeUriPrefixes,
+                $this->getContainer()->getParameter('edgar_ez_site_builder.host'),
+                $this->dir
+            );
 
-        $namespace = $this->vendorName . '\\' . ProjectGenerator::MODELS . '\\' . $this->modelName . 'Bundle';
-        $bundle = $this->vendorName . ProjectGenerator::MODELS . $this->modelName . 'Bundle';
-        $this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle);
+            $namespace = $this->vendorName . '\\' . ProjectGenerator::MODELS . '\\' . $this->modelName . 'Bundle';
+            $bundle = $this->vendorName . ProjectGenerator::MODELS . $this->modelName . 'Bundle';
+            $this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle);
 
-        $output->writeln(array(
-            '',
-            $this->getHelper('formatter')->formatBlock('New model content and bundle generated', 'bg=blue;fg=white', true),
-            ''
-        ));
+            $output->writeln(array(
+                '',
+                $this->getHelper('formatter')->formatBlock('New model content and bundle generated', 'bg=blue;fg=white', true),
+                ''
+            ));
+        } catch (\RuntimeException $e) {
+            $output->write('<error>' . $e->getMessage() . '</error');
+        }
     }
 
     /**

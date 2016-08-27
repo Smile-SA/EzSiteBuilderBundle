@@ -91,57 +91,61 @@ class CustomerCommand extends BaseContainerAwareCommand
         /** @var CustomerService $customerService */
         $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
 
-        $basename = ProjectGenerator::MAIN;
+        try {
+            $basename = ProjectGenerator::MAIN;
 
-        $parentLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.customers_location_id');
-        $returnValue = $customerService->createContentStructure($parentLocationID, $this->customerName);
-        $this->customerLocationID = $returnValue['customerLocationID'];
+            $parentLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.customers_location_id');
+            $returnValue = $customerService->createContentStructure($parentLocationID, $this->customerName);
+            $this->customerLocationID = $returnValue['customerLocationID'];
 
-        $parentLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.media_customers_location_id');
-        $returnValue = $customerService->createMediaContentStructure($parentLocationID, $this->customerName);
-        $this->mediaCustomerLocationID = $returnValue['mediaCustomerLocationID'];
+            $parentLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.media_customers_location_id');
+            $returnValue = $customerService->createMediaContentStructure($parentLocationID, $this->customerName);
+            $this->mediaCustomerLocationID = $returnValue['mediaCustomerLocationID'];
 
-        $parentCreatorLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.user_creators_location_id');
-        $parentEditorLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.user_editors_location_id');
-        $returnValue = $customerService->createUserGroups($parentCreatorLocationID, $parentEditorLocationID, $this->customerName);
-        $this->customerUserCreatorsGroupLocationID = $returnValue['customerUserCreatorsGroupLocationID'];
-        $this->customerUserEditorsGroupLocationID = $returnValue['customerUserEditorsGroupLocationID'];
+            $parentCreatorLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.user_creators_location_id');
+            $parentEditorLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.user_editors_location_id');
+            $returnValue = $customerService->createUserGroups($parentCreatorLocationID, $parentEditorLocationID, $this->customerName);
+            $this->customerUserCreatorsGroupLocationID = $returnValue['customerUserCreatorsGroupLocationID'];
+            $this->customerUserEditorsGroupLocationID = $returnValue['customerUserEditorsGroupLocationID'];
 
-        $returnValue = $customerService->createRoles(
-            $this->customerName,
-            $this->customerLocationID,
-            $this->mediaCustomerLocationID,
-            $this->customerUserCreatorsGroupLocationID,
-            $this->customerUserEditorsGroupLocationID
-        );
-        $this->customerRoleCreatorID = $returnValue['customerRoleCreatorID'];
-        $this->customerRoleEditorID = $returnValue['customerRoleEditorID'];
+            $returnValue = $customerService->createRoles(
+                $this->customerName,
+                $this->customerLocationID,
+                $this->mediaCustomerLocationID,
+                $this->customerUserCreatorsGroupLocationID,
+                $this->customerUserEditorsGroupLocationID
+            );
+            $this->customerRoleCreatorID = $returnValue['customerRoleCreatorID'];
+            $this->customerRoleEditorID = $returnValue['customerRoleEditorID'];
 
-        $this->initializeUserCreator($output);
+            $this->initializeUserCreator($output);
 
-        /** @var CustomerGenerator $generator */
-        $generator = $this->getGenerator();
-        $generator->generate(
-            $this->customerLocationID,
-            $this->mediaCustomerLocationID,
-            $this->customerUserCreatorsGroupLocationID,
-            $this->customerUserEditorsGroupLocationID,
-            $this->customerRoleCreatorID,
-            $this->customerRoleEditorID,
-            $this->vendorName,
-            $this->customerName,
-            $this->dir
-        );
+            /** @var CustomerGenerator $generator */
+            $generator = $this->getGenerator();
+            $generator->generate(
+                $this->customerLocationID,
+                $this->mediaCustomerLocationID,
+                $this->customerUserCreatorsGroupLocationID,
+                $this->customerUserEditorsGroupLocationID,
+                $this->customerRoleCreatorID,
+                $this->customerRoleEditorID,
+                $this->vendorName,
+                $this->customerName,
+                $this->dir
+            );
 
-        $namespace = $this->vendorName . '\\' . ProjectGenerator::CUSTOMERS . '\\' . $this->customerName . '\\' . CustomerGenerator::BUNDLE ;
-        $bundle = $this->vendorName . ProjectGenerator::CUSTOMERS . $this->customerName . CustomerGenerator::BUNDLE;
-        $this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle);
+            $namespace = $this->vendorName . '\\' . ProjectGenerator::CUSTOMERS . '\\' . $this->customerName . '\\' . CustomerGenerator::BUNDLE ;
+            $bundle = $this->vendorName . ProjectGenerator::CUSTOMERS . $this->customerName . CustomerGenerator::BUNDLE;
+            $this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle);
 
-        $output->writeln(array(
-            '',
-            $this->getHelper('formatter')->formatBlock('SiteBuilder Contents and Structure generated', 'bg=blue;fg=white', true),
-            ''
-        ));
+            $output->writeln(array(
+                '',
+                $this->getHelper('formatter')->formatBlock('SiteBuilder Contents and Structure generated', 'bg=blue;fg=white', true),
+                ''
+            ));
+        } catch (\RuntimeException $e) {
+            $output->write('<error>' . $e->getMessage() . '</error');
+        }
     }
 
     /**

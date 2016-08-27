@@ -58,19 +58,23 @@ class SitePolicyCommand extends BaseContainerAwareCommand
         $this->askCustomerName($input, $output);
         $this->askSiteName($input, $output);
 
-        $this->addSiteaccessLimitation($this->customerName, Container::underscore($this->vendorName . $this->customerName . $this->siteName));
+        try {
+            $this->addSiteaccessLimitation($this->customerName, Container::underscore($this->vendorName . $this->customerName . $this->siteName));
 
-        $output->writeln(array(
-            '',
-            $this->getHelper('formatter')->formatBlock(
-                array(
-                    'Siteaccess Limitation are set for your customer creator/editor roles'
+            $output->writeln(array(
+                '',
+                $this->getHelper('formatter')->formatBlock(
+                    array(
+                        'Siteaccess Limitation are set for your customer creator/editor roles'
+                    ),
+                    'bg=blue;fg=white',
+                    true
                 ),
-                'bg=blue;fg=white',
-                true
-            ),
-            ''
-        ));
+                ''
+            ));
+        } catch (\RuntimeException $e) {
+            $output->write('<error>' . $e->getMessage() . '</error');
+        }
     }
 
     /**

@@ -4,6 +4,7 @@ namespace EdgarEz\SiteBuilderBundle\Service;
 
 use EdgarEz\ToolsBundle\Service\Content;
 use EdgarEz\ToolsBundle\Service\Role;
+use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\URLAliasService;
 use eZ\Publish\API\Repository\Values\User\Limitation;
@@ -59,15 +60,21 @@ class SiteService
     {
         $returnValue = array();
 
-        $siteLocationID = $this->content->copySubtree($modelLocationID, $customerLocationID, $siteName);
+        try {
+            $siteLocationID = $this->content->copySubtree($modelLocationID, $customerLocationID, $siteName);
 
-        $returnValue['siteLocationID'] = $siteLocationID;
-        $newLocation = $this->locationService->loadLocation($siteLocationID);
+            $returnValue['siteLocationID'] = $siteLocationID;
+            $newLocation = $this->locationService->loadLocation($siteLocationID);
 
-        $contentPath = $this->urlAliasService->reverseLookup($newLocation, $newLocation->getContentInfo()->mainLanguageCode)->path;
-        $returnValue['excludeUriPrefixes'] = trim($contentPath, '/') . '/';
+            $contentPath = $this->urlAliasService->reverseLookup($newLocation, $newLocation->getContentInfo()->mainLanguageCode)->path;
+            $returnValue['excludeUriPrefixes'] = trim($contentPath, '/') . '/';
 
-        return $returnValue;
+            return $returnValue;
+        } catch (NotFoundException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (\RuntimeException $e) {
+            throw $e;
+        }
      }
 
     /**
@@ -80,11 +87,15 @@ class SiteService
      */
      public function createMediaSiteContent($mediaCustomerLocationID, $mediaModelLocationID, $siteName)
     {
-        $mediaSiteLocationID = $this->content->copySubtree($mediaModelLocationID, $mediaCustomerLocationID, $siteName);
+        try {
+            $mediaSiteLocationID = $this->content->copySubtree($mediaModelLocationID, $mediaCustomerLocationID, $siteName);
 
-        return array(
-            'mediaSiteLocationID' => $mediaSiteLocationID
-        );
+            return array(
+                'mediaSiteLocationID' => $mediaSiteLocationID
+            );
+        } catch (\RuntimeException $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -118,7 +129,12 @@ class SiteService
                 }
             }
         }
-        $this->role->addSiteaccessLimitation($roleCreator, $siteaccess);
+
+        try {
+            $this->role->addSiteaccessLimitation($roleCreator, $siteaccess);
+        } catch (\RuntimeException $e) {
+            throw $e;
+        }
 
         $siteaccess = array();
         $policies = $roleEditor->getPolicies();
@@ -138,6 +154,10 @@ class SiteService
                 }
             }
         }
-        $this->role->addSiteaccessLimitation($roleEditor, $siteaccess);
+        try {
+            $this->role->addSiteaccessLimitation($roleEditor, $siteaccess);
+        } catch (\RuntimeException $e) {
+            throw $e;
+        }
     }
 }

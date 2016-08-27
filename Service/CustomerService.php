@@ -5,11 +5,18 @@ namespace EdgarEz\SiteBuilderBundle\Service;
 use EdgarEz\ToolsBundle\Service\Content;
 use EdgarEz\ToolsBundle\Service\Role;
 use eZ\Publish\API\Repository\ContentTypeService;
+use eZ\Publish\API\Repository\Exceptions\ContentFieldValidationException;
+use eZ\Publish\API\Repository\Exceptions\ContentValidationException;
+use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
+use eZ\Publish\API\Repository\Exceptions\LimitationValidationException;
+use eZ\Publish\API\Repository\Exceptions\NotFoundException;
+use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\RoleService;
 use eZ\Publish\API\Repository\UserService;
 use eZ\Publish\API\Repository\Values\User\Limitation\SubtreeLimitation;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -88,17 +95,29 @@ class CustomerService
         $userLogin = $userEmail;
         $userPassword = substr(str_shuffle(strtolower(sha1(rand() . time() . $userLogin))),0, 8);;
 
-        $contentType = $this->contentTypeService->loadContentTypeByIdentifier('edgar_ez_sb_user');
-        $userCreateStruct = $this->userService->newUserCreateStruct($userLogin, $userEmail, $userPassword, 'eng-GB', $contentType);
-        $userCreateStruct->setField('first_name', $userFirstName);
-        $userCreateStruct->setField('last_name', $userLastName);
+        try {
+            $contentType = $this->contentTypeService->loadContentTypeByIdentifier('edgar_ez_sb_user');
+            $userCreateStruct = $this->userService->newUserCreateStruct($userLogin, $userEmail, $userPassword, 'eng-GB', $contentType);
+            $userCreateStruct->setField('first_name', $userFirstName);
+            $userCreateStruct->setField('last_name', $userLastName);
 
-        $userGroupCreatorLocation = $this->locationService->loadLocation($customerUserCreatorsGroupLocationID);
-        $userGroup = $this->userService->loadUserGroup($userGroupCreatorLocation->contentId);
+            $userGroupCreatorLocation = $this->locationService->loadLocation($customerUserCreatorsGroupLocationID);
+            $userGroup = $this->userService->loadUserGroup($userGroupCreatorLocation->contentId);
 
-        $this->userService->createUser($userCreateStruct, array($userGroup));
+            $this->userService->createUser($userCreateStruct, array($userGroup));
 
-        return $userPassword;
+            return $userPassword;
+        } catch (NotFoundException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (UnauthorizedException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (ContentFieldValidationException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (ContentValidationException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (InvalidArgumentException $e) {
+            throw new \RuntimeException($e->getMessage());
+        }
     }
 
     /**
@@ -110,14 +129,20 @@ class CustomerService
      */
     public function createContentStructure($parentLocationID, $name)
     {
-        $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/customercontent.yml')));
-        $contentDefinition['parentLocationID'] = $parentLocationID;
-        $contentDefinition['fields']['title']['value'] = $name;
-        $contentAdded = $this->content->add($contentDefinition);
+        try {
+            $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/customercontent.yml')));
+            $contentDefinition['parentLocationID'] = $parentLocationID;
+            $contentDefinition['fields']['title']['value'] = $name;
+            $contentAdded = $this->content->add($contentDefinition);
 
-        return array(
-            'customerLocationID' => $contentAdded->contentInfo->mainLocationId
-        );
+            return array(
+                'customerLocationID' => $contentAdded->contentInfo->mainLocationId
+            );
+        } catch (ParseException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (\RuntimeException $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -129,14 +154,20 @@ class CustomerService
      */
     public function createMediaContentStructure($parentLocationID, $name)
     {
-        $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediacustomercontent.yml')));
-        $contentDefinition['parentLocationID'] = $parentLocationID;
-        $contentDefinition['fields']['title']['value'] = $name;
-        $contentAdded = $this->content->add($contentDefinition);
+        try {
+            $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediacustomercontent.yml')));
+            $contentDefinition['parentLocationID'] = $parentLocationID;
+            $contentDefinition['fields']['title']['value'] = $name;
+            $contentAdded = $this->content->add($contentDefinition);
 
-        return array(
-            'mediaCustomerLocationID' => $contentAdded->contentInfo->mainLocationId
-        );
+            return array(
+                'mediaCustomerLocationID' => $contentAdded->contentInfo->mainLocationId
+            );
+        } catch (ParseException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (\RuntimeException $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -151,20 +182,26 @@ class CustomerService
     {
         $contents = array();
 
-        $userGroupDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/customerusergroup_creators.yml')));
-        $userGroupDefinition['parentLocationID'] = $parentCreatorLocationID;
-        $userGroupDefinition['fields']['name']['value'] = $name;
-        $contents['customerUserCreatorsGroup'] = $this->content->add($userGroupDefinition);
+        try {
+            $userGroupDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/customerusergroup_creators.yml')));
+            $userGroupDefinition['parentLocationID'] = $parentCreatorLocationID;
+            $userGroupDefinition['fields']['name']['value'] = $name;
+            $contents['customerUserCreatorsGroup'] = $this->content->add($userGroupDefinition);
 
-        $userGroupDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/customerusergroup_editors.yml')));
-        $userGroupDefinition['parentLocationID'] = $parentEditorLocationID;
-        $userGroupDefinition['fields']['name']['value'] = $name;
-        $contents['customerUserEditorsGroup'] = $this->content->add($userGroupDefinition);
+            $userGroupDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/customerusergroup_editors.yml')));
+            $userGroupDefinition['parentLocationID'] = $parentEditorLocationID;
+            $userGroupDefinition['fields']['name']['value'] = $name;
+            $contents['customerUserEditorsGroup'] = $this->content->add($userGroupDefinition);
 
-        return array(
-            'customerUserCreatorsGroupLocationID' => $contents['customerUserCreatorsGroup']->contentInfo->mainLocationId,
-            'customerUserEditorsGroupLocationID' => $contents['customerUserEditorsGroup']->contentInfo->mainLocationId
-        );
+            return array(
+                'customerUserCreatorsGroupLocationID' => $contents['customerUserCreatorsGroup']->contentInfo->mainLocationId,
+                'customerUserEditorsGroupLocationID' => $contents['customerUserEditorsGroup']->contentInfo->mainLocationId
+            );
+        } catch (ParseException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (\RuntimeException $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -185,70 +222,82 @@ class CustomerService
         $customerUserEditorsGroupLocationID
     )
     {
-        /** @var \eZ\Publish\API\Repository\Values\User\Role $roleCreator */
-        $roleCreator = $this->role->add('SiteBuilder ' . $customerName . ' creator');
+        try {
+            /** @var \eZ\Publish\API\Repository\Values\User\Role $roleCreator */
+            $roleCreator = $this->role->add('SiteBuilder ' . $customerName . ' creator');
 
-        $this->role->addPolicy($roleCreator->id, 'content', 'read');
-        $this->role->addPolicy($roleCreator->id, 'content', 'create');
-        $this->role->addPolicy($roleCreator->id, 'content', 'edit');
-        $this->role->addPolicy($roleCreator->id, 'user', 'login');
+            $this->role->addPolicy($roleCreator->id, 'content', 'read');
+            $this->role->addPolicy($roleCreator->id, 'content', 'create');
+            $this->role->addPolicy($roleCreator->id, 'content', 'edit');
+            $this->role->addPolicy($roleCreator->id, 'user', 'login');
 
-        $this->role->addPolicy($roleCreator->id, 'sitebuilder', 'dashboard');
-        $this->role->addPolicy($roleCreator->id, 'sitebuilder', 'sitegenerate');
-        $this->role->addPolicy($roleCreator->id, 'sitebuilder', 'siteactivate');
+            $this->role->addPolicy($roleCreator->id, 'sitebuilder', 'dashboard');
+            $this->role->addPolicy($roleCreator->id, 'sitebuilder', 'sitegenerate');
+            $this->role->addPolicy($roleCreator->id, 'sitebuilder', 'siteactivate');
 
-        /** @var \eZ\Publish\API\Repository\Values\User\Role $roleEditor */
-        $roleEditor = $this->role->add('SiteBuilder ' . $customerName . ' editor');
+            /** @var \eZ\Publish\API\Repository\Values\User\Role $roleEditor */
+            $roleEditor = $this->role->add('SiteBuilder ' . $customerName . ' editor');
 
-        $this->role->addPolicy($roleEditor->id, 'content', 'read');
-        $this->role->addPolicy($roleEditor->id, 'content', 'create');
-        $this->role->addPolicy($roleEditor->id, 'content', 'edit');
-        $this->role->addPolicy($roleEditor->id, 'user', 'login');
+            $this->role->addPolicy($roleEditor->id, 'content', 'read');
+            $this->role->addPolicy($roleEditor->id, 'content', 'create');
+            $this->role->addPolicy($roleEditor->id, 'content', 'edit');
+            $this->role->addPolicy($roleEditor->id, 'user', 'login');
 
-        // Manage policy subtree limitation to the roles
-        $contentLocation = $this->locationService->loadLocation($customerLocationID);
-        $mediaContentLocation = $this->locationService->loadLocation($mediaCustomerLocationID);
+            // Manage policy subtree limitation to the roles
+            $contentLocation = $this->locationService->loadLocation($customerLocationID);
+            $mediaContentLocation = $this->locationService->loadLocation($mediaCustomerLocationID);
 
-        $userGroupCreatorLocation = $this->locationService->loadLocation($customerUserCreatorsGroupLocationID);
-        $userGroupCreator = $this->userService->loadUserGroup($userGroupCreatorLocation->contentId);
-        $userGroupEditorLocation = $this->locationService->loadLocation($customerUserEditorsGroupLocationID);
-        $userGroupEditor = $this->userService->loadUserGroup($userGroupEditorLocation->contentId);
-        $subtreeLimitation = new SubtreeLimitation(
-            array(
-                'limitationValues' => array(
-                    '/' . implode('/', $contentLocation->path) . '/',
-                    '/' . implode('/', $mediaContentLocation->path) . '/'
+            $userGroupCreatorLocation = $this->locationService->loadLocation($customerUserCreatorsGroupLocationID);
+            $userGroupCreator = $this->userService->loadUserGroup($userGroupCreatorLocation->contentId);
+            $userGroupEditorLocation = $this->locationService->loadLocation($customerUserEditorsGroupLocationID);
+            $userGroupEditor = $this->userService->loadUserGroup($userGroupEditorLocation->contentId);
+            $subtreeLimitation = new SubtreeLimitation(
+                array(
+                    'limitationValues' => array(
+                        '/' . implode('/', $contentLocation->path) . '/',
+                        '/' . implode('/', $mediaContentLocation->path) . '/'
+                    )
                 )
-            )
-        );
+            );
 
-        $this->roleService->assignRoleToUserGroup(
-            $roleCreator,
-            $userGroupCreator,
-            $subtreeLimitation
-        );
+            $this->roleService->assignRoleToUserGroup(
+                $roleCreator,
+                $userGroupCreator,
+                $subtreeLimitation
+            );
 
-        $this->roleService->assignRoleToUserGroup(
-            $roleEditor,
-            $userGroupEditor,
-            $subtreeLimitation
-        );
+            $this->roleService->assignRoleToUserGroup(
+                $roleEditor,
+                $userGroupEditor,
+                $subtreeLimitation
+            );
 
-        $siteaccess = array();
-        $siteaccessGroups = array_keys($this->siteaccessGroups);
-        foreach ($siteaccessGroups as $sg) {
-            if (strpos($sg, 'edgarezsb_models_') === 0) {
-                $sg = substr($sg, strlen('edgarezsb_models_'));
-                $siteaccess[] = sprintf('%u', crc32($sg));
+            $siteaccess = array();
+            $siteaccessGroups = array_keys($this->siteaccessGroups);
+            foreach ($siteaccessGroups as $sg) {
+                if (strpos($sg, 'edgarezsb_models_') === 0) {
+                    $sg = substr($sg, strlen('edgarezsb_models_'));
+                    $siteaccess[] = sprintf('%u', crc32($sg));
+                }
             }
+
+            $this->role->addSiteaccessLimitation($roleCreator, $siteaccess);
+            $this->role->addSiteaccessLimitation($roleEditor, $siteaccess);
+
+            return array(
+                'customerRoleCreatorID' => $roleCreator->id,
+                'customerRoleEditorID'  => $roleEditor->id
+            );
+        } catch (UnauthorizedException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (NotFoundException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (LimitationValidationException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (InvalidArgumentException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (\RuntimeException $e) {
+            throw $e;
         }
-
-        $this->role->addSiteaccessLimitation($roleCreator, $siteaccess);
-        $this->role->addSiteaccessLimitation($roleEditor, $siteaccess);
-
-        return array(
-            'customerRoleCreatorID' => $roleCreator->id,
-            'customerRoleEditorID'  => $roleEditor->id
-        );
     }
 }

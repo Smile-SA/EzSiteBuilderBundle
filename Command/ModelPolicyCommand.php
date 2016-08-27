@@ -52,20 +52,25 @@ class ModelPolicyCommand extends BaseContainerAwareCommand
 
         /** @var ModelService $modelService */
         $modelService = $this->getContainer()->get('edgar_ez_site_builder.model.service');
-        $customers = $this->getContainer()->getParameter('edgar_ez_site_builder.customer');
-        $modelService->addSiteaccessLimitation(Container::underscore($this->vendorName . $this->modelName), $customers);
 
-        $output->writeln(array(
-            '',
-            $this->getHelper('formatter')->formatBlock(
-                array(
-                    'Siteaccess Limitation are set for your customer creators roles'
+        try {
+            $customers = $this->getContainer()->getParameter('edgar_ez_site_builder.customer');
+            $modelService->addSiteaccessLimitation(Container::underscore($this->vendorName . $this->modelName), $customers);
+
+            $output->writeln(array(
+                '',
+                $this->getHelper('formatter')->formatBlock(
+                    array(
+                        'Siteaccess Limitation are set for your customer creators roles'
+                    ),
+                    'bg=blue;fg=white',
+                    true
                 ),
-                'bg=blue;fg=white',
-                true
-            ),
-            ''
-        ));
+                ''
+            ));
+        } catch (\RuntimeException $e) {
+            $output->write('<error>' . $e->getMessage() . '</error');
+        }
     }
 
     /**

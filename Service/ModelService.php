@@ -3,6 +3,10 @@
 namespace EdgarEz\SiteBuilderBundle\Service;
 
 use EdgarEz\ToolsBundle\Service\Content;
+use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
+use eZ\Publish\API\Repository\Exceptions\LimitationValidationException;
+use eZ\Publish\API\Repository\Exceptions\NotFoundException;
+use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\RoleService;
 use eZ\Publish\API\Repository\URLAliasService;
@@ -13,6 +17,7 @@ use eZ\Publish\Core\Repository\Values\User\PolicyDraft;
 use eZ\Publish\Core\Repository\Values\User\PolicyUpdateStruct;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -80,35 +85,43 @@ class ModelService
      */
     public function addSiteaccessLimitation($modelName, array $customers)
     {
-        $rolesCreator = array();
-        foreach ($customers as $customer) {
-            $parameter = 'edgarez_sb.customer.customers_' . $customer . '_sites.default.customer_user_creator_role_id';
-            $roleCreatorID = $this->container->getParameter($parameter);
-            $rolesCreator[] = $this->roleService->loadRole($roleCreatorID);
-        }
+        try {
+            $rolesCreator = array();
+            foreach ($customers as $customer) {
+                $parameter = 'edgarez_sb.customer.customers_' . $customer . '_sites.default.customer_user_creator_role_id';
+                $roleCreatorID = $this->container->getParameter($parameter);
+                $rolesCreator[] = $this->roleService->loadRole($roleCreatorID);
+            }
 
-        foreach ($rolesCreator as $roleCreator) {
-            $siteaccess = array();
+            foreach ($rolesCreator as $roleCreator) {
+                $siteaccess = array();
 
-            /** @var Policy[] $policies */
-            $policies = $roleCreator->getPolicies();
-            foreach ($policies as $policy) {
-                if ($policy->module == 'user' && $policy->function == 'login') {
-                    $limitations = $policy->getLimitations();
-                    foreach ($limitations as $limitation) {
-                        if ($limitation->getIdentifier() == Limitation::SITEACCESS) {
-                            $siteaccessLogin = $limitation->limitationValues;
-                            foreach ($siteaccessLogin as $s) {
-                                if (!empty($s)) {
-                                    $siteaccess[] = $s;
+                /** @var Policy[] $policies */
+                $policies = $roleCreator->getPolicies();
+                foreach ($policies as $policy) {
+                    if ($policy->module == 'user' && $policy->function == 'login') {
+                        $limitations = $policy->getLimitations();
+                        foreach ($limitations as $limitation) {
+                            if ($limitation->getIdentifier() == Limitation::SITEACCESS) {
+                                $siteaccessLogin = $limitation->limitationValues;
+                                foreach ($siteaccessLogin as $s) {
+                                    if (!empty($s)) {
+                                        $siteaccess[] = $s;
+                                    }
                                 }
+                                $siteaccess[] = sprintf('%u', crc32($modelName));
                             }
-                            $siteaccess[] = sprintf('%u', crc32($modelName));
                         }
                     }
                 }
+                $this->role->addSiteaccessLimitation($roleCreator, $siteaccess);
             }
-            $this->role->addSiteaccessLimitation($roleCreator, $siteaccess);
+        } catch (UnauthorizedException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (NotFoundException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (\RuntimeException $e) {
+            throw $e;
         }
     }
 
@@ -123,17 +136,23 @@ class ModelService
     {
         $returnValue = array();
 
-        $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/modelcontent.yml')));
-        $contentDefinition['parentLocationID'] = $modelsLocationID;
-        $contentDefinition['fields']['title']['value'] = $modelName;
-        $contentAdded = $this->content->add($contentDefinition);
+        try {
+            $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/modelcontent.yml')));
+            $contentDefinition['parentLocationID'] = $modelsLocationID;
+            $contentDefinition['fields']['title']['value'] = $modelName;
+            $contentAdded = $this->content->add($contentDefinition);
 
-        $contentLocation = $this->locationService->loadLocation($contentAdded->contentInfo->mainLocationId);
-        $contentPath = $this->urlAliasService->reverseLookup($contentLocation, $contentAdded->contentInfo->mainLanguageCode)->path;
-        $returnValue['excludeUriPrefixes'] = trim($contentPath, '/') . '/';
-        $returnValue['modelLocationID'] = $contentAdded->contentInfo->mainLocationId;
+            $contentLocation = $this->locationService->loadLocation($contentAdded->contentInfo->mainLocationId);
+            $contentPath = $this->urlAliasService->reverseLookup($contentLocation, $contentAdded->contentInfo->mainLanguageCode)->path;
+            $returnValue['excludeUriPrefixes'] = trim($contentPath, '/') . '/';
+            $returnValue['modelLocationID'] = $contentAdded->contentInfo->mainLocationId;
 
-        return $returnValue;
+            return $returnValue;
+        } catch (ParseException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (\RuntimeException $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -145,49 +164,65 @@ class ModelService
      */
     public function createMediaModelContent($mediaModelsLocationID, $modelName)
     {
-        $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediamodelcontent.yml')));
-        $contentDefinition['parentLocationID'] = $mediaModelsLocationID;
-        $contentDefinition['fields']['title']['value'] = $modelName;
-        $contentAdded = $this->content->add($contentDefinition);
+        try {
+            $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediamodelcontent.yml')));
+            $contentDefinition['parentLocationID'] = $mediaModelsLocationID;
+            $contentDefinition['fields']['title']['value'] = $modelName;
+            $contentAdded = $this->content->add($contentDefinition);
 
-        return array(
-            'mediaModelLocationID' => $contentAdded->contentInfo->mainLocationId
-        );
+            return array(
+                'mediaModelLocationID' => $contentAdded->contentInfo->mainLocationId
+            );
+        } catch (ParseException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (\RuntimeException $e) {
+            throw $e;
+        }
     }
 
     public function updateGlobalRole($modelLocationID)
     {
-        /** @var Role $role */
-        $role = $this->roleService->loadRoleByIdentifier('SiteBuilder');
+        try {
+            /** @var Role $role */
+            $role = $this->roleService->loadRoleByIdentifier('SiteBuilder');
 
-        $roleDraft = $this->roleService->createRoleDraft($role);
+            $roleDraft = $this->roleService->createRoleDraft($role);
 
-        /** @var Policy[] $policies */
-        $policies = $roleDraft->policies;
-        foreach ($policies as $policy) {
-            if ($policy->module == 'content' && $policy->function == 'read') {
-                /** @var Limitation[] $limitations */
-                $limitations = $policy->getLimitations();
-                foreach ($limitations as $limitation) {
-                    if ($limitation->getIdentifier() == 'Node') {
-                        $limitationValues = $limitation->limitationValues;
-                        $limitationValues[] = $modelLocationID;
-                        $limitation->limitationValues = $limitationValues;
+            /** @var Policy[] $policies */
+            $policies = $roleDraft->policies;
+            foreach ($policies as $policy) {
+                if ($policy->module == 'content' && $policy->function == 'read') {
+                    /** @var Limitation[] $limitations */
+                    $limitations = $policy->getLimitations();
+                    foreach ($limitations as $limitation) {
+                        if ($limitation->getIdentifier() == 'Node') {
+                            $limitationValues = $limitation->limitationValues;
+                            $limitationValues[] = $modelLocationID;
+                            $limitation->limitationValues = $limitationValues;
 
-                        $policyUpdateStruct = new PolicyUpdateStruct();
-                        $policyUpdateStruct->addLimitation($limitation);
+                            $policyUpdateStruct = new PolicyUpdateStruct();
+                            $policyUpdateStruct->addLimitation($limitation);
 
-                        $policyDraft = new PolicyDraft(['innerPolicy' => new Policy(['id' => $policy->id, 'module' => 'content', 'function' => 'read', 'roleId' => $roleDraft->id])]);
+                            $policyDraft = new PolicyDraft(['innerPolicy' => new Policy(['id' => $policy->id, 'module' => 'content', 'function' => 'read', 'roleId' => $roleDraft->id])]);
 
-                        $this->roleService->updatePolicyByRoleDraft(
-                            $roleDraft,
-                            $policyDraft,
-                            $policyUpdateStruct
-                        );
-                        $this->roleService->publishRoleDraft($roleDraft);
+                            $this->roleService->updatePolicyByRoleDraft(
+                                $roleDraft,
+                                $policyDraft,
+                                $policyUpdateStruct
+                            );
+                            $this->roleService->publishRoleDraft($roleDraft);
+                        }
                     }
                 }
             }
+        } catch (UnauthorizedException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (NotFoundException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (LimitationValidationException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (InvalidArgumentException $e) {
+            throw new \RuntimeException($e->getMessage());
         }
     }
 }

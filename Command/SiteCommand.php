@@ -102,43 +102,47 @@ class SiteCommand extends BaseContainerAwareCommand
         /** @var SiteService $siteSerice */
         $siteSerice = $this->getContainer()->get('edgar_ez_site_builder.site.service');
 
-        $returnValue = $siteSerice->createSiteContent($contentLocationIDs['customerLocationID'], $contentLocationIDs['modelLocationID'], $this->siteName);
-        $this->siteLocationID = $returnValue['siteLocationID'];
-        $this->excludeUriPrefixes = $returnValue['excludeUriPrefixes'];
+        try {
+            $returnValue = $siteSerice->createSiteContent($contentLocationIDs['customerLocationID'], $contentLocationIDs['modelLocationID'], $this->siteName);
+            $this->siteLocationID = $returnValue['siteLocationID'];
+            $this->excludeUriPrefixes = $returnValue['excludeUriPrefixes'];
 
-        $returnValue = $siteSerice->createMediaSiteContent($mediaLocationIDs['mediaCustomerLocationID'], $mediaLocationIDs['mediaModelLocationID'], $this->siteName);
-        $this->mediaSiteLocationID = $returnValue['mediaSiteLocationID'];
+            $returnValue = $siteSerice->createMediaSiteContent($mediaLocationIDs['mediaCustomerLocationID'], $mediaLocationIDs['mediaModelLocationID'], $this->siteName);
+            $this->mediaSiteLocationID = $returnValue['mediaSiteLocationID'];
 
-        /** @var SiteGenerator $generator */
-        $generator = $this->getGenerator();
-        $generator->generate(
-            $this->siteLocationID,
-            $this->mediaSiteLocationID,
-            $this->vendorName,
-            $this->customerName,
-            $this->modelName,
-            $this->siteName,
-            $this->excludeUriPrefixes,
-            $this->host,
-            $this->mapuri,
-            $this->siteaccessSuffix,
-            $this->dir
-        );
+            /** @var SiteGenerator $generator */
+            $generator = $this->getGenerator();
+            $generator->generate(
+                $this->siteLocationID,
+                $this->mediaSiteLocationID,
+                $this->vendorName,
+                $this->customerName,
+                $this->modelName,
+                $this->siteName,
+                $this->excludeUriPrefixes,
+                $this->host,
+                $this->mapuri,
+                $this->siteaccessSuffix,
+                $this->dir
+            );
 
-        $output->writeln(array(
-            '',
-            $this->getHelper('formatter')->formatBlock(
-                array(
-                    'SiteBuilder Contents and Structure generated',
-                    '',
-                    'Create a VirtualHost for your site and add this line',
-                    '   SetEnvIf Request_URI ".*" SITEBUILDER_ENV=' . $this->vendorName . '_' . $this->customerName . '_' . $this->siteName
+            $output->writeln(array(
+                '',
+                $this->getHelper('formatter')->formatBlock(
+                    array(
+                        'SiteBuilder Contents and Structure generated',
+                        '',
+                        'Create a VirtualHost for your site and add this line',
+                        '   SetEnvIf Request_URI ".*" SITEBUILDER_ENV=' . $this->vendorName . '_' . $this->customerName . '_' . $this->siteName
+                    ),
+                    'bg=blue;fg=white',
+                    true
                 ),
-                'bg=blue;fg=white',
-                true
-            ),
-            ''
-        ));
+                ''
+            ));
+        } catch (\RuntimeException $e) {
+            $output->write('<error>' . $e->getMessage() . '</error');
+        }
     }
 
     /**
