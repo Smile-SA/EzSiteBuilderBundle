@@ -20,6 +20,7 @@ parameters:
     edgar_ez_site_builder.controller.sb.site.class: EdgarEz\SiteBuilderBundle\Controller\SiteController
     edgar_ez_site_builder.tabs: [install, dashboard, customergenerate, modelgenerate, sitegenerate, siteactivate]
 
+    edgarezsb.security.service.class: EdgarEz\SiteBuilderBundle\Service\SecurityService
     edgarezsb.security.twig.extension.class: EdgarEz\SiteBuilderBundle\Twig\Extension\SecurityExtension
 
 services:
@@ -125,11 +126,16 @@ services:
             - @ezpublish.api.service.search
         parent: ezsystems.platformui.controller.base
 
-    edgarezsb.security.twig.extension:
-        class: %edgarezsb.security.twig.extension.class%
+    edgarezsb.security.service:
+        class: %edgarezsb.security.service.class%
         arguments:
             - @security.token_storage
             - @security.authorization_checker
             - @ezpublish.api.service.role
+
+    edgarezsb.security.twig.extension:
+        class: %edgarezsb.security.twig.extension.class%
+        arguments:
+            - @edgarezsb.security.service
         tags:
             - { name: twig.extension }
