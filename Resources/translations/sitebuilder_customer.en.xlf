@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
+  <file date="2016-08-28T20:16:40Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+    <header>
+      <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
+      <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
+    </header>
+    <body>
+      <trans-unit id="e3626480107d65481aa56b151432919db9aab2fc" resname="customer.button">
+        <source>customer.button</source>
+        <target>Generate</target>
+        <jms:reference-file line="56">/../src/EdgarEz/SiteBuilderBundle/Form/Type/CustomerType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a22c7891bab1c78dd81c583ffd5fdc5481c956da" resname="form.customer.customername.label">
+        <source>form.customer.customername.label</source>
+        <target>Customer name</target>
+        <jms:reference-file line="37">/../src/EdgarEz/SiteBuilderBundle/Form/Type/CustomerType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f60fa94ad0dfa8d96bfa9e707ae0caa1e3385954" resname="form.customer.useremail.label">
+        <source>form.customer.useremail.label</source>
+        <target>User email</target>
+        <jms:reference-file line="52">/../src/EdgarEz/SiteBuilderBundle/Form/Type/CustomerType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="61c89a9c6c8508aba30bdca9d77cc8d1e814fe63" resname="form.customer.userfirstname.label">
+        <source>form.customer.userfirstname.label</source>
+        <target>User first name</target>
+        <jms:reference-file line="42">/../src/EdgarEz/SiteBuilderBundle/Form/Type/CustomerType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8e500211933a2da365ae2bb31796efe911934568" resname="form.customer.userlastname.label">
+        <source>form.customer.userlastname.label</source>
+        <target>User last name</target>
+        <jms:reference-file line="47">/../src/EdgarEz/SiteBuilderBundle/Form/Type/CustomerType.php</jms:reference-file>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

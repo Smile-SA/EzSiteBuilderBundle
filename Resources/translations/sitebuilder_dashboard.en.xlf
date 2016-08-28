@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
+  <file date="2016-08-28T20:16:40Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+    <header>
+      <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
+      <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
+    </header>
+    <body>
+      <trans-unit id="55e7f764658892e42a4a828a34fc5e5ee9913db2" resname="sb.dashboard.th.command">
+        <source>sb.dashboard.th.command</source>
+        <target>Command</target>
+        <jms:reference-file line="9">/../src/EdgarEz/SiteBuilderBundle/Resources/views/sb/tab/dashboard.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1aa22d08c3386baec8c2faa3989848ab523ae666" resname="sb.dashboard.th.executedat">
+        <source>sb.dashboard.th.executedat</source>
+        <target>Executed at</target>
+        <jms:reference-file line="12">/../src/EdgarEz/SiteBuilderBundle/Resources/views/sb/tab/dashboard.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b3e46b7915acf9c920d0846cf2f7b624e8bf3ff7" resname="sb.dashboard.th.parameters">
+        <source>sb.dashboard.th.parameters</source>
+        <target>Parameters</target>
+        <jms:reference-file line="10">/../src/EdgarEz/SiteBuilderBundle/Resources/views/sb/tab/dashboard.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="33aae0ea101573f817de946ee5e7aa935a14aff4" resname="sb.dashboard.th.postedat">
+        <source>sb.dashboard.th.postedat</source>
+        <target>Posted at</target>
+        <jms:reference-file line="11">/../src/EdgarEz/SiteBuilderBundle/Resources/views/sb/tab/dashboard.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a22b207103a0e29cac14c668212f5b25a364cfc8" resname="sb.dashboard.th.service">
+        <source>sb.dashboard.th.service</source>
+        <target>Service</target>
+        <jms:reference-file line="8">/../src/EdgarEz/SiteBuilderBundle/Resources/views/sb/tab/dashboard.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2ca202b9b2fda764922bbe0f11d03050ebe47d7e" resname="sb.dashboard.th.status">
+        <source>sb.dashboard.th.status</source>
+        <target>Status</target>
+        <jms:reference-file line="13">/../src/EdgarEz/SiteBuilderBundle/Resources/views/sb/tab/dashboard.html.twig</jms:reference-file>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
