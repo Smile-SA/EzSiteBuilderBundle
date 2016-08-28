@@ -10,6 +10,7 @@ use EdgarEz\SiteBuilderBundle\Data\Mapper\CustomerMapper;
 use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
 use EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\CustomerDispatcher;
 use EdgarEz\SiteBuilderBundle\Form\Type\CustomerType;
+use EdgarEz\SiteBuilderBundle\Service\SecurityService;
 use EdgarEz\SiteBuilderBundle\Values\Content\Customer;
 use EzSystems\PlatformUIBundle\Controller\Controller;
 use eZ\Publish\Core\MVC\Symfony\Security\User;
@@ -26,15 +27,27 @@ class CustomerController extends Controller
 
     protected $tabItems;
 
-    public function __construct(CustomerDispatcher $actionDispatcher, $tabItems)
+    /** @var SecurityService $securityService */
+    protected $securityService;
+
+    public function __construct(
+        CustomerDispatcher $actionDispatcher,
+        $tabItems,
+        SecurityService $securityService
+    )
     {
         $this->actionDispatcher = $actionDispatcher;
         $this->tabItems = $tabItems;
+        $this->securityService = $securityService;
     }
 
     public function generateAction(Request $request)
     {
         $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
+        if (!$this->securityService->checkAuthorization('customergenerate')) {
+            return $this->redirectAfterFormPost($actionUrl);
+        }
+
         $form = $this->getForm($request);
         $form->handleRequest($request);
         if ($form->isValid()) {

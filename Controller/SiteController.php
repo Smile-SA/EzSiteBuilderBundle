@@ -10,6 +10,7 @@ use EdgarEz\SiteBuilderBundle\Data\Site\SiteData;
 use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
 use EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\SiteDispatcher;
 use EdgarEz\SiteBuilderBundle\Form\Type\SiteType;
+use EdgarEz\SiteBuilderBundle\Service\SecurityService;
 use EdgarEz\SiteBuilderBundle\Values\Content\Site;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\SearchService;
@@ -34,21 +35,31 @@ class SiteController extends Controller
 
     protected $tabItems;
 
+    /** @var SecurityService $securityService */
+    protected $securityService;
+
     public function __construct(
         LocationService $locationService,
         SearchService $searchService,
         SiteDispatcher $actionDispatcher,
-    $tabItems
+        $tabItems,
+        SecurityService $securityService
     )
     {
         $this->locationService = $locationService;
         $this->searchService = $searchService;
         $this->actionDispatcher = $actionDispatcher;
         $this->tabItems = $tabItems;
+        $this->securityService = $securityService;
     }
 
     public function generateAction(Request $request)
     {
+        $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
+        if (!$this->securityService->checkAuthorization('sitegenerate')) {
+            return $this->redirectAfterFormPost($actionUrl);
+        }
+
         $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
         $form = $this->getForm($request);
         $form->handleRequest($request);

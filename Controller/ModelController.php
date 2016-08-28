@@ -10,6 +10,7 @@ use EdgarEz\SiteBuilderBundle\Data\Model\ModelData;
 use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
 use EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\ModelDispatcher;
 use EdgarEz\SiteBuilderBundle\Form\Type\ModelType;
+use EdgarEz\SiteBuilderBundle\Service\SecurityService;
 use EdgarEz\SiteBuilderBundle\Values\Content\Model;
 use eZ\Publish\Core\MVC\Symfony\Security\User;
 use EzSystems\PlatformUIBundle\Controller\Controller;
@@ -26,14 +27,27 @@ class ModelController extends Controller
 
     protected $tabItems;
 
-    public function __construct(ModelDispatcher $actionDispatcher, $tabItems)
+    /** @var SecurityService $securityService */
+    protected $securityService;
+
+    public function __construct(
+        ModelDispatcher $actionDispatcher,
+        $tabItems,
+        SecurityService $securityService
+    )
     {
         $this->actionDispatcher = $actionDispatcher;
         $this->tabItems = $tabItems;
+        $this->securityService = $securityService;
     }
 
     public function generateAction(Request $request)
     {
+        $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
+        if (!$this->securityService->checkAuthorization('modelgenerate')) {
+            return $this->redirectAfterFormPost($actionUrl);
+        }
+
         $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
         $form = $this->getForm($request);
         $form->handleRequest($request);

@@ -10,6 +10,7 @@ use EdgarEz\SiteBuilderBundle\Data\Mapper\InstallMapper;
 use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
 use EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\InstallDispatcher;
 use EdgarEz\SiteBuilderBundle\Form\Type\InstallType;
+use EdgarEz\SiteBuilderBundle\Service\SecurityService;
 use EdgarEz\SiteBuilderBundle\Values\Content\Install;
 use eZ\Publish\Core\MVC\Symfony\Security\User;
 use EzSystems\PlatformUIBundle\Controller\Controller;
@@ -26,14 +27,27 @@ class InstallController extends Controller
 
     protected $tabItems;
 
-    public function __construct(InstallDispatcher $actionDispatcher, $tabItems)
+    /** @var SecurityService $securityService */
+    protected $securityService;
+
+    public function __construct(
+        InstallDispatcher $actionDispatcher,
+        $tabItems,
+        SecurityService $securityService
+    )
     {
         $this->actionDispatcher = $actionDispatcher;
         $this->tabItems = $tabItems;
+        $this->securityService = $securityService;
     }
 
     public function installAction(Request $request)
     {
+        $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
+        if (!$this->securityService->checkAuthorization('install')) {
+            return $this->redirectAfterFormPost($actionUrl);
+        }
+
         $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
         $form = $this->getForm($request);
         $form->handleRequest($request);
