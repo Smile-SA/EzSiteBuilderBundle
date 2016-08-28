@@ -5,12 +5,11 @@
 <fieldset>
     <div class="pure-control-group">
         <label for="{{ params.installForm.vendorName.vars.id }}">{{ form_label(params.installForm.vendorName) }}</label>
-        {{ form_errors(params.installForm.vendorName) }}
         {{ form_widget(params.installForm.vendorName) }}
+        {{ form_errors(params.installForm.vendorName) }}
     </div>
     <div class="pure-control-group">
         <label for="{{ params.installForm.contentLocationID.vars.id }}">{{ form_label(params.installForm.contentLocationID) }}</label>
-        {{ form_errors(params.installForm.contentLocationID) }}
         {{ form_widget(params.installForm.contentLocationID) }}
         <button type="button" data-universaldiscovery-title="{{ "install.content.location.udw_title"|trans({}, "ezrepoforms_role") }}"
                 class="ez-button-tree pure-button ez-font-icon ez-button edgarezsb-install-pick-location-content-button"
@@ -26,10 +25,10 @@
                 {% endfor %}
             </ul>
         </div>
+        {{ form_errors(params.installForm.contentLocationID) }}
     </div>
     <div class="pure-control-group">
         <label for="{{ params.installForm.mediaLocationID.vars.id }}">{{ form_label(params.installForm.mediaLocationID) }}</label>
-        {{ form_errors(params.installForm.mediaLocationID) }}
         {{ form_widget(params.installForm.mediaLocationID) }}
         <button type="button" data-universaldiscovery-title="{{ "install.media.location.udw_title"|trans({}, "ezrepoforms_role") }}"
                 class="ez-button-tree pure-button ez-font-icon ez-button edgarezsb-install-pick-location-media-button"
@@ -45,10 +44,10 @@
                 {% endfor %}
             </ul>
         </div>
+        {{ form_errors(params.installForm.mediaLocationID) }}
     </div>
     <div class="pure-control-group">
         <label for="{{ params.installForm.userLocationID.vars.id }}">{{ form_label(params.installForm.userLocationID) }}</label>
-        {{ form_errors(params.installForm.userLocationID) }}
         {{ form_widget(params.installForm.userLocationID) }}
         <button type="button" data-universaldiscovery-title="{{ "install.user.location.udw_title"|trans({}, "ezrepoforms_role") }}"
                 class="ez-button-tree pure-button ez-font-icon ez-button edgarezsb-install-pick-location-user-button"
@@ -64,6 +63,7 @@
                 {% endfor %}
             </ul>
         </div>
+        {{ form_errors(params.installForm.userLocationID) }}
     </div>
 </fieldset>
 

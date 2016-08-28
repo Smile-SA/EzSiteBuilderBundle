@@ -68,9 +68,10 @@ class CustomerController extends Controller
             );
         }
 
+        $tabItems = $this->tabItems;
+        unset($tabItems[0]);
         return $this->render('EdgarEzSiteBuilderBundle:sb:index.html.twig', [
-            'installed' => true,
-            'tab_items' => $this->tabItems,
+            'tab_items' => $tabItems,
             'tab_item_selected' => 'customergenerate',
             'params' => array('customergenerate' => $form->createView()),
             'hasErrors' => true

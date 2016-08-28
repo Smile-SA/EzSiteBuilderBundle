@@ -64,9 +64,10 @@ class ModelController extends Controller
             );
         }
 
+        $tabItems = $this->tabItems;
+        unset($tabItems[0]);
         return $this->render('EdgarEzSiteBuilderBundle:sb:index.html.twig', [
-            'installed' => true,
-            'tab_items' => $this->tabItems,
+            'tab_items' => $tabItems,
             'tab_item_selected' => 'modelgenerate',
             'params' => array('modelgenerate' => $form->createView()),
             'hasErrors' => true

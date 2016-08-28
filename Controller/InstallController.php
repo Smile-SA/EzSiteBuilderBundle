@@ -68,9 +68,9 @@ class InstallController extends Controller
             );
         }
 
+        $tabItems = array($this->tabItems[0], $this->tabItems[1]);
         return $this->render('EdgarEzSiteBuilderBundle:sb:index.html.twig', [
-            'installed' => false,
-            'tab_items' => $this->tabItems,
+            'tab_items' => $tabItems,
             'tab_item_selected' => 'install',
             'params' => array('install' => $form->createView()),
             'hasErrors' => true
