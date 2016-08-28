@@ -24,9 +24,12 @@ class CustomerController extends Controller
     /** @var CustomerData $data */
     protected $data;
 
-    public function __construct(CustomerDispatcher $actionDispatcher)
+    protected $tabItems;
+
+    public function __construct(CustomerDispatcher $actionDispatcher, $tabItems)
     {
         $this->actionDispatcher = $actionDispatcher;
+        $this->tabItems = $tabItems;
     }
 
     public function generateAction(Request $request)
@@ -53,22 +56,24 @@ class CustomerController extends Controller
 
             $this->initTask($form);
 
-            foreach ($form->getErrors(true) as $error) {
-                $this->notifyErrorPlural(
-                    $error->getMessageTemplate(),
-                    $error->getMessagePluralization(),
-                    $error->getMessageParameters(),
-                    'edgarezsb_form_customer'
-                );
-            }
-
             return $this->redirectAfterFormPost($actionUrl);
         }
 
-        return $this->render('EdgarEzSiteBuilderBundle:sb:tab/customergenerate.html.twig', [
-            'params' => array(
-                'customerForm' => $form->createView(),
-            )
+        foreach ($form->getErrors(true) as $error) {
+            $this->notifyErrorPlural(
+                $error->getMessageTemplate(),
+                $error->getMessagePluralization(),
+                $error->getMessageParameters(),
+                'edgarezsb_form_customer'
+            );
+        }
+
+        return $this->render('EdgarEzSiteBuilderBundle:sb:index.html.twig', [
+            'installed' => true,
+            'tab_items' => $this->tabItems,
+            'tab_item_selected' => 'customergenerate',
+            'params' => array('customergenerate' => $form->createView()),
+            'hasErrors' => true
         ]);
     }
 

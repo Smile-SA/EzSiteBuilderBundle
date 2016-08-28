@@ -24,9 +24,12 @@ class ModelController extends Controller
     /** @var ModelData $data */
     protected $data;
 
-    public function __construct(ModelDispatcher $actionDispatcher)
+    protected $tabItems;
+
+    public function __construct(ModelDispatcher $actionDispatcher, $tabItems)
     {
         $this->actionDispatcher = $actionDispatcher;
+        $this->tabItems = $tabItems;
     }
 
     public function generateAction(Request $request)
@@ -49,22 +52,24 @@ class ModelController extends Controller
             $this->initTask($form);
             $this->initPolicyTask($form);
 
-            foreach ($form->getErrors(true) as $error) {
-                $this->notifyErrorPlural(
-                    $error->getMessageTemplate(),
-                    $error->getMessagePluralization(),
-                    $error->getMessageParameters(),
-                    'edgarezsb_form_model'
-                );
-            }
-
             return $this->redirectAfterFormPost($actionUrl);
         }
 
-        return $this->render('EdgarEzSiteBuilderBundle:sb:tab/modelgenerate.html.twig', [
-            'params' => array(
-                'modelForm' => $form->createView(),
-            )
+        foreach ($form->getErrors(true) as $error) {
+            $this->notifyErrorPlural(
+                $error->getMessageTemplate(),
+                $error->getMessagePluralization(),
+                $error->getMessageParameters(),
+                'edgarezsb_form_model'
+            );
+        }
+
+        return $this->render('EdgarEzSiteBuilderBundle:sb:index.html.twig', [
+            'installed' => true,
+            'tab_items' => $this->tabItems,
+            'tab_item_selected' => 'modelgenerate',
+            'params' => array('modelgenerate' => $form->createView()),
+            'hasErrors' => true
         ]);
     }
 

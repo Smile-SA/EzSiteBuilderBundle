@@ -34,16 +34,20 @@ class InstallType extends AbstractType
     {
         $builder
             ->add('vendorName', TextType::class, array(
+                'label' => 'form.install.vendorname.label',
                 'required' => true,
                 'constraints' => array(new VendorNameConstraint())
             ))
             ->add('contentLocationID', HiddenType::class, array(
+                'label' => 'form.install.contentlocationid.label',
                 'constraints' => array(new LocationIDConstraint())
             ))
             ->add('mediaLocationID', HiddenType::class, array(
+                'label' => 'form.install.medialocationid.label',
                 'constraints' => array(new LocationIDConstraint())
             ))
             ->add('userLocationID', HiddenType::class, array(
+                'label' => 'form.install.userlocationid.label',
                 'constraints' => array(new LocationIDConstraint())
             ))
             ->add('install', SubmitType::class, ['label' => 'install.button']);

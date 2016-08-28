@@ -27,7 +27,7 @@ class ModelType extends AbstractType
     {
         $builder
             ->add('modelName', TextType::class, array(
-                'label' => 'form.model.label',
+                'label' => 'form.model.modelname.label',
                 'required' => true,
                 'constraints' => array(new ModelNameConstraint())
             ))

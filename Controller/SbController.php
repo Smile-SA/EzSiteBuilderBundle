@@ -31,40 +31,57 @@ class SbController extends Controller
         return $this->render('EdgarEzSiteBuilderBundle:sb:index.html.twig', [
             'installed' => $installed,
             'tab_items' => $tabItems,
-            'tab_item_selected' => $tabItem
+            'tab_item_selected' => $tabItem,
+            'params' => array(),
+            'hasErrors' => false
         ]);
     }
 
-    public function tabAction($tabItem)
+    public function tabAction($tabItem, $paramsTwig = array(), $hasErrors = false)
     {
         $params = array();
         switch ($tabItem) {
             case 'install':
-                $params['installForm'] = $this->createForm(
-                    new InstallType()
-                )->createView();
+                if (isset($paramsTwig['install'])) {
+                    $params['installForm'] = $paramsTwig['install'];
+                } else {
+                    $params['installForm'] = $this->createForm(
+                        new InstallType()
+                    )->createView();
+                }
                 break;
             case 'dashboard':
                 $params['user_id'] = $this->getUser()->getAPIUser()->getUserId();
                 break;
             case 'customergenerate':
-                $params['customerForm'] = $this->createForm(
-                    new CustomerType()
-                )->createView();
+                if (isset($paramsTwig['customergenerate'])) {
+                    $params['customerForm'] = $paramsTwig['customergenerate'];
+                } else {
+                    $params['customerForm'] = $this->createForm(
+                        new CustomerType()
+                    )->createView();
+                }
                 break;
             case 'modelgenerate':
+                if (isset($paramsTwig['modelgenerate'])) {
+                    $params['modelForm'] = $paramsTwig['modelgenerate'];
+                }
                 $params['modelForm'] = $this->createForm(
                     new ModelType()
                 )->createView();
                 break;
             case 'sitegenerate':
-                $params['siteForm'] = $this->createForm(
-                    new SiteType(
-                        $this->container->get('ezpublish.api.service.location'),
-                        $this->container->get('ezpublish.api.service.search'),
-                        $this->container->getParameter('edgarez_sb.project.default.models_location_id')
-                    )
-                )->createView();
+                if (isset($params['sitegenerate'])) {
+                    $params['sitegenerate'];
+                } else {
+                    $params['siteForm'] = $this->createForm(
+                        new SiteType(
+                            $this->container->get('ezpublish.api.service.location'),
+                            $this->container->get('ezpublish.api.service.search'),
+                            $this->container->getParameter('edgarez_sb.project.default.models_location_id')
+                        )
+                    )->createView();
+                }
                 break;
             default:
                 break;

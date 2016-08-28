@@ -32,15 +32,19 @@ class SiteController extends Controller
     /** @var SiteData $data */
     protected $data;
 
+    protected $tabItems;
+
     public function __construct(
         LocationService $locationService,
         SearchService $searchService,
-        SiteDispatcher $actionDispatcher
+        SiteDispatcher $actionDispatcher,
+    $tabItems
     )
     {
         $this->locationService = $locationService;
         $this->searchService = $searchService;
         $this->actionDispatcher = $actionDispatcher;
+        $this->tabItems = $tabItems;
     }
 
     public function generateAction(Request $request)
@@ -67,22 +71,24 @@ class SiteController extends Controller
 
             $this->initTask($form);
 
-            foreach ($form->getErrors(true) as $error) {
-                $this->notifyErrorPlural(
-                    $error->getMessageTemplate(),
-                    $error->getMessagePluralization(),
-                    $error->getMessageParameters(),
-                    'edgarezsb_form_site'
-                );
-            }
-
             return $this->redirectAfterFormPost($actionUrl);
         }
 
-        return $this->render('EdgarEzSiteBuilderBundle:sb:tab/sitegenerate.html.twig', [
-            'params' => array(
-                'siteForm' => $form->createView(),
-            )
+        foreach ($form->getErrors(true) as $error) {
+            $this->notifyErrorPlural(
+                $error->getMessageTemplate(),
+                $error->getMessagePluralization(),
+                $error->getMessageParameters(),
+                'edgarezsb_form_site'
+            );
+        }
+
+        return $this->render('EdgarEzSiteBuilderBundle:sb:index.html.twig', [
+            'installed' => true,
+            'tab_items' => $this->tabItems,
+            'tab_item_selected' => 'sitegenerate',
+            'params' => array('sitegenerate' => $form->createView()),
+            'hasErrors' => true
         ]);
     }
 

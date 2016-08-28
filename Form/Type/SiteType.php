@@ -55,21 +55,26 @@ class SiteType extends AbstractType
     {
         $builder
             ->add('siteName', TextType::class, array(
+                'label' => 'form.site.sitename.label',
                 'required' => true,
                 'constraints' => array(new SiteNameConstraint())
             ))
             ->add('model', ChoiceType::class, array(
+                'label' => 'form.site.model.label',
                 'required' => true,
                 'choices' => $this->getModels()
             ))
             ->add('host', TextType::class, array(
+                'label' => 'form.site.host.label',
                 'required' => true,
                 'constraints' => array(new HostConstraint())
             ))
             ->add('mapuri', CheckboxType::class, array(
+                'label' => 'form.site.mapuri.label',
                 'required' => false
             ))
             ->add('suffix', TextType::class, array(
+                'label' => 'form.site.suffix.label',
                 'required' => false,
                 'constraints' => array(new HostSuffixConstraint())
             ))

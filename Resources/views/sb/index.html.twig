@@ -28,7 +28,9 @@
                                 <section class="ez-serverside-content">
                                     {{ render( controller(
                                     'edgar_ez_site_builder.controller.sb:tabAction', {
-                                        'tabItem': tab_item
+                                        'tabItem': tab_item,
+                                        'paramsTwig': params,
+                                        'hasErrors': hasErrors
                                     } ) ) }}
                                 </section>
                             </div>
@@ -41,3 +43,9 @@
     </section>
 {% endblock %}
 
+{% block notification %}
+    {% if hasErrors|length %}
+        <li data-state="error">{{ "form.validation_error"|trans(domain="general") }}</li>
+    {% endif %}
+    {{ parent() }}
+{% endblock %}

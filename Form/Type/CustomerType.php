@@ -34,18 +34,22 @@ class CustomerType extends AbstractType
     {
         $builder
             ->add('customerName', TextType::class, array(
+                'label' => 'form.customer.customername.label',
                 'required' => true,
                 'constraints' => array(new CustomerNameConstraint())
             ))
             ->add('userFirstName', TextType::class, array(
+                'label' => 'form.customer.userfirstname.label',
                 'required' => true,
                 'constraints' => array(new UserNameConstraint())
             ))
             ->add('userLastName', TextType::class, array(
+                'label' => 'form.customer.userlastname.label',
                 'required' => true,
                 'constraints' => array(new UserNameConstraint())
             ))
             ->add('userEmail', EmailType::class, array(
+                'label' => 'form.customer.useremail.label',
                 'required' => true,
                 'constraints' => array(new UserEmailConstraint())
             ))

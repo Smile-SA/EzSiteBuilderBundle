@@ -24,9 +24,12 @@ class InstallController extends Controller
     /** @var InstallData $data */
     protected $data;
 
-    public function __construct(InstallDispatcher $actionDispatcher)
+    protected $tabItems;
+
+    public function __construct(InstallDispatcher $actionDispatcher, $tabItems)
     {
         $this->actionDispatcher = $actionDispatcher;
+        $this->tabItems = $tabItems;
     }
 
     public function installAction(Request $request)
@@ -53,22 +56,24 @@ class InstallController extends Controller
 
             $this->initTask($form);
 
-            foreach ($form->getErrors(true) as $error) {
-                $this->notifyErrorPlural(
-                    $error->getMessageTemplate(),
-                    $error->getMessagePluralization(),
-                    $error->getMessageParameters(),
-                    'edgarezsb_form_install'
-                );
-            }
-
             return $this->redirectAfterFormPost($actionUrl);
         }
 
-        return $this->render('EdgarEzSiteBuilderBundle:sb:tab/install.html.twig', [
-            'params' => array(
-                'installForm' => $form->createView(),
-            )
+        foreach ($form->getErrors(true) as $error) {
+            $this->notifyErrorPlural(
+                $error->getMessageTemplate(),
+                $error->getMessagePluralization(),
+                $error->getMessageParameters(),
+                'edgarezsb_form_install'
+            );
+        }
+
+        return $this->render('EdgarEzSiteBuilderBundle:sb:index.html.twig', [
+            'installed' => false,
+            'tab_items' => $this->tabItems,
+            'tab_item_selected' => 'install',
+            'params' => array('install' => $form->createView()),
+            'hasErrors' => true
         ]);
     }
 

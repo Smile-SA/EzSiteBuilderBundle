@@ -179,6 +179,7 @@ services:
         class: %edgar_ez_site_builder.controller.sb.install.class%
         arguments:
             - @edgar_ez_site_builder.action_dispatcher.install
+            - %edgar_ez_site_builder.tabs%
         parent: ezsystems.platformui.controller.base
 
     edgar_ez_site_builder.controller.sb.dashboard:
@@ -191,12 +192,14 @@ services:
         class: %edgar_ez_site_builder.controller.sb.customer.class%
         arguments:
             - @edgar_ez_site_builder.action_dispatcher.customer
+            - %edgar_ez_site_builder.tabs%
         parent: ezsystems.platformui.controller.base
 
     edgar_ez_site_builder.controller.sb.model:
         class: %edgar_ez_site_builder.controller.sb.model.class%
         arguments:
             - @edgar_ez_site_builder.action_dispatcher.model
+            - %edgar_ez_site_builder.tabs%
         parent: ezsystems.platformui.controller.base
 
     edgar_ez_site_builder.controller.sb.site:
@@ -205,6 +208,7 @@ services:
             - @ezpublish.api.service.location
             - @ezpublish.api.service.search
             - @edgar_ez_site_builder.action_dispatcher.site
+            - %edgar_ez_site_builder.tabs%
         parent: ezsystems.platformui.controller.base
 
     # security service
