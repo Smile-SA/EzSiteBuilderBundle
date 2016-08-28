@@ -82,6 +82,7 @@ services:
             - @edgar_ez_tools.content.service
             - @edgar_ez_tools.role.service
 
+    # Task services
     edgar_ez_site_builder.project.task.service:
         class: %edgar_ez_site_builder.project.task.service.class%
         arguments:
@@ -93,12 +94,28 @@ services:
 
     edgar_ez_site_builder.customer.task.service:
         class: %edgar_ez_site_builder.customer.task.service.class%
+        arguments:
+            - @filesystem
+            - @kernel
+            - @edgar_ez_site_builder.customer.service
+            - %kernel.root_dir%
 
     edgar_ez_site_builder.model.task.service:
         class: %edgar_ez_site_builder.model.task.service.class%
+        arguments:
+            - @filesystem
+            - @kernel
+            - @edgar_ez_site_builder.model.service
+            - %kernel.root_dir%
 
     edgar_ez_site_builder.site.task.service:
         class: %edgar_ez_site_builder.site.task.service.class%
+        arguments:
+            - @filesystem
+            - @kernel
+            - @ezpublish.api.service.location
+            - @edgar_ez_site_builder.site.service
+            - %kernel.root_dir%
 
     edgar_ez_site_builder.mailer:
         class: %edgar_ez_site_builder.mailer.class%

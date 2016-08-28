@@ -3,7 +3,6 @@
 ## Global
 
 * manage language
-* catch and throw exceptions
 * finalize user guide
 * translate user guide
 
@@ -48,13 +47,13 @@
   * manage security access
   * manage form constraints
   * manage notifications
-* translations
+* <s>translations</s>
 * cronjob documentation
 * tasks
   * <s>install</s>
-  * customer generate
-  * model generate
-  * model policy
+  * <s>customer generate</s>
+  * <s>model generate</s>
+  * <s>model policy</s>
   * site generate
   * site policy
   * site activate

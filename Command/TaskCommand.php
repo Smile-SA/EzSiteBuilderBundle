@@ -51,36 +51,37 @@ class TaskCommand extends ContainerAwareCommand
         if ($task) {
             $action = $task->getAction();
 
-            if (!isset($action['service'])) {
-                $output->writeln('task service not identified');
-                return;
-            }
-
-            if (!isset($action['command'])) {
-                $output->writeln('task action has no command');
-                return;
-            }
-
-            if (!isset($action['parameters'])) {
-                $output->writeln('task action has no parameters');
-                return;
-            }
-
-            /** @var TaskInterface $taskService */
-            $taskService = $this->getContainer()->get('edgar_ez_site_builder.' . $action['service'] . '.task.service');
             try {
                 $userID = $task->getUserID();
                 /** @var Repository $repository */
                 $repository = $this->getContainer()->get('ezpublish.api.repository');
                 $repository->setCurrentUser($repository->getUserService()->loadUser($userID));
 
+                if (!isset($action['service'])) {
+                    $task->setLogs('task service not identified');
+                    return;
+                }
+
+                /** @var TaskInterface $taskService */
+                $taskService = $this->getContainer()->get('edgar_ez_site_builder.' . $action['service'] . '.task.service');
+
+                if (!isset($action['command'])) {
+                    $task->setLogs('task action has no command');
+                    return;
+                }
+
+                if (!isset($action['parameters'])) {
+                    $task->setLogs('task action has no parameters');
+                    return;
+                }
+
                 $task->setExecutedAt(new \DateTime());
-                if (!$taskService->execute($action['command'], $action['parameters'])) {
-                    $task->setLogs($taskService->getMessage());
+                if (!$taskService->execute($action['command'], $action['parameters'], $this->getContainer())) {
                     $task->setStatus(self::STATUS_FAIL);
                 } else {
                     $task->setStatus(self::STATUS_OK);
                 }
+                $task->setLogs($taskService->getMessage());
             } catch (\Exception $e) {
                 $task->setLogs($taskService->getMessage());
                 $task->setStatus(self::STATUS_FAIL);

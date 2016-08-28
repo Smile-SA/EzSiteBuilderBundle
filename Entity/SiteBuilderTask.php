@@ -174,7 +174,13 @@ class SiteBuilderTask
      */
     public function setLogs($logs)
     {
-        $this->logs = $logs;
+        $logsArray = array();
+        if ($this->logs) {
+            $logsArray[] = $this->logs;
+        }
+
+        $logsArray[] = $logs;
+        $this->logs = explode('\n', $logsArray);
 
         return $this;
     }

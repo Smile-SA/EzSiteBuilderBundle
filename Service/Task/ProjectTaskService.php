@@ -5,7 +5,9 @@ namespace EdgarEz\SiteBuilderBundle\Service\Task;
 use EdgarEz\SiteBuilderBundle\Command\Validators;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\SiteBuilderBundle\Service\InstallService;
+use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
 use eZ\Publish\API\Repository\LocationService;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
 
@@ -98,16 +100,13 @@ class ProjectTaskService extends BaseTaskService implements TaskInterface
      */
     public function validateParameters($parameters)
     {
-        if (!isset($parameters['vendorName'])) {
-            throw new \Exception('vendorName missing');
-        }
-
-        if (!Validators::validateVendorName($parameters['vendorName'])) {
-            throw new \Exception('vendorName format wrong');
-        }
-
-        if (!isset($parameters['contentLocationID'])) {
-            throw new \Exception('no root content location ID');
+        try {
+            Validators::validateVendorName($parameters['vendorName']);
+            Validators::validateLocationID($parameters['contentLocationID']);
+            Validators::validateLocationID($parameters['mediaLocationID']);
+            Validators::validateLocationID($parameters['userLocationID']);
+        } catch (InvalidArgumentException $e) {
+            throw new \Exception($e->getMessage());
         }
 
         try {
@@ -116,18 +115,10 @@ class ProjectTaskService extends BaseTaskService implements TaskInterface
             throw new \Exception('Fail to load root content location');
         }
 
-        if (!isset($parameters['mediaLocationID'])) {
-            throw new \Exception('no root media location ID');
-        }
-
         try {
             $this->locationService->loadLocation($parameters['mediaLocationID']);
         } catch (\Exception $e) {
             throw new \Exception('Fail to load root media location');
-        }
-
-        if (!isset($parameters['userLocationID'])) {
-            throw new \Exception('no root user location ID');
         }
 
         try {
@@ -144,7 +135,7 @@ class ProjectTaskService extends BaseTaskService implements TaskInterface
      * @param array $parameters
      * @return bool
      */
-    public function execute($command, array $parameters)
+    public function execute($command, array $parameters, Container $container)
     {
         switch ($command) {
             case 'install':
@@ -194,6 +185,9 @@ class ProjectTaskService extends BaseTaskService implements TaskInterface
                     $namespace = $parameters['vendorName'] . '\\' . ProjectGenerator::BUNDLE;
                     $bundle = $parameters['vendorName'] . ProjectGenerator::BUNDLE;
                     $this->updateKernel($this->kernel, $namespace, $bundle);
+                } catch (\RuntimeException $e) {
+                    $this->message = $e->getMessage();
+                    return false;
                 } catch (\Exception $e) {
                     $this->message = $e->getMessage();
                     return false;
