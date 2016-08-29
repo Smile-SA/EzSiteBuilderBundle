@@ -160,12 +160,8 @@ class SiteController extends BaseController
             )
         );
 
-        /** @var Registry $dcotrineRegistry */
-        $doctrineRegistry = $this->get('doctrine');
-        $doctrineManager = $doctrineRegistry->getManager();
-
         $task = new SiteBuilderTask();
-        $this->submitTask($doctrineManager, $task, $action);
+        $this->submitTask($task, $action);
     }
 
     protected function initPolicyTask(Form $form)

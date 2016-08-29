@@ -11,20 +11,20 @@ use EzSystems\PlatformUIBundle\Controller\Controller;
 
 abstract class BaseController extends Controller
 {
-    public function submitFuturTask($action)
+    protected function submitFuturTask($action)
+    {
+        $task = new SiteBuilderTask();
+        $postedAt = new \DateTime();
+        $postedAt->modify('+5 minutes');
+        $this->submitTask($task, $action, $postedAt);
+    }
+
+    protected function submitTask(SiteBuilderTask $task, array $action, \DateTime $postedAt = null)
     {
         /** @var Registry $dcotrineRegistry */
         $doctrineRegistry = $this->get('doctrine');
         $doctrineManager = $doctrineRegistry->getManager();
 
-        $task = new SiteBuilderTask();
-        $postedAt = new \DateTime();
-        $postedAt->modify('+5 minutes');
-        $this->submitTask($doctrineManager, $task, $action, $postedAt);
-    }
-
-    protected function submitTask(EntityManager $doctrineManager, SiteBuilderTask $task, array $action, \DateTime $postedAt = null)
-    {
         $postedAt = $postedAt ? $postedAt : new \DateTime();
         try {
             $task->setAction($action);
