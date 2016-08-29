@@ -163,6 +163,9 @@ class CustomerCommand extends BaseContainerAwareCommand
     {
         $questionHelper = $this->getQuestionHelper();
 
+        /** @var CustomerService $customerService */
+        $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
+
         $customerName = false;
         $question = new Question($questionHelper->getQuestion('Customer name used to construct namespace', null));
         $question->setValidator(
@@ -174,6 +177,11 @@ class CustomerCommand extends BaseContainerAwareCommand
 
         while (!$customerName) {
             $customerName = $questionHelper->ask($input, $output, $question);
+            $exists = $customerService->exists($this->customerName, $this->vendorName, $this->dir);
+            if ($exists) {
+                $output->writeln('<error>This customer already exists with this name</error>');
+                $customerName = false;
+            }
         }
 
         $this->customerName = $customerName;

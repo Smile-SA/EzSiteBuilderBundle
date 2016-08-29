@@ -2,6 +2,7 @@
 
 namespace EdgarEz\SiteBuilderBundle\Service;
 
+use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\ToolsBundle\Service\Content;
 use EdgarEz\ToolsBundle\Service\Role;
 use eZ\Publish\API\Repository\ContentTypeService;
@@ -352,5 +353,18 @@ class CustomerService
         } catch (InvalidArgumentException $e) {
             throw new \RuntimeException($e->getMessage());
         }
+    }
+
+    /**
+     * Check if customer bundle exists
+     *
+     * @param string $customerName
+     * @param string $vendorName
+     * @param string $dir
+     * @return bool true|false if customer bundle exists
+     */
+    public function exists($customerName, $vendorName, $dir)
+    {
+        return file_exists($dir . $vendorName . '/' . ProjectGenerator::CUSTOMERS . '/' . $customerName);
     }
 }

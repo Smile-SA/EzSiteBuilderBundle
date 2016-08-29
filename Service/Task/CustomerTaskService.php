@@ -70,6 +70,16 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
                 try {
                     $this->validateParameters($parameters);
 
+                    $basename = substr(ProjectGenerator::BUNDLE, 0, -6);
+                    $extensionAlias = 'edgarez_sb.' . Container::underscore($basename);
+                    $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
+
+                    $exists = $this->customerService->exists($parameters['customerName'], $vendorName, $this->kernelRootDir . '/../src');
+                    if ($exists) {
+                        $this->message = 'Customer already exists with this name';
+                        return false;
+                    }
+
                     $basename = ProjectGenerator::MAIN;
 
                     $parentLocationID = $container->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.customers_location_id');
@@ -100,10 +110,6 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
                     );
                     $customerRoleCreatorID = $returnValue['customerRoleCreatorID'];
                     $customerRoleEditorID = $returnValue['customerRoleEditorID'];
-
-                    $basename = substr(ProjectGenerator::BUNDLE, 0, -6);
-                    $extensionAlias = 'edgarez_sb.' . Container::underscore($basename);
-                    $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
                     // Generate first user creator
                     $userPassword = $this->customerService->initializeUserCreator(
