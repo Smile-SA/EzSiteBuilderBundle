@@ -6,31 +6,27 @@
 * finalize user guide
 * translate user guide
 
-## Installation
-
-## Customer bundle generation 
-
-## Model generator
-
 ## Site generator
 
-* send system admin a mail to configure virtualhost with new siteaccess
+* send system admin a mail to configure web host (apache/nginx/...) for new siteaccess
 
 ## eZPlatform  SiteBuilder interface
 
 * install interface
   * manage form constraints
     * manage location IDs constraint
-* model generator interface
+* model generation interface
   * manage notifications
     * fix form error notification
-* site activator interface
+* site pre-activation
   * interface
   * manage security access
-  * manage form constraints
-  * manage notifications
+* site activation interface
+  * interface
+  * manage security access
 * tasks
-  * site activate
+  * site pre activation
+  * site activation
 
 
 
