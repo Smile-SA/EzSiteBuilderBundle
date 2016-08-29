@@ -52,7 +52,7 @@ class Validators
      */
     public static function validateCustomerName($customerName)
     {
-        if (!preg_match('/^[A-Z][a-zA-Z]*$/', $customerName)) {
+        if (!preg_match('/^[A-Z][a-z]*$/', $customerName)) {
             throw new InvalidArgumentException($customerName, 'Input is not a valid Customer name. Customer name should contains only alphabetic characters, first uppercase.');
         }
 
@@ -68,7 +68,7 @@ class Validators
      */
     public static function validateModelName($modelName)
     {
-        if (!preg_match('/^[A-Z][a-zA-Z]*$/', $modelName)) {
+        if (!preg_match('/^[A-Z][a-z]*$/', $modelName)) {
             throw new InvalidArgumentException($modelName, 'Input is not a valid Model name. Model name should contains only alphabetic characters, first uppercase.');
         }
 
@@ -84,7 +84,7 @@ class Validators
      */
     public static function validateSiteName($siteName)
     {
-        if (!preg_match('/^[A-Z][a-zA-Z]*$/', $siteName)) {
+        if (!preg_match('/^[A-Z][a-z]*$/', $siteName)) {
             throw new InvalidArgumentException($siteName, 'Input is not a valid Site name. Site name should contains only alphabetic characters, first uppercase.');
         }
 

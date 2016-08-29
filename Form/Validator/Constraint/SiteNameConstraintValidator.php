@@ -9,7 +9,7 @@ class SiteNameConstraintValidator extends ConstraintValidator
 {
     public function validate($value, Constraint $constraint)
     {
-        if (!preg_match('/^[A-Z][a-zA-Z]*$/', $value)) {
+        if (!preg_match('/^[A-Z][a-z]*$/', $value)) {
             $this->context->addViolation(
                 $constraint->message,
                 array('%string%' => $value)
