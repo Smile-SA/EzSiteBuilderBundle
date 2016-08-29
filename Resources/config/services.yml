@@ -98,6 +98,8 @@ services:
             - @filesystem
             - @kernel
             - @edgar_ez_site_builder.customer.service
+            - @edgar_ez_site_builder.mailer
+            - %edgar_ez_site_builder.sysadminemail%
             - %kernel.root_dir%
 
     edgar_ez_site_builder.model.task.service:
@@ -115,6 +117,7 @@ services:
             - @kernel
             - @ezpublish.api.service.location
             - @edgar_ez_site_builder.site.service
+            - @ezpublish.api.service.role
             - %kernel.root_dir%
 
     edgar_ez_site_builder.mailer:

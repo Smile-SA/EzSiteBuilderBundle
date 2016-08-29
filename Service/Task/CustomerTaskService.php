@@ -5,6 +5,7 @@ namespace EdgarEz\SiteBuilderBundle\Service\Task;
 use EdgarEz\SiteBuilderBundle\Command\Validators;
 use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
+use EdgarEz\SiteBuilderBundle\Mail\Sender;
 use EdgarEz\SiteBuilderBundle\Service\CustomerService;
 use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Container;
@@ -15,6 +16,12 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
 {
     /** @var CustomerService $customerService */
     protected $customerService;
+
+    /** @var Sender $mailer */
+    protected $mailer;
+
+    /** @var string $sysadminEmail */
+    protected $sysadminEmail;
 
     /** @var Filesystem $filesystem */
     protected $filesystem;
@@ -29,12 +36,16 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
         Filesystem $filesystem,
         Kernel $kernel,
         CustomerService $customerService,
+        Sender $mailer,
+        $sysadminEmail,
         $kernelRootDir
     )
     {
         $this->filesystem = $filesystem;
         $this->kernel = $kernel;
         $this->customerService = $customerService;
+        $this->mailer = $mailer;
+        $this->sysadminEmail = $sysadminEmail;
         $this->kernelRootDir = $kernelRootDir;
 
         $this->message = false;
@@ -93,6 +104,21 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
                     $basename = substr(ProjectGenerator::BUNDLE, 0, -6);
                     $extensionAlias = 'edgarez_sb.' . Container::underscore($basename);
                     $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
+
+                    // Generate first user creator
+                    $userPassword = $this->customerService->initializeUserCreator(
+                        $parameters['userFirstName'],
+                        $parameters['userLastName'],
+                        $parameters['userEmail'],
+                        $customerUserCreatorsGroupLocationID
+                    );
+
+                    $this->mailer->send(
+                        'new user: ' . $parameters['userEmail'] . '/' . $userPassword,
+                        'new user',
+                        $this->sysadminEmail,
+                        $parameters['userEmail']
+                    );
 
                     $generator = new CustomerGenerator(
                         $this->filesystem,

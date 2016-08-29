@@ -4,11 +4,14 @@ namespace EdgarEz\SiteBuilderBundle\Service\Task;
 
 
 use EdgarEz\SiteBuilderBundle\Command\Validators;
+use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\SiteGenerator;
 use EdgarEz\SiteBuilderBundle\Service\SiteService;
 use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
 use eZ\Publish\API\Repository\LocationService;
+use eZ\Publish\API\Repository\Repository;
+use eZ\Publish\API\Repository\RoleService;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
@@ -17,6 +20,9 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
 {
     /** @var SiteService $siteService */
     protected $siteService;
+
+    /** @var RoleService $roleService */
+    protected $roleService;
 
     /** @var Filesystem $filesystem */
     protected $filesystem;
@@ -35,6 +41,7 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
         Kernel $kernel,
         LocationService $locationService,
         SiteService $siteService,
+        RoleService $roleService,
         $kernelRootDir
     )
     {
@@ -42,6 +49,7 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
         $this->kernel = $kernel;
         $this->locationService = $locationService;
         $this->siteService = $siteService;
+        $this->roleService = $roleService;
         $this->kernelRootDir = $kernelRootDir;
 
         $this->message = false;
@@ -63,14 +71,13 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
             }
             Validators::validateLocationID($model[0]);
             Validators::validateLocationID($model[1]);
+
+            $this->locationService->loadLocation($model[0]);
+            $this->locationService->loadLocation($model[1]);
         } catch (InvalidArgumentException $e) {
             throw new \Exception($e->getMessage());
-        }
-
-        try {
-            $this->locationService->loadLocation($parameters['model']);
         } catch (\Exception $e) {
-            throw new \Exception('Fail to load model');
+            throw $e;
         }
     }
 
@@ -81,9 +88,8 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                 try {
                     $this->validateParameters($parameters);
 
-                    $modelLocation = $this->locationService->loadLocation($parameters['model']);;
-
                     $model = explode('-', $parameters['model']);
+                    $modelLocation = $this->locationService->loadLocation($model[0]);
 
                     $returnValue = $this->siteService->createSiteContent($parameters['customerContentLocationID'], $model[0], $parameters['siteName']);
                     $siteLocationID = $returnValue['siteLocationID'];
@@ -110,7 +116,7 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                         $excludeUriPrefixes,
                         $parameters['host'],
                         $parameters['mapuri'],
-                        $parameters['siteaccessSuffix'],
+                        $parameters['suffix'],
                         $this->kernelRootDir . '/../src'
                     );
                 } catch (\RuntimeException $e) {
@@ -123,7 +129,26 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                 break;
             case 'policy':
                 try {
+                    $adminID = $container->getParameter('edgar_ez_tools.adminid');
+                    /** @var Repository $repository */
+                    $repository = $container->get('ezpublish.api.repository');
+                    $repository->setCurrentUser($repository->getUserService()->loadUser($adminID));
+
                     $this->validateParameters($parameters);
+
+                    $extensionAlias = Container::underscore(ProjectGenerator::CUSTOMERS . $parameters['customerName'] . CustomerGenerator::SITES);
+                    $roleCreatorID = $container->getParameter('edgarez_sb.customer.' . $extensionAlias . '.default.customer_user_creator_role_id');
+                    $roleEditorID = $container->getParameter('edgarez_sb.customer.' . $extensionAlias . '.default.customer_user_editor_role_id');
+
+                    $roleCreator = $this->roleService->loadRole($roleCreatorID);
+                    $roleEditor = $this->roleService->loadRole($roleEditorID);
+
+                    $basename = substr(ProjectGenerator::BUNDLE, 0, -6);
+                    $extensionAlias = 'edgarez_sb.' . Container::underscore($basename);
+                    $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
+
+                    $siteaccessName = Container::underscore($vendorName . $parameters['customerName'] . $parameters['siteName']);
+                    $this->siteService->addSiteaccessLimitation($roleCreator, $roleEditor, $siteaccessName);
                 } catch (\RuntimeException $e) {
                     $this->message = $e->getMessage();
                     return false;
