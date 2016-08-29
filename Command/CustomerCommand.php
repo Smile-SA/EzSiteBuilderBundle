@@ -177,7 +177,7 @@ class CustomerCommand extends BaseContainerAwareCommand
 
         while (!$customerName) {
             $customerName = $questionHelper->ask($input, $output, $question);
-            $exists = $customerService->exists($this->customerName, $this->vendorName, $this->dir);
+            $exists = $customerService->exists($customerName, $this->vendorName, $this->dir);
             if ($exists) {
                 $output->writeln('<error>This customer already exists with this name</error>');
                 $customerName = false;

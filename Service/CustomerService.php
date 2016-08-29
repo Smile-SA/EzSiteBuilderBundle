@@ -365,6 +365,6 @@ class CustomerService
      */
     public function exists($customerName, $vendorName, $dir)
     {
-        return file_exists($dir . $vendorName . '/' . ProjectGenerator::CUSTOMERS . '/' . $customerName);
+        return file_exists($dir . '/' . $vendorName . '/' . ProjectGenerator::CUSTOMERS . '/' . $customerName);
     }
 }

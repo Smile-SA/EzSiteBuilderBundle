@@ -175,6 +175,6 @@ class SiteService
      */
     public function exists($siteName, $customerName, $vendorName, $dir)
     {
-        return file_exists($dir . $vendorName . '/' . ProjectGenerator::CUSTOMERS . '/' . $customerName . '/' . CustomerGenerator::SITES . '/' . $siteName . 'Bundle');
+        return file_exists($dir . '/' . $vendorName . '/' . ProjectGenerator::CUSTOMERS . '/' . $customerName . '/' . CustomerGenerator::SITES . '/' . $siteName . 'Bundle');
     }
 }

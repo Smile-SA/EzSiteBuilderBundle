@@ -230,7 +230,7 @@ class SiteCommand extends BaseContainerAwareCommand
 
         while (!$siteName) {
             $siteName = $questionHelper->ask($input, $output, $question);
-            $exists = $siteService->exists($this->siteName, $this->customerName, $this->vendorName, $this->dir);
+            $exists = $siteService->exists($siteName, $this->customerName, $this->vendorName, $this->dir);
             if ($exists) {
                 $output->writeln('<error>This site already exists with this name for this customer</error>');
                 $siteName = false;

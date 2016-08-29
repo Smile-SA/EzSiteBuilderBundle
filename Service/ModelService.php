@@ -238,6 +238,6 @@ class ModelService
      */
     public function exists($modelName, $vendorName, $dir)
     {
-        return file_exists($dir . $vendorName . '/' . ProjectGenerator::MODELS . '/' . $modelName . 'Bundle');
+        return file_exists($dir . '/' . $vendorName . '/' . ProjectGenerator::MODELS . '/' . $modelName . 'Bundle');
     }
 }

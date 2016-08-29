@@ -136,7 +136,7 @@ class ModelCommand extends BaseContainerAwareCommand
 
         while (!$modelName) {
             $modelName = $questionHelper->ask($input, $output, $question);
-            $exists = $modelService->exists($this->modelName, $this->vendorName, $this->dir);
+            $exists = $modelService->exists($modelName, $this->vendorName, $this->dir);
             if ($exists) {
                 $output->writeln('<error>This model already exists with this name</error>');
                 $modelName = false;
