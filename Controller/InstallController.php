@@ -3,8 +3,6 @@
 namespace EdgarEz\SiteBuilderBundle\Controller;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\ORM\EntityManager;
-use EdgarEz\SiteBuilderBundle\Command\TaskCommand;
 use EdgarEz\SiteBuilderBundle\Data\Install\InstallData;
 use EdgarEz\SiteBuilderBundle\Data\Mapper\InstallMapper;
 use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
@@ -12,7 +10,6 @@ use EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\InstallDispatcher;
 use EdgarEz\SiteBuilderBundle\Form\Type\InstallType;
 use EdgarEz\SiteBuilderBundle\Service\SecurityService;
 use EdgarEz\SiteBuilderBundle\Values\Content\Install;
-use eZ\Publish\Core\MVC\Symfony\Security\User;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 
