@@ -118,30 +118,6 @@ class SiteBuilderTask
     }
 
     /**
-     * Set state
-     *
-     * @param integer $state
-     *
-     * @return SiteBuilderTask
-     */
-    public function setState($state)
-    {
-        $this->state = $state;
-
-        return $this;
-    }
-
-    /**
-     * Get state
-     *
-     * @return integer
-     */
-    public function getState()
-    {
-        return $this->state;
-    }
-
-    /**
      * Set executedAt
      *
      * @param \DateTime $executedAt
