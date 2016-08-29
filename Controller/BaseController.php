@@ -63,7 +63,7 @@ abstract class BaseController extends Controller
             $form,
             $data,
             $form->getClickedButton() ? $form->getClickedButton()->getName() : null,
-            $data
+            $options
         );
     }
 
