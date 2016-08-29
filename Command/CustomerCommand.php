@@ -118,6 +118,11 @@ class CustomerCommand extends BaseContainerAwareCommand
             $this->customerRoleCreatorID = $returnValue['customerRoleCreatorID'];
             $this->customerRoleEditorID = $returnValue['customerRoleEditorID'];
 
+            $customerService->updateGlobalRole(
+                $this->customerUserCreatorsGroupLocationID,
+                $this->customerUserEditorsGroupLocationID
+            );
+
             $this->initializeUserCreator($output);
 
             /** @var CustomerGenerator $generator */

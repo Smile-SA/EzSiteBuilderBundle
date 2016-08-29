@@ -12,4 +12,7 @@ class Site extends ValueObject
     protected $host;
     protected $mapuri;
     protected $suffix;
+    protected $customerName;
+    protected $customerContentLocationID;
+    protected $customerMediaLocationID;
 }

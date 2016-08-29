@@ -180,7 +180,7 @@ class ModelService
         }
     }
 
-    public function updateGlobalRole($modelLocationID)
+    public function updateGlobalRole($modelLocationID, $mediaModelLocationID)
     {
         try {
             /** @var Role $role */
@@ -198,6 +198,7 @@ class ModelService
                         if ($limitation->getIdentifier() == 'Node') {
                             $limitationValues = $limitation->limitationValues;
                             $limitationValues[] = $modelLocationID;
+                            $limitationValues[] = $mediaModelLocationID;
                             $limitation->limitationValues = $limitationValues;
 
                             $policyUpdateStruct = new PolicyUpdateStruct();

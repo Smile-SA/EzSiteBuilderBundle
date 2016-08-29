@@ -84,7 +84,7 @@ class ModelCommand extends BaseContainerAwareCommand
             $this->mediaModelLocationID = $returnValue['mediaModelLocationID'];
 
 
-            $modelService->updateGlobalRole($this->modelLocationID);
+            $modelService->updateGlobalRole($this->modelLocationID, $this->mediaModelLocationID);
 
             /** @var ModelGenerator $generator */
             $generator = $this->getGenerator();
@@ -108,7 +108,7 @@ class ModelCommand extends BaseContainerAwareCommand
                 ''
             ));
         } catch (\RuntimeException $e) {
-            $output->write('<error>' . $e->getMessage() . '</error');
+            $output->write('<error>' . $e->getMessage() . '</error>');
         }
     }
 

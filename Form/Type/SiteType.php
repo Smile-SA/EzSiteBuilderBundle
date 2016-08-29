@@ -12,6 +12,7 @@ use eZ\Publish\API\Repository\Values\Content\Search\SearchResult;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -26,17 +27,37 @@ class SiteType extends AbstractType
     protected $searchService;
 
     /** @var int $modelsLocationID */
-    protected $modelsLocationID;
+    protected $contentRootModelsLocationID;
+
+    /** @var int $mediaRootModelsLocationID */
+    protected $mediaRootModelsLocationID;
+
+    /** @var int $contentRootCustomerLocationID */
+    protected $contentRootCustomerLocationID;
+
+    /** @var int $mediaRootCustomerLocationID */
+    protected $mediaRootCustomerLocationID;
+
+    /** @var string $customerName */
+    protected $customerName;
 
     public function __construct(
         LocationService $locationService,
         SearchService $searchService,
-        $modelsLocationID
+        $contentRootModelsLocationID,
+        $mediaRootModelsLocationID,
+        $contentRootCustomerLocationID,
+        $mediaRootCustomerLocationID,
+        $customerName
     )
     {
         $this->locationService = $locationService;
         $this->searchService = $searchService;
-        $this->modelsLocationID = $modelsLocationID;
+        $this->contentRootModelsLocationID = $contentRootModelsLocationID;
+        $this->mediaRootModelsLocationID = $mediaRootModelsLocationID;
+        $this->contentRootCustomerLocationID = $contentRootCustomerLocationID;
+        $this->mediaRootCustomerLocationID = $mediaRootCustomerLocationID;
+        $this->customerName = $customerName;
     }
 
     /**
@@ -53,6 +74,19 @@ class SiteType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $contentModels = $this->getContentModels();
+        $mediaModels = $this->getMediaModels();
+        $models = array();
+
+        foreach ($contentModels as $idContent => $contentModel) {
+            foreach ($mediaModels as $idMedia => $mediaModel) {
+                if ($contentModel == $mediaModel) {
+                    $models[$idContent . '-' . $idMedia] = $mediaModel;
+                    break;
+                }
+            }
+        }
+
         $builder
             ->add('siteName', TextType::class, array(
                 'label' => 'form.site.sitename.label',
@@ -62,7 +96,7 @@ class SiteType extends AbstractType
             ->add('model', ChoiceType::class, array(
                 'label' => 'form.site.model.label',
                 'required' => true,
-                'choices' => $this->getModels()
+                'choices' => $models
             ))
             ->add('host', TextType::class, array(
                 'label' => 'form.site.host.label',
@@ -78,16 +112,42 @@ class SiteType extends AbstractType
                 'required' => false,
                 'constraints' => array(new HostSuffixConstraint())
             ))
+            ->add('customerName', HiddenType::class, array('data' => $this->customerName))
+            ->add('customerContentLocationID', HiddenType::class, array('data' => $this->contentRootCustomerLocationID))
+            ->add('customerMediaLocationID', HiddenType::class, array('data' => $this->mediaRootCustomerLocationID))
             ->add('site', SubmitType::class, ['label' => 'site.button']);
     }
 
-    private function getModels()
+    private function getContentModels()
     {
         $models = array();
 
         $query = new \eZ\Publish\API\Repository\Values\Content\Query();
-        $locationCriterion = new Query\Criterion\ParentLocationId($this->modelsLocationID);
+        $locationCriterion = new Query\Criterion\ParentLocationId($this->contentRootModelsLocationID);
         $contentTypeIdentifier = new Query\Criterion\ContentTypeIdentifier('edgar_ez_sb_model');
+
+        $query->filter = new Query\Criterion\LogicalAnd(
+            array($locationCriterion, $contentTypeIdentifier)
+        );
+
+        /** @var SearchResult $result */
+        $result = $this->searchService->findContent($query);
+        if ($result->totalCount) {
+            foreach ($result->searchHits as $searchHit) {
+                $models[$searchHit->valueObject->contentInfo->mainLocationId] = $searchHit->valueObject->contentInfo->name;
+            }
+        }
+
+        return $models;
+    }
+
+    private function getMediaModels()
+    {
+        $models = array();
+
+        $query = new \eZ\Publish\API\Repository\Values\Content\Query();
+        $locationCriterion = new Query\Criterion\ParentLocationId($this->mediaRootModelsLocationID);
+        $contentTypeIdentifier = new Query\Criterion\ContentTypeIdentifier('edgar_ez_sb_mediamodel');
 
         $query->filter = new Query\Criterion\LogicalAnd(
             array($locationCriterion, $contentTypeIdentifier)

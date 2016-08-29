@@ -14,7 +14,11 @@ use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\RoleService;
 use eZ\Publish\API\Repository\UserService;
+use eZ\Publish\API\Repository\Values\User\Limitation;
 use eZ\Publish\API\Repository\Values\User\Limitation\SubtreeLimitation;
+use eZ\Publish\API\Repository\Values\User\Policy;
+use eZ\Publish\Core\Repository\Values\User\PolicyDraft;
+use eZ\Publish\Core\Repository\Values\User\PolicyUpdateStruct;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
@@ -255,7 +259,9 @@ class CustomerService
                 array(
                     'limitationValues' => array(
                         '/' . implode('/', $contentLocation->path) . '/',
-                        '/' . implode('/', $mediaContentLocation->path) . '/'
+                        '/' . implode('/', $mediaContentLocation->path) . '/',
+                        '/' . implode('/', $userGroupCreatorLocation->path) . '/',
+                        '/' . implode('/', $userGroupEditorLocation->path) . '/'
                     )
                 )
             );
@@ -298,6 +304,53 @@ class CustomerService
             throw new \RuntimeException($e->getMessage());
         } catch (\RuntimeException $e) {
             throw $e;
+        }
+    }
+
+    public function updateGlobalRole($customerUserCreatorsGroupLocationID, $customerUserEditorsGroupLocationID)
+    {
+        try {
+            /** @var \eZ\Publish\API\Repository\Values\User\Role $role */
+            $role = $this->roleService->loadRoleByIdentifier('SiteBuilder');
+
+            $roleDraft = $this->roleService->createRoleDraft($role);
+
+            /** @var Policy[] $policies */
+            $policies = $roleDraft->policies;
+            foreach ($policies as $policy) {
+                if ($policy->module == 'content' && $policy->function == 'read') {
+                    /** @var Limitation[] $limitations */
+                    $limitations = $policy->getLimitations();
+                    foreach ($limitations as $limitation) {
+                        if ($limitation->getIdentifier() == 'Node') {
+                            $limitationValues = $limitation->limitationValues;
+                            $limitationValues[] = $customerUserCreatorsGroupLocationID;
+                            $limitationValues[] = $customerUserEditorsGroupLocationID;
+                            $limitation->limitationValues = $limitationValues;
+
+                            $policyUpdateStruct = new PolicyUpdateStruct();
+                            $policyUpdateStruct->addLimitation($limitation);
+
+                            $policyDraft = new PolicyDraft(['innerPolicy' => new \eZ\Publish\Core\Repository\Values\User\Policy(['id' => $policy->id, 'module' => 'content', 'function' => 'read', 'roleId' => $roleDraft->id])]);
+
+                            $this->roleService->updatePolicyByRoleDraft(
+                                $roleDraft,
+                                $policyDraft,
+                                $policyUpdateStruct
+                            );
+                            $this->roleService->publishRoleDraft($roleDraft);
+                        }
+                    }
+                }
+            }
+        } catch (UnauthorizedException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (NotFoundException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (LimitationValidationException $e) {
+            throw new \RuntimeException($e->getMessage());
+        } catch (InvalidArgumentException $e) {
+            throw new \RuntimeException($e->getMessage());
         }
     }
 }

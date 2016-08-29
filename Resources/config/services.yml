@@ -189,6 +189,7 @@ services:
     edgar_ez_site_builder.controller.sb:
         class: %edgar_ez_site_builder.controller.sb.class%
         arguments:
+            - @ezpublish.api.service.location
             - %edgar_ez_site_builder.tabs%
         parent: ezsystems.platformui.controller.base
 

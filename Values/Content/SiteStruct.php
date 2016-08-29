@@ -12,4 +12,7 @@ class SiteStruct extends ValueObject
     public $host;
     public $mapuri;
     public $suffix;
+    public $customerName;
+    public $customerContentLocationID;
+    public $customerMediaLocationID;
 }

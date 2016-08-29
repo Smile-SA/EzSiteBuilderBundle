@@ -6,14 +6,23 @@ use EdgarEz\SiteBuilderBundle\Form\Type\CustomerType;
 use EdgarEz\SiteBuilderBundle\Form\Type\InstallType;
 use EdgarEz\SiteBuilderBundle\Form\Type\ModelType;
 use EdgarEz\SiteBuilderBundle\Form\Type\SiteType;
+use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
+use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
+use eZ\Publish\API\Repository\LocationService;
+use eZ\Publish\API\Repository\Values\User\User;
 use EzSystems\PlatformUIBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\Container;
 
 class SbController extends Controller
 {
+    /** @var LocationService $locationService */
+    protected $locationService;
+
     protected $tabItems;
 
-    public function __construct($tabItems)
+    public function __construct(LocationService $locationService, $tabItems)
     {
+        $this->locationService = $locationService;
         $this->tabItems = $tabItems;
     }
 
@@ -72,13 +81,20 @@ class SbController extends Controller
                 break;
             case 'sitegenerate':
                 if (isset($params['sitegenerate'])) {
-                    $params['sitegenerate'];
+                    $params['sitegenerate'] = $paramsTwig['sitegenerate'];
                 } else {
+                    $customerName = $this->getCustomerName();
+
+                    $customerAlias = ProjectGenerator::CUSTOMERS . $customerName . CustomerGenerator::SITES;
                     $params['siteForm'] = $this->createForm(
                         new SiteType(
                             $this->container->get('ezpublish.api.service.location'),
                             $this->container->get('ezpublish.api.service.search'),
-                            $this->container->getParameter('edgarez_sb.project.default.models_location_id')
+                            $this->container->getParameter('edgarez_sb.project.default.models_location_id'),
+                            $this->container->getParameter('edgarez_sb.project.default.media_models_location_id'),
+                            $this->container->getParameter('edgarez_sb.customer.' . Container::underscore($customerAlias) . '.default.customer_location_id'),
+                            $this->container->getParameter('edgarez_sb.customer.' . Container::underscore($customerAlias) . '.default.media_customer_location_id'),
+                            $customerName
                         )
                     )->createView();
                 }
@@ -92,5 +108,15 @@ class SbController extends Controller
             'tab_item' => $tabItem,
             'params' => $params
         ]);
+    }
+
+    protected function getCustomerName()
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $userLocation = $this->locationService->loadLocation($user->getAPIUser()->contentInfo->mainLocationId);
+
+        $parent = $this->locationService->loadLocation($userLocation->parentLocationId);
+        return $parent->contentInfo->name;
     }
 }

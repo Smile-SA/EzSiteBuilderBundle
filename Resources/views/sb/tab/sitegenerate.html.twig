@@ -31,6 +31,9 @@
 </fieldset>
 
 <div class="pure-controls">
+    {{ form_widget(params.siteForm.customerName) }}
+    {{ form_widget(params.siteForm.customerContentLocationID) }}
+    {{ form_widget(params.siteForm.customerMediaLocationID) }}
     {{ form_widget(
     params.siteForm.site,
     {

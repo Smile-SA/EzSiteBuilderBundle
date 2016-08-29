@@ -123,12 +123,10 @@ class InstallCommand extends BaseContainerAwareCommand
             $this->userEditorsLocationID = $returnValue['userEditorsLocationID'];
 
             $locationIDs = array(
-                $this->rootContentLocationID,
-                $this->rootMediaLocationID,
-                $this->customersLocationID,
-                $this->mediaCustomersLocationID,
-                $this->modelsLocationID,
-                $this->mediaModelsLocationID
+                $this->rootContentLocationID, $this->rootMediaLocationID,
+                $this->customersLocationID, $this->mediaCustomersLocationID,
+                $this->modelsLocationID, $this->mediaModelsLocationID,
+                $userGroupLocationID, $this->userGroupParenttLocationID, $this->userCreatorsLocationID, $this->userEditorsLocationID
             );
             $installService->createRole($this->userGroupParenttLocationID, $locationIDs);
 

@@ -68,7 +68,7 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
                     $returnValue = $this->modelService->createMediaModelContent($mediaModelsLocationID, $parameters['modelName']);
                     $mediaModelLocationID = $returnValue['mediaModelLocationID'];
 
-                    $this->modelService->updateGlobalRole($modelLocationID);
+                    $this->modelService->updateGlobalRole($modelLocationID, $mediaModelLocationID);
 
                     $basename = substr(ProjectGenerator::BUNDLE, 0, -6);
                     $extensionAlias = 'edgarez_sb.' . Container::underscore($basename);

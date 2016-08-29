@@ -50,10 +50,19 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
     public function validateParameters($parameters)
     {
         try {
+            Validators::validateCustomerName($parameters['customerName']);
+            Validators::validateLocationID($parameters['customerContentLocationID']);
+            Validators::validateLocationID($parameters['customerMediaLocationID']);
             Validators::validateSiteName($parameters['siteName']);
-            Validators::validateLocationID($parameters['model']);
             Validators::validateHost($parameters['host']);
             Validators::validateSiteaccessSuffix($parameters['suffix']);
+
+            $model = explode('-', $parameters['model']);
+            if (!is_array($model) || count($model) != 2) {
+                throw new \Exception('Fail to identify model by content or media location ID');
+            }
+            Validators::validateLocationID($model[0]);
+            Validators::validateLocationID($model[1]);
         } catch (InvalidArgumentException $e) {
             throw new \Exception($e->getMessage());
         }
@@ -70,16 +79,17 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
         switch ($command) {
             case 'generate':
                 try {
-                    /*
                     $this->validateParameters($parameters);
 
                     $modelLocation = $this->locationService->loadLocation($parameters['model']);;
 
-                    $returnValue = $this->siteService->createSiteContent($contentLocationIDs['customerLocationID'], $contentLocationIDs['modelLocationID'], $parameters['siteName']);
+                    $model = explode('-', $parameters['model']);
+
+                    $returnValue = $this->siteService->createSiteContent($parameters['customerContentLocationID'], $model[0], $parameters['siteName']);
                     $siteLocationID = $returnValue['siteLocationID'];
                     $excludeUriPrefixes = $returnValue['excludeUriPrefixes'];
 
-                    $returnValue = $this->siteService->createMediaSiteContent($mediaLocationIDs['mediaCustomerLocationID'], $mediaLocationIDs['mediaModelLocationID'], $parameters['siteName']);
+                    $returnValue = $this->siteService->createMediaSiteContent($parameters['customerMediaLocationID'], $model[1], $parameters['siteName']);
                     $mediaSiteLocationID = $returnValue['mediaSiteLocationID'];
 
                     $basename = substr(ProjectGenerator::BUNDLE, 0, -6);
@@ -94,7 +104,7 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                         $siteLocationID,
                         $mediaSiteLocationID,
                         $vendorName,
-                        $this->customerName,
+                        $parameters['customerName'],
                         $modelLocation->contentInfo->name,
                         $parameters['siteName'],
                         $excludeUriPrefixes,
@@ -103,7 +113,6 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                         $parameters['siteaccessSuffix'],
                         $this->kernelRootDir . '/../src'
                     );
-                    */
                 } catch (\RuntimeException $e) {
                     $this->message = $e->getMessage();
                     return false;

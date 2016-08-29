@@ -10,12 +10,15 @@ use EdgarEz\SiteBuilderBundle\Data\Site\SiteData;
 use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
 use EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\SiteDispatcher;
 use EdgarEz\SiteBuilderBundle\Form\Type\SiteType;
+use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
+use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\SiteBuilderBundle\Service\SecurityService;
 use EdgarEz\SiteBuilderBundle\Values\Content\Site;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\SearchService;
 use eZ\Publish\Core\MVC\Symfony\Security\User;
 use EzSystems\PlatformUIBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -72,7 +75,7 @@ class SiteController extends Controller
                     'siteName' => $this->data->siteName,
                     'host' => $this->data->host,
                     'mapuri' => $this->data->mapuri,
-                    'suffix' => $this->data->suffix,
+                    'model' => $this->data->customerContentLocationID . '-' . $this->data->customerMediaLocationID
                 )
             );
 
@@ -112,13 +115,30 @@ class SiteController extends Controller
             'host' => '',
             'mapuri' => false,
             'suffix' => '',
+            'customerName' => '',
+            'customerContentLocationID' => 0,
+            'customerMediaLocationID' => 0,
         ]);
-        $siteData = (new SiteMapper())->mapToFormData($site);
+        $this->data = (new SiteMapper())->mapToFormData($site);
 
-        $modelsLocationID = $this->container->getParameter('edgarez_sb.project.default.models_location_id');
+        $customerName = $this->getCustomerName();
+        $customerAlias = ProjectGenerator::CUSTOMERS . $customerName . CustomerGenerator::SITES;
+
+        $contentRootModelsLocationID = $this->container->getParameter('edgarez_sb.project.default.models_location_id');
+        $mediaRootModelsLocationID = $this->container->getParameter('edgarez_sb.project.default.media_models_location_id');
+        $contentRootCustomerLocationID = $this->container->getParameter('edgarez_sb.customer.' . Container::underscore($customerAlias) . '.default.customer_location_id');
+        $mediaRootCustomerLocationID = $this->container->getParameter('edgarez_sb.customer.' . Container::underscore($customerAlias) . '.default.media_customer_location_id');
         return $this->createForm(
-            new SiteType($this->locationService, $this->searchService, $modelsLocationID),
-            $siteData
+            new SiteType(
+                $this->locationService,
+                $this->searchService,
+                $contentRootModelsLocationID,
+                $mediaRootModelsLocationID,
+                $contentRootCustomerLocationID,
+                $mediaRootCustomerLocationID,
+                $customerName
+            ),
+            $this->data
         );
     }
 
@@ -135,7 +155,10 @@ class SiteController extends Controller
                 'model' => $data->model,
                 'host' => $data->host,
                 'mapuri' => $data->mapuri,
-                'suffix' => $data->suffix
+                'suffix' => $data->suffix,
+                'customerName' => $data->customerName,
+                'customerContentLocationID' => $data->customerContentLocationID,
+                'customerMediaLocationID' => $data->customerMediaLocationID,
             )
         );
 
@@ -164,5 +187,15 @@ class SiteController extends Controller
             $doctrineManager->persist($task);
             $doctrineManager->flush();
         }
+    }
+
+    protected function getCustomerName()
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $userLocation = $this->locationService->loadLocation($user->getAPIUser()->contentInfo->mainLocationId);
+
+        $parent = $this->locationService->loadLocation($userLocation->parentLocationId);
+        return $parent->contentInfo->name;
     }
 }
