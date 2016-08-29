@@ -75,6 +75,11 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
                     $customerUserCreatorsGroupLocationID = $returnValue['customerUserCreatorsGroupLocationID'];
                     $customerUserEditorsGroupLocationID = $returnValue['customerUserEditorsGroupLocationID'];
 
+                    $this->customerService->updateGlobalRole(
+                        $customerUserCreatorsGroupLocationID,
+                        $customerUserEditorsGroupLocationID
+                    );
+
                     $returnValue = $this->customerService->createRoles(
                         $parameters['customerName'],
                         $customerLocationID,

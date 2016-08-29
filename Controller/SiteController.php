@@ -84,6 +84,7 @@ class SiteController extends Controller
             }
 
             $this->initTask($form);
+            $this->initPolicyTask($form);
 
             return $this->redirectAfterFormPost($actionUrl);
         }
@@ -170,12 +171,43 @@ class SiteController extends Controller
         $this->submitTask($doctrineManager, $task, $action);
     }
 
-    protected function submitTask(EntityManager $doctrineManager, SiteBuilderTask $task, array $action)
+    protected function initPolicyTask(Form $form)
     {
+        /** @var SiteData $data */
+        $data = $form->getData();
+
+        $action = array(
+            'service'    => 'site',
+            'command'    => 'policy',
+            'parameters' => array(
+                'siteName' => $data->siteName,
+                'model' => $data->model,
+                'host' => $data->host,
+                'mapuri' => $data->mapuri,
+                'suffix' => $data->suffix,
+                'customerName' => $data->customerName,
+                'customerContentLocationID' => $data->customerContentLocationID,
+                'customerMediaLocationID' => $data->customerMediaLocationID,
+            )
+        );
+
+        /** @var Registry $dcotrineRegistry */
+        $doctrineRegistry = $this->get('doctrine');
+        $doctrineManager = $doctrineRegistry->getManager();
+
+        $task = new SiteBuilderTask();
+        $postedAt = new \DateTime();
+        $postedAt->modify('+5 minutes');
+        $this->submitTask($doctrineManager, $task, $action, $postedAt);
+    }
+
+    protected function submitTask(EntityManager $doctrineManager, SiteBuilderTask $task, array $action, \DateTime $postedAt = null)
+    {
+        $postedAt = $postedAt ? $postedAt : new \DateTime();
         try {
             $task->setAction($action);
             $task->setStatus(TaskCommand::STATUS_SUBMITTED);
-            $task->setPostedAt(new \DateTime());
+            $task->setPostedAt($postedAt);
         } catch (\Exception $e) {
             $task->setLogs('Fail to generate task');
             $task->setStatus(TaskCommand::STATUS_FAIL);
