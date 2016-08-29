@@ -157,20 +157,8 @@ class SiteCommand extends BaseContainerAwareCommand
     {
         $questionHelper = $this->getQuestionHelper();
 
-        $siteName = false;
-        $question = new Question($questionHelper->getQuestion('Site name you want to create', null));
-        $question->setValidator(
-            array(
-                'EdgarEz\SiteBuilderBundle\Command\Validators',
-                'validateVendorName'
-            )
-        );
-
-        while (!$siteName) {
-            $siteName = $questionHelper->ask($input, $output, $question);
-        }
-
-        $this->siteName = $siteName;
+        /** @var SiteService $siteService */
+        $siteService = $this->getContainer()->get('edgar_ez_site_builder.site.service');
 
         /** @var Repository $repository */
         $repository = $this->getContainer()->get('ezpublish.api.repository');
@@ -230,6 +218,26 @@ class SiteCommand extends BaseContainerAwareCommand
         $this->customerName = $customerLocation->getContentInfo()->name;
         $modelLocation = $locationService->loadLocation($modelLocationID);
         $this->modelName = $modelLocation->getContentInfo()->name;
+
+        $siteName = false;
+        $question = new Question($questionHelper->getQuestion('Site name you want to create', null));
+        $question->setValidator(
+            array(
+                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'validateVendorName'
+            )
+        );
+
+        while (!$siteName) {
+            $siteName = $questionHelper->ask($input, $output, $question);
+            $exists = $siteService->exists($this->siteName, $this->customerName, $this->vendorName, $this->dir);
+            if ($exists) {
+                $output->writeln('<error>This site already exists with this name for this customer</error>');
+                $siteName = false;
+            }
+        }
+
+        $this->siteName = $siteName;
 
         return array(
             'customerLocationID' => $customerLocationID,

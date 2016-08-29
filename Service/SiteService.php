@@ -2,6 +2,9 @@
 
 namespace EdgarEz\SiteBuilderBundle\Service;
 
+use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
+use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
+use EdgarEz\SiteBuilderBundle\Generator\SiteGenerator;
 use EdgarEz\ToolsBundle\Service\Content;
 use EdgarEz\ToolsBundle\Service\Role;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
@@ -159,5 +162,19 @@ class SiteService
         } catch (\RuntimeException $e) {
             throw $e;
         }
+    }
+
+    /**
+     * Check if a site bundle already exists for a specific customer
+     *
+     * @param string $siteName
+     * @param string $customerName
+     * @param string $vendorName
+     * @param string $dir
+     * @return bool true|false if site bundle already exists for a specific customer
+     */
+    public function exists($siteName, $customerName, $vendorName, $dir)
+    {
+        return file_exists($dir . $vendorName . '/' . ProjectGenerator::CUSTOMERS . '/' . $customerName . '/' . CustomerGenerator::SITES . '/' . $siteName . 'Bundle');
     }
 }

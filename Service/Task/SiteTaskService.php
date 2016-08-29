@@ -2,7 +2,6 @@
 
 namespace EdgarEz\SiteBuilderBundle\Service\Task;
 
-
 use EdgarEz\SiteBuilderBundle\Command\Validators;
 use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
@@ -88,6 +87,16 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                 try {
                     $this->validateParameters($parameters);
 
+                    $basename = substr(ProjectGenerator::BUNDLE, 0, -6);
+                    $extensionAlias = 'edgarez_sb.' . Container::underscore($basename);
+                    $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
+
+                    $exists = $this->siteService->exists($parameters['siteName'], $parameters['customerName'], $vendorName, $this->kernelRootDir . '/../src');
+                    if ($exists) {
+                        $this->message = 'Site already exists with this name for this customer';
+                        return false;
+                    }
+
                     $model = explode('-', $parameters['model']);
                     $modelLocation = $this->locationService->loadLocation($model[0]);
 
@@ -97,10 +106,6 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
 
                     $returnValue = $this->siteService->createMediaSiteContent($parameters['customerMediaLocationID'], $model[1], $parameters['siteName']);
                     $mediaSiteLocationID = $returnValue['mediaSiteLocationID'];
-
-                    $basename = substr(ProjectGenerator::BUNDLE, 0, -6);
-                    $extensionAlias = 'edgarez_sb.' . Container::underscore($basename);
-                    $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
                     $generator = new SiteGenerator(
                         $this->filesystem,
