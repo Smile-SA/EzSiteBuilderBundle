@@ -2,7 +2,6 @@
 
 namespace EdgarEz\SiteBuilderBundle\Controller;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use EdgarEz\SiteBuilderBundle\Data\Mapper\SiteMapper;
 use EdgarEz\SiteBuilderBundle\Data\Site\SiteData;
 use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;

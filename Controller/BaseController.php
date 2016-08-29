@@ -3,7 +3,6 @@
 namespace EdgarEz\SiteBuilderBundle\Controller;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\ORM\EntityManager;
 use EdgarEz\SiteBuilderBundle\Command\TaskCommand;
 use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
 use eZ\Publish\Core\MVC\Symfony\Security\User;
