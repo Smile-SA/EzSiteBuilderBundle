@@ -156,7 +156,7 @@ class SiteBuilderTask
         }
 
         $logsArray[] = $logs;
-        $this->logs = explode('\n', $logsArray);
+        $this->logs = implode('\n', $logsArray);
 
         return $this;
     }

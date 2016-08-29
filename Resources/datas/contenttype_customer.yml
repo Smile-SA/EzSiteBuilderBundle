@@ -10,8 +10,3 @@ fields:
         mainLanguage: eng-GB
         type: ezstring
         name: Title
-    max_site_count:
-        identifier: max_site_count
-        mainLanguage: eng-GB
-        type: ezinteger
-        name: Max site count
