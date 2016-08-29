@@ -2,6 +2,9 @@
 
 ## Introduction
 
+Ce guide d'installation et de configuration vous permet de préparer votre environnement eZ Platform pour une utilisation de l'outil d'usine à site.
+ Prenez soin à suivre l'ensemble des étapes et n'hésitez pas à proposer des retours en cas de cas d'erreur ou cas particulier lié à votre environnement.
+
 ## Installation
 
 ### Bundle et pré-requis
@@ -180,3 +183,22 @@ class AppKernel extends Kernel
 }
 ```
 
+### Configuration cronjob
+
+L'outil d'usine à site propose un système de tâches permettant à travers l'interface du back-office de demander la création de nouveaux modèles, clients ou sites.
+Ces demandes ne sont pas traitées automatiquement, mais de façon asynchrone par un gestionnaire de tâche.
+
+Pour que ces tâches puissent être traitées, ajoutez dans votre crontab
+
+```shell
+# votre utilisateur apache/nginx/...
+APACHEUSER=www-data
+# Votre dossier projet
+EZPUBLISHROOT=/var/www/ezplatform
+# Votre environnement
+ENV=dev
+# Chemin du client PHP
+PHP=/usr/bin/php
+
+*/2 * * * * su - $APACHEUSER -c "cd $EZPUBLISHROOT && $PHP app/console --env=$ENV edgarez:sitebuilder:task" > /tmp/edgarezsb_tasks.log
+```

@@ -29,7 +29,6 @@
   * manage security access
   * manage form constraints
   * manage notifications
-* cronjob documentation
 * tasks
   * site activate
 
