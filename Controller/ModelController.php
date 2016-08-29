@@ -45,12 +45,9 @@ class ModelController extends BaseController
         $form = $this->getForm($request);
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $this->actionDispatcher->dispatchFormAction(
-                $form,
-                $this->data,
-                $form->getClickedButton() ? $form->getClickedButton()->getName() : null,
-                array('modelName' => $this->data->modelName)
-            );
+            $this->dispatchFormAction($this->actionDispatcher, $form, $this->data, array(
+                'modelName' => $this->data->modelName
+            ));
 
             if ($response = $this->actionDispatcher->getResponse())
                 return $response;
@@ -60,14 +57,7 @@ class ModelController extends BaseController
             return $this->redirectAfterFormPost($actionUrl);
         }
 
-        foreach ($form->getErrors(true) as $error) {
-            $this->notifyErrorPlural(
-                $error->getMessageTemplate(),
-                $error->getMessagePluralization(),
-                $error->getMessageParameters(),
-                'edgarezsb_form_model'
-            );
-        }
+        $this->getErrors($form, 'edgarezsb_form_model');
 
         $tabItems = $this->tabItems;
         unset($tabItems[0]);

@@ -61,17 +61,12 @@ class SiteController extends BaseController
         $form = $this->getForm($request);
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $this->actionDispatcher->dispatchFormAction(
-                $form,
-                $this->data,
-                $form->getClickedButton() ? $form->getClickedButton()->getName() : null,
-                array(
-                    'siteName' => $this->data->siteName,
-                    'host' => $this->data->host,
-                    'mapuri' => $this->data->mapuri,
-                    'model' => $this->data->customerContentLocationID . '-' . $this->data->customerMediaLocationID
-                )
-            );
+            $this->dispatchFormAction($this->actionDispatcher, $form, $this->data, array(
+                'siteName' => $this->data->siteName,
+                'host' => $this->data->host,
+                'mapuri' => $this->data->mapuri,
+                'model' => $this->data->customerContentLocationID . '-' . $this->data->customerMediaLocationID
+            ));
 
             if ($response = $this->actionDispatcher->getResponse())
                 return $response;
@@ -81,14 +76,7 @@ class SiteController extends BaseController
             return $this->redirectAfterFormPost($actionUrl);
         }
 
-        foreach ($form->getErrors(true) as $error) {
-            $this->notifyErrorPlural(
-                $error->getMessageTemplate(),
-                $error->getMessagePluralization(),
-                $error->getMessageParameters(),
-                'edgarezsb_form_site'
-            );
-        }
+        $this->getErrors($form, 'edgarezsb_form_site');
 
         $tabItems = $this->tabItems;
         unset($tabItems[0]);

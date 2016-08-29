@@ -47,17 +47,12 @@ class InstallController extends BaseController
         $form = $this->getForm($request);
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $this->actionDispatcher->dispatchFormAction(
-                $form,
-                $this->data,
-                $form->getClickedButton() ? $form->getClickedButton()->getName() : null,
-                array(
-                    'vendorName' => $this->data->vendorName,
-                    'contentLocationID' => $this->data->contentLocationID,
-                    'mediaLocationID' => $this->data->mediaLocationID,
-                    'userLocationID' => $this->data->userLocationID,
-                )
-            );
+            $this->dispatchFormAction($this->actionDispatcher, $form, $this->data, array(
+                'vendorName' => $this->data->vendorName,
+                'contentLocationID' => $this->data->contentLocationID,
+                'mediaLocationID' => $this->data->mediaLocationID,
+                'userLocationID' => $this->data->userLocationID,
+            ));
 
             if ($response = $this->actionDispatcher->getResponse()) {
                 return $response;
@@ -68,14 +63,7 @@ class InstallController extends BaseController
             return $this->redirectAfterFormPost($actionUrl);
         }
 
-        foreach ($form->getErrors(true) as $error) {
-            $this->notifyErrorPlural(
-                $error->getMessageTemplate(),
-                $error->getMessagePluralization(),
-                $error->getMessageParameters(),
-                'edgarezsb_form_install'
-            );
-        }
+        $this->getErrors($form, 'edgarezsb_form_install');
 
         $tabItems = array($this->tabItems[0], $this->tabItems[1]);
         return $this->render('EdgarEzSiteBuilderBundle:sb:index.html.twig', [

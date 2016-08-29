@@ -46,17 +46,12 @@ class CustomerController extends BaseController
         $form = $this->getForm($request);
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $this->actionDispatcher->dispatchFormAction(
-                $form,
-                $this->data,
-                $form->getClickedButton() ? $form->getClickedButton()->getName() : null,
-                array(
-                    'customerName' => $this->data->customerName,
-                    'userFirstName' => $this->data->userFirstName,
-                    'userLastName' => $this->data->userLastName,
-                    'userEmail' => $this->data->userEmail,
-                )
-            );
+            $this->dispatchFormAction($this->actionDispatcher, $form, $this->data, array(
+                'customerName' => $this->data->customerName,
+                'userFirstName' => $this->data->userFirstName,
+                'userLastName' => $this->data->userLastName,
+                'userEmail' => $this->data->userEmail,
+            ));
 
             if ($response = $this->actionDispatcher->getResponse()) {
                 return $response;
@@ -67,14 +62,7 @@ class CustomerController extends BaseController
             return $this->redirectAfterFormPost($actionUrl);
         }
 
-        foreach ($form->getErrors(true) as $error) {
-            $this->notifyErrorPlural(
-                $error->getMessageTemplate(),
-                $error->getMessagePluralization(),
-                $error->getMessageParameters(),
-                'edgarezsb_form_customer'
-            );
-        }
+        $this->getErrors($form, 'edgarezsb_form_customer');
 
         $tabItems = $this->tabItems;
         unset($tabItems[0]);
