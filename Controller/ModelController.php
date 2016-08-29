@@ -39,11 +39,9 @@ class ModelController extends BaseController
     public function generateAction(Request $request)
     {
         $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
-        if (!$this->securityService->checkAuthorization('modelgenerate')) {
+        if (!$this->securityService->checkAuthorization('modelgenerate'))
             return $this->redirectAfterFormPost($actionUrl);
-        }
 
-        $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
         $form = $this->getForm($request);
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -54,13 +52,11 @@ class ModelController extends BaseController
                 array('modelName' => $this->data->modelName)
             );
 
-            if ($response = $this->actionDispatcher->getResponse()) {
+            if ($response = $this->actionDispatcher->getResponse())
                 return $response;
-            }
 
             $this->initTask($form);
             $this->initPolicyTask($form);
-
             return $this->redirectAfterFormPost($actionUrl);
         }
 

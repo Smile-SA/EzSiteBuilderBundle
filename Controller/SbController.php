@@ -49,65 +49,87 @@ class SbController extends Controller
     public function tabAction($tabItem, $paramsTwig = array(), $hasErrors = false)
     {
         $params = array();
-        switch ($tabItem) {
-            case 'install':
-                if (isset($paramsTwig['install'])) {
-                    $params['installForm'] = $paramsTwig['install'];
-                } else {
-                    $params['installForm'] = $this->createForm(
-                        new InstallType()
-                    )->createView();
-                }
-                break;
-            case 'dashboard':
-                $params['user_id'] = $this->getUser()->getAPIUser()->getUserId();
-                break;
-            case 'customergenerate':
-                if (isset($paramsTwig['customergenerate'])) {
-                    $params['customerForm'] = $paramsTwig['customergenerate'];
-                } else {
-                    $params['customerForm'] = $this->createForm(
-                        new CustomerType()
-                    )->createView();
-                }
-                break;
-            case 'modelgenerate':
-                if (isset($paramsTwig['modelgenerate'])) {
-                    $params['modelForm'] = $paramsTwig['modelgenerate'];
-                }
-                $params['modelForm'] = $this->createForm(
-                    new ModelType()
-                )->createView();
-                break;
-            case 'sitegenerate':
-                if (isset($params['sitegenerate'])) {
-                    $params['sitegenerate'] = $paramsTwig['sitegenerate'];
-                } else {
-                    $customerName = $this->getCustomerName();
-
-                    $customerAlias = ProjectGenerator::CUSTOMERS . $customerName . CustomerGenerator::SITES;
-                    $params['siteForm'] = $this->createForm(
-                        new SiteType(
-                            $this->container->get('ezpublish.api.service.location'),
-                            $this->container->get('ezpublish.api.service.search'),
-                            $this->container->getParameter('edgarez_sb.project.default.models_location_id'),
-                            $this->container->getParameter('edgarez_sb.project.default.media_models_location_id'),
-                            $this->container->getParameter('edgarez_sb.customer.' . Container::underscore($customerAlias) . '.default.customer_location_id'),
-                            $this->container->getParameter('edgarez_sb.customer.' . Container::underscore($customerAlias) . '.default.media_customer_location_id'),
-                            $customerName
-                        )
-                    )->createView();
-                }
-                break;
-            default:
-                break;
-        }
+        $tabItemMethod = 'tabItem' . ucfirst($tabItem);
+        $params = $this->{$tabItemMethod}($paramsTwig);
 
         return $this->render('EdgarEzSiteBuilderBundle:sb:tab/' . $tabItem . '.html.twig', [
             'tab_items' => $this->tabItems,
             'tab_item' => $tabItem,
             'params' => $params
         ]);
+    }
+
+    protected function tabItemInstall($paramsTwig)
+    {
+        if (isset($paramsTwig['install'])) {
+            $params['installForm'] = $paramsTwig['install'];
+        } else {
+            $params['installForm'] = $this->createForm(
+                new InstallType()
+            )->createView();
+        }
+
+        return $params;
+    }
+
+    protected function tabItemDashboard($paramsTwig)
+    {
+        $params['user_id'] = $this->getUser()->getAPIUser()->getUserId();
+        return $params;
+    }
+
+    protected function tabItemCustomergenerate($paramsTwig)
+    {
+        if (isset($paramsTwig['customergenerate'])) {
+            $params['customerForm'] = $paramsTwig['customergenerate'];
+        } else {
+            $params['customerForm'] = $this->createForm(
+                new CustomerType()
+            )->createView();
+        }
+
+        return $params;
+    }
+
+    protected function tabItemModelgenerate($paramsTwig)
+    {
+        if (isset($paramsTwig['modelgenerate'])) {
+            $params['modelForm'] = $paramsTwig['modelgenerate'];
+        }
+        $params['modelForm'] = $this->createForm(
+            new ModelType()
+        )->createView();
+
+        return $params;
+    }
+
+    protected function tabItemSitegenerate($paramsTwig)
+    {
+        if (isset($paramsTwig['sitegenerate'])) {
+            $params['sitegenerate'] = $paramsTwig['sitegenerate'];
+        } else {
+            $customerName = $this->getCustomerName();
+
+            $customerAlias = ProjectGenerator::CUSTOMERS . $customerName . CustomerGenerator::SITES;
+            $params['siteForm'] = $this->createForm(
+                new SiteType(
+                    $this->container->get('ezpublish.api.service.location'),
+                    $this->container->get('ezpublish.api.service.search'),
+                    $this->container->getParameter('edgarez_sb.project.default.models_location_id'),
+                    $this->container->getParameter('edgarez_sb.project.default.media_models_location_id'),
+                    $this->container->getParameter('edgarez_sb.customer.' . Container::underscore($customerAlias) . '.default.customer_location_id'),
+                    $this->container->getParameter('edgarez_sb.customer.' . Container::underscore($customerAlias) . '.default.media_customer_location_id'),
+                    $customerName
+                )
+            )->createView();
+        }
+
+        return $params;
+    }
+
+    protected function tabItemSiteactivate($paramsTwig)
+    {
+        return array();
     }
 
     protected function getCustomerName()

@@ -55,11 +55,9 @@ class SiteController extends BaseController
     public function generateAction(Request $request)
     {
         $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
-        if (!$this->securityService->checkAuthorization('sitegenerate')) {
+        if (!$this->securityService->checkAuthorization('sitegenerate'))
             return $this->redirectAfterFormPost($actionUrl);
-        }
 
-        $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
         $form = $this->getForm($request);
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -75,13 +73,11 @@ class SiteController extends BaseController
                 )
             );
 
-            if ($response = $this->actionDispatcher->getResponse()) {
+            if ($response = $this->actionDispatcher->getResponse())
                 return $response;
-            }
 
             $this->initTask($form);
             $this->initPolicyTask($form);
-
             return $this->redirectAfterFormPost($actionUrl);
         }
 
