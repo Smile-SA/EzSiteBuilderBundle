@@ -122,6 +122,9 @@ class ModelCommand extends BaseContainerAwareCommand
     {
         $questionHelper = $this->getQuestionHelper();
 
+        /** @var ModelService $modelService */
+        $modelService = $this->getContainer()->get('edgar_ez_site_builder.model.service');
+
         $modelName = false;
         $question = new Question($questionHelper->getQuestion('Model name used to construct namespace', null));
         $question->setValidator(
@@ -133,6 +136,11 @@ class ModelCommand extends BaseContainerAwareCommand
 
         while (!$modelName) {
             $modelName = $questionHelper->ask($input, $output, $question);
+            $exists = $modelService->exists($this->modelName, $this->vendorName, $this->dir);
+            if ($exists) {
+                $output->writeln('<error>This model already exists with this name</error>');
+                $modelName = false;
+            }
         }
 
         $this->modelName = $modelName;

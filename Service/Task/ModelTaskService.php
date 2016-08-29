@@ -57,6 +57,16 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
                 try {
                     $this->validateParameters($parameters);
 
+                    $basename = substr(ProjectGenerator::BUNDLE, 0, -6);
+                    $extensionAlias = 'edgarez_sb.' . Container::underscore($basename);
+                    $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
+
+                    $exists = $this->modelService->exists($parameters['modelName'], $vendorName, $this->kernelRootDir . '/../src');
+                    if ($exists) {
+                        $this->message = 'Model already exists with this name';
+                        return false;
+                    }
+
                     $basename = ProjectGenerator::MAIN ;
 
                     $modelsLocationID = $container->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.models_location_id');
@@ -69,10 +79,6 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
                     $mediaModelLocationID = $returnValue['mediaModelLocationID'];
 
                     $this->modelService->updateGlobalRole($modelLocationID, $mediaModelLocationID);
-
-                    $basename = substr(ProjectGenerator::BUNDLE, 0, -6);
-                    $extensionAlias = 'edgarez_sb.' . Container::underscore($basename);
-                    $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
                     /** @var ModelGenerator $generator */
                     $generator = new ModelGenerator(

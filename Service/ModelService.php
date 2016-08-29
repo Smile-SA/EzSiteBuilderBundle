@@ -2,6 +2,7 @@
 
 namespace EdgarEz\SiteBuilderBundle\Service;
 
+use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\ToolsBundle\Service\Content;
 use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
 use eZ\Publish\API\Repository\Exceptions\LimitationValidationException;
@@ -225,5 +226,18 @@ class ModelService
         } catch (InvalidArgumentException $e) {
             throw new \RuntimeException($e->getMessage());
         }
+    }
+
+    /**
+     * Check if model bundle already exists
+     *
+     * @param string $modelName
+     * @param string $vendorName
+     * @param string $dir
+     * @return bool true|false if model bundle already exists
+     */
+    public function exists($modelName, $vendorName, $dir)
+    {
+        return file_exists($dir . $vendorName . '/' . ProjectGenerator::MODELS . '/' . $modelName . 'Bundle');
     }
 }
