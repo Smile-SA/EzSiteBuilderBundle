@@ -37,6 +37,9 @@ class DashboardController extends Controller
             ->orderBy('t.postedAt', 'DESC')
             ->getQuery();
 
-       return $query->getArrayResult();
+
+        /** @var SiteBuilderTask[] $result */
+        $result = $query->getArrayResult();
+        return $result;
     }
 }

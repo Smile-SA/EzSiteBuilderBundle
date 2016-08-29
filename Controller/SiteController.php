@@ -3,8 +3,6 @@
 namespace EdgarEz\SiteBuilderBundle\Controller;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\ORM\EntityManager;
-use EdgarEz\SiteBuilderBundle\Command\TaskCommand;
 use EdgarEz\SiteBuilderBundle\Data\Mapper\SiteMapper;
 use EdgarEz\SiteBuilderBundle\Data\Site\SiteData;
 use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
@@ -17,12 +15,11 @@ use EdgarEz\SiteBuilderBundle\Values\Content\Site;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\SearchService;
 use eZ\Publish\Core\MVC\Symfony\Security\User;
-use EzSystems\PlatformUIBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 
-class SiteController extends Controller
+class SiteController extends BaseController
 {
     /** @var LocationService $locationService */
     protected $locationService;
@@ -191,34 +188,7 @@ class SiteController extends Controller
             )
         );
 
-        /** @var Registry $dcotrineRegistry */
-        $doctrineRegistry = $this->get('doctrine');
-        $doctrineManager = $doctrineRegistry->getManager();
-
-        $task = new SiteBuilderTask();
-        $postedAt = new \DateTime();
-        $postedAt->modify('+5 minutes');
-        $this->submitTask($doctrineManager, $task, $action, $postedAt);
-    }
-
-    protected function submitTask(EntityManager $doctrineManager, SiteBuilderTask $task, array $action, \DateTime $postedAt = null)
-    {
-        $postedAt = $postedAt ? $postedAt : new \DateTime();
-        try {
-            $task->setAction($action);
-            $task->setStatus(TaskCommand::STATUS_SUBMITTED);
-            $task->setPostedAt($postedAt);
-        } catch (\Exception $e) {
-            $task->setLogs('Fail to generate task');
-            $task->setStatus(TaskCommand::STATUS_FAIL);
-        } finally {
-            /** @var User $user */
-            $user = $this->getUser();
-            $task->setUserID($user->getAPIUser()->getUserId());
-
-            $doctrineManager->persist($task);
-            $doctrineManager->flush();
-        }
+        $this->submitFuturTask($action);
     }
 
     protected function getCustomerName()

@@ -13,11 +13,10 @@ use EdgarEz\SiteBuilderBundle\Form\Type\InstallType;
 use EdgarEz\SiteBuilderBundle\Service\SecurityService;
 use EdgarEz\SiteBuilderBundle\Values\Content\Install;
 use eZ\Publish\Core\MVC\Symfony\Security\User;
-use EzSystems\PlatformUIBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 
-class InstallController extends Controller
+class InstallController extends BaseController
 {
     /** @var InstallDispatcher $actionDispatcher */
     protected $actionDispatcher;
@@ -126,24 +125,5 @@ class InstallController extends Controller
 
         $task = new SiteBuilderTask();
         $this->submitTask($doctrineManager, $task, $action);
-    }
-
-    protected function submitTask(EntityManager $doctrineManager, SiteBuilderTask $task, array $action)
-    {
-        try {
-            $task->setAction($action);
-            $task->setStatus(TaskCommand::STATUS_SUBMITTED);
-            $task->setPostedAt(new \DateTime());
-        } catch (\Exception $e) {
-            $task->setLogs('Fail to initialize task');
-            $task->setStatus(TaskCommand::STATUS_FAIL);
-        } finally {
-            /** @var User $user */
-            $user = $this->getUser();
-            $task->setUserID($user->getAPIUser()->getUserId());
-
-            $doctrineManager->persist($task);
-            $doctrineManager->flush();
-        }
     }
 }

@@ -4,7 +4,6 @@ namespace EdgarEz\SiteBuilderBundle\Service;
 
 use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
-use EdgarEz\SiteBuilderBundle\Generator\SiteGenerator;
 use EdgarEz\ToolsBundle\Service\Content;
 use EdgarEz\ToolsBundle\Service\Role;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
