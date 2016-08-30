@@ -66,11 +66,17 @@ abstract class BaseContainerAwareCommand extends GeneratorCommand
         KernelInterface $kernel,
         $namespace,
         $bundle
-    )
-    {
+    ) {
         $auto = true;
         if ($input->isInteractive()) {
-            $question = new ConfirmationQuestion($questionHelper->getQuestion('Confirm automatic update of your Kernel', 'yes', '?'), true);
+            $question = new ConfirmationQuestion(
+                $questionHelper->getQuestion(
+                    'Confirm automatic update of your Kernel',
+                    'yes',
+                    '?'
+                ),
+                true
+            );
             $auto = $questionHelper->ask($input, $output, $question);
         }
 
@@ -92,7 +98,11 @@ abstract class BaseContainerAwareCommand extends GeneratorCommand
             }
         } catch (\RuntimeException $e) {
             return array(
-                sprintf('Bundle <comment>%s</comment> is already defined in <comment>AppKernel::registerBundles()</comment>.', $namespace . '\\' . $bundle),
+                sprintf(
+                    'Bundle <comment>%s</comment> is already defined in ' .
+                    '<comment>AppKernel::registerBundles()</comment>.',
+                    $namespace . '\\' . $bundle
+                ),
                 '',
             );
         }

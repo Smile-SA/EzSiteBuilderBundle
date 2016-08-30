@@ -42,8 +42,7 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
         SiteService $siteService,
         RoleService $roleService,
         $kernelRootDir
-    )
-    {
+    ) {
         $this->filesystem = $filesystem;
         $this->kernel = $kernel;
         $this->locationService = $locationService;
@@ -91,7 +90,12 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                     $extensionAlias = 'edgarez_sb.' . Container::underscore($basename);
                     $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
-                    $exists = $this->siteService->exists($parameters['siteName'], $parameters['customerName'], $vendorName, $this->kernelRootDir . '/../src');
+                    $exists = $this->siteService->exists(
+                        $parameters['siteName'],
+                        $parameters['customerName'],
+                        $vendorName,
+                        $this->kernelRootDir . '/../src'
+                    );
                     if ($exists) {
                         $this->message = 'Site already exists with this name for this customer';
                         return false;
@@ -100,11 +104,19 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                     $model = explode('-', $parameters['model']);
                     $modelLocation = $this->locationService->loadLocation($model[0]);
 
-                    $returnValue = $this->siteService->createSiteContent($parameters['customerContentLocationID'], $model[0], $parameters['siteName']);
+                    $returnValue = $this->siteService->createSiteContent(
+                        $parameters['customerContentLocationID'],
+                        $model[0],
+                        $parameters['siteName']
+                    );
                     $siteLocationID = $returnValue['siteLocationID'];
                     $excludeUriPrefixes = $returnValue['excludeUriPrefixes'];
 
-                    $returnValue = $this->siteService->createMediaSiteContent($parameters['customerMediaLocationID'], $model[1], $parameters['siteName']);
+                    $returnValue = $this->siteService->createMediaSiteContent(
+                        $parameters['customerMediaLocationID'],
+                        $model[1],
+                        $parameters['siteName']
+                    );
                     $mediaSiteLocationID = $returnValue['mediaSiteLocationID'];
 
                     $generator = new SiteGenerator(
@@ -141,9 +153,15 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
 
                     $this->validateParameters($parameters);
 
-                    $extensionAlias = Container::underscore(ProjectGenerator::CUSTOMERS . $parameters['customerName'] . CustomerGenerator::SITES);
-                    $roleCreatorID = $container->getParameter('edgarez_sb.customer.' . $extensionAlias . '.default.customer_user_creator_role_id');
-                    $roleEditorID = $container->getParameter('edgarez_sb.customer.' . $extensionAlias . '.default.customer_user_editor_role_id');
+                    $extensionAlias = Container::underscore(
+                        ProjectGenerator::CUSTOMERS . $parameters['customerName'] . CustomerGenerator::SITES
+                    );
+                    $roleCreatorID = $container->getParameter(
+                        'edgarez_sb.customer.' . $extensionAlias . '.default.customer_user_creator_role_id'
+                    );
+                    $roleEditorID = $container->getParameter(
+                        'edgarez_sb.customer.' . $extensionAlias . '.default.customer_user_editor_role_id'
+                    );
 
                     $roleCreator = $this->roleService->loadRole($roleCreatorID);
                     $roleEditor = $this->roleService->loadRole($roleEditorID);
@@ -152,7 +170,9 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                     $extensionAlias = 'edgarez_sb.' . Container::underscore($basename);
                     $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
-                    $siteaccessName = Container::underscore($vendorName . $parameters['customerName'] . $parameters['siteName']);
+                    $siteaccessName = Container::underscore(
+                        $vendorName . $parameters['customerName'] . $parameters['siteName']
+                    );
                     $this->siteService->addSiteaccessLimitation($roleCreator, $roleEditor, $siteaccessName);
                 } catch (\RuntimeException $e) {
                     $this->message = $e->getMessage();
@@ -171,5 +191,4 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
     {
         return $this->message;
     }
-
 }

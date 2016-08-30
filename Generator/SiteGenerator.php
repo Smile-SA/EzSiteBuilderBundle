@@ -63,25 +63,44 @@ class SiteGenerator extends Generator
         $mapuri,
         $siteaccessSuffix,
         $targetDir
-    )
-    {
-        $namespace = $vendorName . '\\' . ProjectGenerator::CUSTOMERS . '\\' . $customerName . '\\' . CustomerGenerator::SITES . '\\' . $siteName . 'Bundle';
+    ) {
+        $namespace = $vendorName . '\\' . ProjectGenerator::CUSTOMERS . '\\' . $customerName . '\\' .
+            CustomerGenerator::SITES . '\\' . $siteName . 'Bundle';
 
         $dir = $targetDir . '/' . strtr($namespace, '\\', '/');
         if (file_exists($dir)) {
             if (!is_dir($dir)) {
-                throw new \RuntimeException(sprintf('Unable to generate the bundle as the target directory "%s" exists but is a file.', realpath($dir)));
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unable to generate the bundle as the target directory "%s" exists but is a file.',
+                        realpath($dir)
+                    )
+                );
             }
             $files = scandir($dir);
             if ($files != array('.', '..')) {
-                throw new \RuntimeException(sprintf('Unable to generate the bundle as the target directory "%s" is not empty.', realpath($dir)));
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unable to generate the bundle as the target directory "%s" is not empty.',
+                        realpath($dir)
+                    )
+                );
             }
             if (!is_writable($dir)) {
-                throw new \RuntimeException(sprintf('Unable to generate the bundle as the target directory "%s" is not writable.', realpath($dir)));
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unable to generate the bundle as the target directory "%s" is not writable.',
+                        realpath($dir)
+                    )
+                );
             }
         }
 
-        $basename = substr(ProjectGenerator::CUSTOMERS . $customerName . CustomerGenerator::SITES . $siteName . 'Bundle', 0, -6);
+        $basename = substr(
+            ProjectGenerator::CUSTOMERS . $customerName . CustomerGenerator::SITES . $siteName . 'Bundle',
+            0,
+            -6
+        );
         $parameters = array(
             'namespace' => $namespace,
             'bundle'    => $siteName . 'Bundle',
@@ -105,10 +124,27 @@ class SiteGenerator extends Generator
         );
 
         $this->setSkeletonDirs(array($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/skeleton')));
-        $this->renderFile('site/Bundle.php.twig', $dir . '/' . $vendorName . $basename . 'Bundle.php', $parameters);
-        $this->renderFile('site/Extension.php.twig', $dir . '/DependencyInjection/' . $vendorName . $basename . 'Extension.php', $parameters);
-        $this->renderFile('site/Configuration.php.twig', $dir . '/DependencyInjection/Configuration.php', $parameters);
-        $this->renderFile('site/Resources/config/ezplatform.yml.twig', $targetDir . '/' . $vendorName . '/ProjectBundle/Resources/config/sites/' . $parameters['siteaccess'] . '/ezplatform.yml', $parameters);
+        $this->renderFile(
+            'site/Bundle.php.twig',
+            $dir . '/' . $vendorName . $basename . 'Bundle.php',
+            $parameters
+        );
+        $this->renderFile(
+            'site/Extension.php.twig',
+            $dir . '/DependencyInjection/' . $vendorName . $basename . 'Extension.php',
+            $parameters
+        );
+        $this->renderFile(
+            'site/Configuration.php.twig',
+            $dir . '/DependencyInjection/Configuration.php',
+            $parameters
+        );
+        $this->renderFile(
+            'site/Resources/config/ezplatform.yml.twig',
+            $targetDir . '/' . $vendorName . '/ProjectBundle/Resources/config/sites/' .
+            $parameters['siteaccess'] . '/ezplatform.yml',
+            $parameters
+        );
 
         $this->filesystem->mkdir($dir . '/Resources/public');
         $this->filesystem->mkdir($dir . '/Resources/public/css');

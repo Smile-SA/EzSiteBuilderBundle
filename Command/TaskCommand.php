@@ -63,7 +63,9 @@ class TaskCommand extends ContainerAwareCommand
                 }
 
                 /** @var TaskInterface $taskService */
-                $taskService = $this->getContainer()->get('edgar_ez_site_builder.' . $action['service'] . '.task.service');
+                $taskService = $this->getContainer()->get(
+                    'edgar_ez_site_builder.' . $action['service'] . '.task.service'
+                );
 
                 if (!isset($action['command'])) {
                     $task->setLogs('task action has no command');

@@ -39,8 +39,7 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
         Sender $mailer,
         $sysadminEmail,
         $kernelRootDir
-    )
-    {
+    ) {
         $this->filesystem = $filesystem;
         $this->kernel = $kernel;
         $this->customerService = $customerService;
@@ -74,7 +73,11 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
                     $extensionAlias = 'edgarez_sb.' . Container::underscore($basename);
                     $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
-                    $exists = $this->customerService->exists($parameters['customerName'], $vendorName, $this->kernelRootDir . '/../src');
+                    $exists = $this->customerService->exists(
+                        $parameters['customerName'],
+                        $vendorName,
+                        $this->kernelRootDir . '/../src'
+                    );
                     if ($exists) {
                         $this->message = 'Customer already exists with this name';
                         return false;
@@ -82,17 +85,35 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
 
                     $basename = ProjectGenerator::MAIN;
 
-                    $parentLocationID = $container->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.customers_location_id');
-                    $returnValue = $this->customerService->createContentStructure($parentLocationID, $parameters['customerName']);
+                    $parentLocationID = $container->getParameter(
+                        'edgarez_sb.' . Container::underscore($basename) . '.default.customers_location_id'
+                    );
+                    $returnValue = $this->customerService->createContentStructure(
+                        $parentLocationID,
+                        $parameters['customerName']
+                    );
                     $customerLocationID = $returnValue['customerLocationID'];
 
-                    $parentLocationID = $container->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.media_customers_location_id');
-                    $returnValue = $this->customerService->createMediaContentStructure($parentLocationID, $parameters['customerName']);
+                    $parentLocationID = $container->getParameter(
+                        'edgarez_sb.' . Container::underscore($basename) . '.default.media_customers_location_id'
+                    );
+                    $returnValue = $this->customerService->createMediaContentStructure(
+                        $parentLocationID,
+                        $parameters['customerName']
+                    );
                     $mediaCustomerLocationID = $returnValue['mediaCustomerLocationID'];
 
-                    $parentCreatorLocationID = $container->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.user_creators_location_id');
-                    $parentEditorLocationID = $container->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.user_editors_location_id');
-                    $returnValue = $this->customerService->createUserGroups($parentCreatorLocationID, $parentEditorLocationID, $parameters['customerName']);
+                    $parentCreatorLocationID = $container->getParameter(
+                        'edgarez_sb.' . Container::underscore($basename) . '.default.user_creators_location_id'
+                    );
+                    $parentEditorLocationID = $container->getParameter(
+                        'edgarez_sb.' . Container::underscore($basename) . '.default.user_editors_location_id'
+                    );
+                    $returnValue = $this->customerService->createUserGroups(
+                        $parentCreatorLocationID,
+                        $parentEditorLocationID,
+                        $parameters['customerName']
+                    );
                     $customerUserCreatorsGroupLocationID = $returnValue['customerUserCreatorsGroupLocationID'];
                     $customerUserEditorsGroupLocationID = $returnValue['customerUserEditorsGroupLocationID'];
 
@@ -142,8 +163,10 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
                         $this->kernelRootDir . '/../src'
                     );
 
-                    $namespace = $vendorName . '\\' . ProjectGenerator::CUSTOMERS . '\\' . $parameters['customerName'] . '\\' . CustomerGenerator::BUNDLE ;
-                    $bundle = $vendorName . ProjectGenerator::CUSTOMERS . $parameters['customerName'] . CustomerGenerator::BUNDLE;
+                    $namespace = $vendorName . '\\' . ProjectGenerator::CUSTOMERS .
+                        '\\' . $parameters['customerName'] . '\\' . CustomerGenerator::BUNDLE ;
+                    $bundle = $vendorName . ProjectGenerator::CUSTOMERS . $parameters['customerName'] .
+                        CustomerGenerator::BUNDLE;
                     $this->updateKernel($this->kernel, $namespace, $bundle);
                 } catch (\RuntimeException $e) {
                     $this->message = $e->getMessage();

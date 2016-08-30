@@ -62,21 +62,35 @@ class ProjectGenerator extends Generator
         $userEditorsLocationID,
         $vendorName,
         $targetDir
-    )
-    {
+    ) {
         $namespace = $vendorName . '\\' . self::BUNDLE;
 
         $dir = rtrim($targetDir, '/') . '/' . strtr($namespace, '\\', '/');
         if (file_exists($dir)) {
             if (!is_dir($dir)) {
-                throw new \RuntimeException(sprintf('Unable to generate the bundle as the target directory "%s" exists but is a file.', realpath($dir)));
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unable to generate the bundle as the target directory "%s" exists but is a file.',
+                        realpath($dir)
+                    )
+                );
             }
             $files = scandir($dir);
             if ($files != array('.', '..')) {
-                throw new \RuntimeException(sprintf('Unable to generate the bundle as the target directory "%s" is not empty.', realpath($dir)));
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unable to generate the bundle as the target directory "%s" is not empty.',
+                        realpath($dir)
+                    )
+                );
             }
             if (!is_writable($dir)) {
-                throw new \RuntimeException(sprintf('Unable to generate the bundle as the target directory "%s" is not writable.', realpath($dir)));
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unable to generate the bundle as the target directory "%s" is not writable.',
+                        realpath($dir)
+                    )
+                );
             }
         }
 
@@ -101,11 +115,31 @@ class ProjectGenerator extends Generator
         );
 
         $this->setSkeletonDirs(array($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/skeleton')));
-        $this->renderFile('project/Bundle.php.twig', $dir . '/' . $vendorName . $basename . 'Bundle.php', $parameters);
-        $this->renderFile('project/Extension.php.twig', $dir . '/DependencyInjection/' . $vendorName . $basename . 'Extension.php', $parameters);
-        $this->renderFile('project/Configuration.php.twig', $dir . '/DependencyInjection/Configuration.php', $parameters);
-        $this->renderFile('project/Resources/config/edgarezsb.yml.twig', $dir . '/Resources/config/edgarezsb.yml', $parameters);
-        $this->renderFile('project/Resources/config/default_settings.yml.twig', $dir . '/Resources/config/default_settings.yml', $parameters);
+        $this->renderFile(
+            'project/Bundle.php.twig',
+            $dir . '/' . $vendorName . $basename . 'Bundle.php',
+            $parameters
+        );
+        $this->renderFile(
+            'project/Extension.php.twig',
+            $dir . '/DependencyInjection/' . $vendorName . $basename . 'Extension.php',
+            $parameters
+        );
+        $this->renderFile(
+            'project/Configuration.php.twig',
+            $dir . '/DependencyInjection/Configuration.php',
+            $parameters
+        );
+        $this->renderFile(
+            'project/Resources/config/edgarezsb.yml.twig',
+            $dir . '/Resources/config/edgarezsb.yml',
+            $parameters
+        );
+        $this->renderFile(
+            'project/Resources/config/default_settings.yml.twig',
+            $dir . '/Resources/config/default_settings.yml',
+            $parameters
+        );
 
         $this->filesystem->mkdir($targetDir . '/' . $vendorName . '/' . self::MODELS);
         $this->filesystem->mkdir($targetDir . '/' . $vendorName . '/' . self::CUSTOMERS);

@@ -13,8 +13,7 @@ class DashboardController extends Controller
 
     public function __construct(
         Registry $doctrineRegistry
-    )
-    {
+    ) {
         $this->doctrineRegistry = $doctrineRegistry;
     }
 

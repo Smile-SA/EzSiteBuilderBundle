@@ -94,17 +94,29 @@ class CustomerCommand extends BaseContainerAwareCommand
         try {
             $basename = ProjectGenerator::MAIN;
 
-            $parentLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.customers_location_id');
+            $parentLocationID = $this->getContainer()->getParameter(
+                'edgarez_sb.' . Container::underscore($basename) . '.default.customers_location_id'
+            );
             $returnValue = $customerService->createContentStructure($parentLocationID, $this->customerName);
             $this->customerLocationID = $returnValue['customerLocationID'];
 
-            $parentLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.media_customers_location_id');
+            $parentLocationID = $this->getContainer()->getParameter(
+                'edgarez_sb.' . Container::underscore($basename) . '.default.media_customers_location_id'
+            );
             $returnValue = $customerService->createMediaContentStructure($parentLocationID, $this->customerName);
             $this->mediaCustomerLocationID = $returnValue['mediaCustomerLocationID'];
 
-            $parentCreatorLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.user_creators_location_id');
-            $parentEditorLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.user_editors_location_id');
-            $returnValue = $customerService->createUserGroups($parentCreatorLocationID, $parentEditorLocationID, $this->customerName);
+            $parentCreatorLocationID = $this->getContainer()->getParameter(
+                'edgarez_sb.' . Container::underscore($basename) . '.default.user_creators_location_id'
+            );
+            $parentEditorLocationID = $this->getContainer()->getParameter(
+                'edgarez_sb.' . Container::underscore($basename) . '.default.user_editors_location_id'
+            );
+            $returnValue = $customerService->createUserGroups(
+                $parentCreatorLocationID,
+                $parentEditorLocationID,
+                $this->customerName
+            );
             $this->customerUserCreatorsGroupLocationID = $returnValue['customerUserCreatorsGroupLocationID'];
             $this->customerUserEditorsGroupLocationID = $returnValue['customerUserEditorsGroupLocationID'];
 
@@ -139,13 +151,26 @@ class CustomerCommand extends BaseContainerAwareCommand
                 $this->dir
             );
 
-            $namespace = $this->vendorName . '\\' . ProjectGenerator::CUSTOMERS . '\\' . $this->customerName . '\\' . CustomerGenerator::BUNDLE ;
-            $bundle = $this->vendorName . ProjectGenerator::CUSTOMERS . $this->customerName . CustomerGenerator::BUNDLE;
-            $this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle);
+            $namespace = $this->vendorName . '\\' . ProjectGenerator::CUSTOMERS . '\\' . $this->customerName .
+                '\\' . CustomerGenerator::BUNDLE ;
+            $bundle = $this->vendorName . ProjectGenerator::CUSTOMERS . $this->customerName .
+                CustomerGenerator::BUNDLE;
+            $this->updateKernel(
+                $questionHelper,
+                $input,
+                $output,
+                $this->getContainer()->get('kernel'),
+                $namespace,
+                $bundle
+            );
 
             $output->writeln(array(
                 '',
-                $this->getHelper('formatter')->formatBlock('SiteBuilder Contents and Structure generated', 'bg=blue;fg=white', true),
+                $this->getHelper('formatter')->formatBlock(
+                    'SiteBuilder Contents and Structure generated',
+                    'bg=blue;fg=white',
+                    true
+                ),
                 ''
             ));
         } catch (\RuntimeException $e) {
@@ -278,7 +303,7 @@ class CustomerCommand extends BaseContainerAwareCommand
             array(
                 '',
                 'user login: ' . $this->userEmail,
-                'user password: ' . $userPassword ,
+                'user password: ' . $userPassword,
                 ''
             )
         );

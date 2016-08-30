@@ -24,4 +24,3 @@ trait InstallDataTrait
         $this->install = $install;
     }
 }
-

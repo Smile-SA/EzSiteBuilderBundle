@@ -6,7 +6,8 @@ use Symfony\Component\Validator\Constraint;
 
 class ModelNameConstraint extends Constraint
 {
-    public $message = 'The string "%string%" contains an illegal character: it can only contain letters and should start with uppercase.';
+    public $message = 'The string "%string%" contains an illegal character: it can only contain letters ' .
+    'and should start with uppercase.';
 
     public function validatedBy()
     {

@@ -2,7 +2,6 @@
 
 namespace EdgarEz\SiteBuilderBundle\Service\Task;
 
-
 use Symfony\Component\DependencyInjection\Container;
 
 interface TaskInterface

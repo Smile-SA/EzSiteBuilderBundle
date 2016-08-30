@@ -24,8 +24,7 @@ class SecurityService
         TokenStorage $tokenStorage,
         AuthorizationChecker $authorizationChecker,
         RoleService $roleService
-    )
-    {
+    ) {
         $this->tokenStorage = $tokenStorage;
         $this->authorizationChecker = $authorizationChecker;
         $this->roleService = $roleService;

@@ -81,8 +81,7 @@ class ProjectTaskService extends BaseTaskService implements TaskInterface
         LocationService $locationService,
         InstallService $installService,
         $kernelRootDir
-    )
-    {
+    ) {
         $this->filesystem = $filesystem;
         $this->kernel = $kernel;
         $this->locationService = $locationService;

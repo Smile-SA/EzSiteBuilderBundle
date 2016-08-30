@@ -49,8 +49,7 @@ class SiteType extends AbstractType
         $contentRootCustomerLocationID,
         $mediaRootCustomerLocationID,
         $customerName
-    )
-    {
+    ) {
         $this->locationService = $locationService;
         $this->searchService = $searchService;
         $this->contentRootModelsLocationID = $contentRootModelsLocationID;
@@ -134,7 +133,8 @@ class SiteType extends AbstractType
         $result = $this->searchService->findContent($query);
         if ($result->totalCount) {
             foreach ($result->searchHits as $searchHit) {
-                $models[$searchHit->valueObject->contentInfo->mainLocationId] = $searchHit->valueObject->contentInfo->name;
+                $key = $searchHit->valueObject->contentInfo->mainLocationId;
+                $models[$key] = $searchHit->valueObject->contentInfo->name;
             }
         }
 
@@ -157,7 +157,8 @@ class SiteType extends AbstractType
         $result = $this->searchService->findContent($query);
         if ($result->totalCount) {
             foreach ($result->searchHits as $searchHit) {
-                $models[$searchHit->valueObject->contentInfo->mainLocationId] = $searchHit->valueObject->contentInfo->name;
+                $key = $searchHit->valueObject->contentInfo->mainLocationId;
+                $models[$key] = $searchHit->valueObject->contentInfo->name;
             }
         }
 

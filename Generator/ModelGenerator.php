@@ -55,21 +55,35 @@ class ModelGenerator extends Generator
         $excludeUriPrefixes,
         $host,
         $targetDir
-    )
-    {
+    ) {
         $namespace = $vendorName . '\\' . ProjectGenerator::MODELS . '\\' . $modelName . 'Bundle';
 
         $dir = $targetDir . '/' . strtr($namespace, '\\', '/');
         if (file_exists($dir)) {
             if (!is_dir($dir)) {
-                throw new \RuntimeException(sprintf('Unable to generate the bundle as the target directory "%s" exists but is a file.', realpath($dir)));
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unable to generate the bundle as the target directory "%s" exists but is a file.',
+                        realpath($dir)
+                    )
+                );
             }
             $files = scandir($dir);
             if ($files != array('.', '..')) {
-                throw new \RuntimeException(sprintf('Unable to generate the bundle as the target directory "%s" is not empty.', realpath($dir)));
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unable to generate the bundle as the target directory "%s" is not empty.',
+                        realpath($dir)
+                    )
+                );
             }
             if (!is_writable($dir)) {
-                throw new \RuntimeException(sprintf('Unable to generate the bundle as the target directory "%s" is not writable.', realpath($dir)));
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unable to generate the bundle as the target directory "%s" is not writable.',
+                        realpath($dir)
+                    )
+                );
             }
         }
 
@@ -89,13 +103,41 @@ class ModelGenerator extends Generator
             'exclude_uri_prefixes' => $excludeUriPrefixes
         );
 
-        $this->setSkeletonDirs(array($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/skeleton')));
-        $this->renderFile('model/Bundle.php.twig', $dir . '/' . $vendorName . $basename . 'Bundle.php', $parameters);
-        $this->renderFile('model/Extension.php.twig', $dir . '/DependencyInjection/' . $vendorName . $basename . 'Extension.php', $parameters);
-        $this->renderFile('model/Configuration.php.twig', $dir . '/DependencyInjection/Configuration.php', $parameters);
-        $this->renderFile('model/Resources/config/ezplatform.yml.twig', $dir . '/Resources/config/ezplatform.yml', $parameters);
-        $this->renderFile('model/Resources/views/pagelayout.html.twig.twig', $dir . '/Resources/views/pagelayout.html.twig', $parameters);
-        $this->renderFile('model/Resources/views/full/model.html.twig.twig', $dir . '/Resources/views/full/model.html.twig', $parameters);
+        $this->setSkeletonDirs(
+            array(
+                $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/skeleton')
+            )
+        );
+        $this->renderFile(
+            'model/Bundle.php.twig',
+            $dir . '/' . $vendorName . $basename . 'Bundle.php',
+            $parameters
+        );
+        $this->renderFile(
+            'model/Extension.php.twig',
+            $dir . '/DependencyInjection/' . $vendorName . $basename . 'Extension.php',
+            $parameters
+        );
+        $this->renderFile(
+            'model/Configuration.php.twig',
+            $dir . '/DependencyInjection/Configuration.php',
+            $parameters
+        );
+        $this->renderFile(
+            'model/Resources/config/ezplatform.yml.twig',
+            $dir . '/Resources/config/ezplatform.yml',
+            $parameters
+        );
+        $this->renderFile(
+            'model/Resources/views/pagelayout.html.twig.twig',
+            $dir . '/Resources/views/pagelayout.html.twig',
+            $parameters
+        );
+        $this->renderFile(
+            'model/Resources/views/full/model.html.twig.twig',
+            $dir . '/Resources/views/full/model.html.twig',
+            $parameters
+        );
 
         $this->filesystem->mkdir($dir . '/Resources/public');
         $this->filesystem->mkdir($dir . '/Resources/public/css');

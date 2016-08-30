@@ -27,8 +27,7 @@ abstract class BaseTaskService
         KernelInterface $kernel,
         $namespace,
         $bundle
-    )
-    {
+    ) {
         $auto = true;
 
         $manip = new KernelManipulator($kernel);
@@ -40,8 +39,12 @@ abstract class BaseTaskService
             }
         } catch (\RuntimeException $e) {
             return array(
-                sprintf('Bundle <comment>%s</comment> is already defined in <comment>AppKernel::registerBundles()</comment>.', $namespace . '\\' . $bundle),
-                '',
+                sprintf(
+                    'Bundle <comment>%s</comment> is already defined in ' .
+                    '<comment>AppKernel::registerBundles()</comment>.',
+                    $namespace . '\\' . $bundle
+                ),
+                ''
             );
         }
     }
@@ -56,4 +59,3 @@ abstract class BaseTaskService
         return $this->message;
     }
 }
-

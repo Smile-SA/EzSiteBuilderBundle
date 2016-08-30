@@ -103,11 +103,19 @@ class SiteCommand extends BaseContainerAwareCommand
         $siteSerice = $this->getContainer()->get('edgar_ez_site_builder.site.service');
 
         try {
-            $returnValue = $siteSerice->createSiteContent($contentLocationIDs['customerLocationID'], $contentLocationIDs['modelLocationID'], $this->siteName);
+            $returnValue = $siteSerice->createSiteContent(
+                $contentLocationIDs['customerLocationID'],
+                $contentLocationIDs['modelLocationID'],
+                $this->siteName
+            );
             $this->siteLocationID = $returnValue['siteLocationID'];
             $this->excludeUriPrefixes = $returnValue['excludeUriPrefixes'];
 
-            $returnValue = $siteSerice->createMediaSiteContent($mediaLocationIDs['mediaCustomerLocationID'], $mediaLocationIDs['mediaModelLocationID'], $this->siteName);
+            $returnValue = $siteSerice->createMediaSiteContent(
+                $mediaLocationIDs['mediaCustomerLocationID'],
+                $mediaLocationIDs['mediaModelLocationID'],
+                $this->siteName
+            );
             $this->mediaSiteLocationID = $returnValue['mediaSiteLocationID'];
 
             /** @var SiteGenerator $generator */
@@ -133,7 +141,8 @@ class SiteCommand extends BaseContainerAwareCommand
                         'SiteBuilder Contents and Structure generated',
                         '',
                         'Create a VirtualHost for your site and add this line',
-                        '   SetEnvIf Request_URI ".*" SITEBUILDER_ENV=' . $this->vendorName . '_' . $this->customerName . '_' . $this->siteName
+                        '   SetEnvIf Request_URI ".*" SITEBUILDER_ENV=' . $this->vendorName . '_' .
+                        $this->customerName . '_' . $this->siteName
                     ),
                     'bg=blue;fg=white',
                     true
@@ -168,7 +177,12 @@ class SiteCommand extends BaseContainerAwareCommand
 
         // Get customer content root location ID
         $customerLocationID = false;
-        $question = new Question($questionHelper->getQuestion('Customer location ID where your site content would be generated', $customerLocationID));
+        $question = new Question(
+            $questionHelper->getQuestion(
+                'Customer location ID where your site content would be generated',
+                $customerLocationID
+            )
+        );
         $question->setValidator(
             array(
                 'EdgarEz\SiteBuilderBundle\Command\Validators',
@@ -192,7 +206,12 @@ class SiteCommand extends BaseContainerAwareCommand
 
         // Get model content root location ID
         $modelLocationID = false;
-        $question = new Question($questionHelper->getQuestion('Model location ID you want to use to generate ste content', $modelLocationID));
+        $question = new Question(
+            $questionHelper->getQuestion(
+                'Model location ID you want to use to generate ste content',
+                $modelLocationID
+            )
+        );
         $question->setValidator(
             array(
                 'EdgarEz\SiteBuilderBundle\Command\Validators',
@@ -281,7 +300,12 @@ class SiteCommand extends BaseContainerAwareCommand
 
         // Get customer media content root location ID
         $mediaCustomerLocationID = false;
-        $question = new Question($questionHelper->getQuestion('Customer media location ID where your site media content would be generated', $mediaCustomerLocationID));
+        $question = new Question(
+            $questionHelper->getQuestion(
+                'Customer media location ID where your site media content would be generated',
+                $mediaCustomerLocationID
+            )
+        );
         $question->setValidator(
             array(
                 'EdgarEz\SiteBuilderBundle\Command\Validators',
@@ -305,7 +329,12 @@ class SiteCommand extends BaseContainerAwareCommand
 
         // Get model content root location ID
         $mediaModelLocationID = false;
-        $question = new Question($questionHelper->getQuestion('Model location ID yout want to use to generate ste content', $mediaModelLocationID));
+        $question = new Question(
+            $questionHelper->getQuestion(
+                'Model location ID yout want to use to generate ste content',
+                $mediaModelLocationID
+            )
+        );
         $question->setValidator(
             array(
                 'EdgarEz\SiteBuilderBundle\Command\Validators',
@@ -365,7 +394,14 @@ class SiteCommand extends BaseContainerAwareCommand
 
         $mapuri = true;
         if ($input->isInteractive()) {
-            $question = new ConfirmationQuestion($questionHelper->getQuestion('Add siteaccess suffix', 'yes', '?'), true);
+            $question = new ConfirmationQuestion(
+                $questionHelper->getQuestion(
+                    'Add siteaccess suffix',
+                    'yes',
+                    '?'
+                ),
+                true
+            );
             $mapuri = $questionHelper->ask($input, $output, $question);
         }
 

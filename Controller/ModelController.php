@@ -29,8 +29,7 @@ class ModelController extends BaseController
         ModelDispatcher $actionDispatcher,
         $tabItems,
         SecurityService $securityService
-    )
-    {
+    ) {
         $this->actionDispatcher = $actionDispatcher;
         $this->tabItems = $tabItems;
         $this->securityService = $securityService;
@@ -39,8 +38,9 @@ class ModelController extends BaseController
     public function generateAction(Request $request)
     {
         $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
-        if (!$this->securityService->checkAuthorization('modelgenerate'))
+        if (!$this->securityService->checkAuthorization('modelgenerate')) {
             return $this->redirectAfterFormPost($actionUrl);
+        }
 
         $form = $this->getForm($request);
         $form->handleRequest($request);
@@ -49,8 +49,9 @@ class ModelController extends BaseController
                 'modelName' => $this->data->modelName
             ));
 
-            if ($response = $this->actionDispatcher->getResponse())
+            if ($response = $this->actionDispatcher->getResponse()) {
                 return $response;
+            }
 
             $this->initTask($form);
             $this->initPolicyTask($form);

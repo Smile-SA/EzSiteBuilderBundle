@@ -16,4 +16,3 @@ class Install extends ValueObject
     protected $mediaLocationID;
     protected $userLocationID;
 }
-

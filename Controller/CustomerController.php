@@ -29,8 +29,7 @@ class CustomerController extends BaseController
         CustomerDispatcher $actionDispatcher,
         $tabItems,
         SecurityService $securityService
-    )
-    {
+    ) {
         $this->actionDispatcher = $actionDispatcher;
         $this->tabItems = $tabItems;
         $this->securityService = $securityService;

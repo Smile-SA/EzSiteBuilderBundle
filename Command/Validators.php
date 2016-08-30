@@ -37,7 +37,11 @@ class Validators
     public static function validateVendorName($vendorName)
     {
         if (!preg_match('/^[A-Z][a-z]*$/', $vendorName)) {
-            throw new InvalidArgumentException($vendorName, 'Input is not a valid Vendor name. Vendor name should contains only alphabetic characters, first uppercase; last lowercase.');
+            throw new InvalidArgumentException(
+                $vendorName,
+                'Input is not a valid Vendor name. Vendor name should contains only alphabetic ' .
+                'characters, first uppercase; last lowercase.'
+            );
         }
 
         return $vendorName;
@@ -53,7 +57,11 @@ class Validators
     public static function validateCustomerName($customerName)
     {
         if (!preg_match('/^[A-Z][a-z]*$/', $customerName)) {
-            throw new InvalidArgumentException($customerName, 'Input is not a valid Customer name. Customer name should contains only alphabetic characters, first uppercase.');
+            throw new InvalidArgumentException(
+                $customerName,
+                'Input is not a valid Customer name. Customer name should contains ' .
+                'only alphabetic characters, first uppercase.'
+            );
         }
 
         return $customerName;
@@ -69,7 +77,11 @@ class Validators
     public static function validateModelName($modelName)
     {
         if (!preg_match('/^[A-Z][a-z]*$/', $modelName)) {
-            throw new InvalidArgumentException($modelName, 'Input is not a valid Model name. Model name should contains only alphabetic characters, first uppercase.');
+            throw new InvalidArgumentException(
+                $modelName,
+                'Input is not a valid Model name. Model name should contains ' .
+                'only alphabetic characters, first uppercase.'
+            );
         }
 
         return $modelName;
@@ -85,7 +97,11 @@ class Validators
     public static function validateSiteName($siteName)
     {
         if (!preg_match('/^[A-Z][a-z]*$/', $siteName)) {
-            throw new InvalidArgumentException($siteName, 'Input is not a valid Site name. Site name should contains only alphabetic characters, first uppercase.');
+            throw new InvalidArgumentException(
+                $siteName,
+                'Input is not a valid Site name. Site name should contains ' .
+                'only alphabetic characters, first uppercase.'
+            );
         }
 
         return $siteName;

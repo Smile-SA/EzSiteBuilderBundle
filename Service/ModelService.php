@@ -67,8 +67,7 @@ class ModelService
         Content $content,
         \EdgarEz\ToolsBundle\Service\Role $role,
         ContainerInterface $container
-    )
-    {
+    ) {
         $this->kernel = $kernel;
         $this->urlAliasService = $urlAliasService;
         $this->locationService = $locationService;
@@ -89,7 +88,9 @@ class ModelService
         try {
             $rolesCreator = array();
             foreach ($customers as $customer) {
-                $parameter = 'edgarez_sb.customer.customers_' . $customer . '_sites.default.customer_user_creator_role_id';
+                $parameter = 'edgarez_sb.customer.customers_' .
+                    $customer .
+                    '_sites.default.customer_user_creator_role_id';
                 $roleCreatorID = $this->container->getParameter($parameter);
                 $rolesCreator[] = $this->roleService->loadRole($roleCreatorID);
             }
@@ -138,13 +139,20 @@ class ModelService
         $returnValue = array();
 
         try {
-            $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/modelcontent.yml')));
+            $contentDefinition = Yaml::parse(
+                file_get_contents(
+                    $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/modelcontent.yml')
+                )
+            );
             $contentDefinition['parentLocationID'] = $modelsLocationID;
             $contentDefinition['fields']['title']['value'] = $modelName;
             $contentAdded = $this->content->add($contentDefinition);
 
             $contentLocation = $this->locationService->loadLocation($contentAdded->contentInfo->mainLocationId);
-            $contentPath = $this->urlAliasService->reverseLookup($contentLocation, $contentAdded->contentInfo->mainLanguageCode)->path;
+            $contentPath = $this->urlAliasService->reverseLookup(
+                $contentLocation,
+                $contentAdded->contentInfo->mainLanguageCode
+            )->path;
             $returnValue['excludeUriPrefixes'] = trim($contentPath, '/') . '/';
             $returnValue['modelLocationID'] = $contentAdded->contentInfo->mainLocationId;
 
@@ -166,7 +174,11 @@ class ModelService
     public function createMediaModelContent($mediaModelsLocationID, $modelName)
     {
         try {
-            $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediamodelcontent.yml')));
+            $contentDefinition = Yaml::parse(
+                file_get_contents(
+                    $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediamodelcontent.yml')
+                )
+            );
             $contentDefinition['parentLocationID'] = $mediaModelsLocationID;
             $contentDefinition['fields']['title']['value'] = $modelName;
             $contentAdded = $this->content->add($contentDefinition);
@@ -205,7 +217,18 @@ class ModelService
                             $policyUpdateStruct = new PolicyUpdateStruct();
                             $policyUpdateStruct->addLimitation($limitation);
 
-                            $policyDraft = new PolicyDraft(['innerPolicy' => new Policy(['id' => $policy->id, 'module' => 'content', 'function' => 'read', 'roleId' => $roleDraft->id])]);
+                            $policyDraft = new PolicyDraft(
+                                [
+                                    'innerPolicy' => new Policy(
+                                        [
+                                            'id' => $policy->id,
+                                            'module' => 'content',
+                                            'function' => 'read',
+                                            'roleId' => $roleDraft->id
+                                        ]
+                                    )
+                                ]
+                            );
 
                             $this->roleService->updatePolicyByRoleDraft(
                                 $roleDraft,

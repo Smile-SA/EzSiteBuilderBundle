@@ -28,7 +28,9 @@ class SbController extends Controller
 
     public function sbAction($tabItem)
     {
-        $installed = $this->container->hasParameter('edgar_ez_site_builder.installed') ? $this->container->getParameter('edgar_ez_site_builder.installed') : false;
+        $installed = $this->container->hasParameter('edgar_ez_site_builder.installed')
+            ? $this->container->getParameter('edgar_ez_site_builder.installed')
+            : false;
         $tabItems = $this->tabItems;
 
         if (!$installed) {
@@ -117,8 +119,14 @@ class SbController extends Controller
                     $this->container->get('ezpublish.api.service.search'),
                     $this->container->getParameter('edgarez_sb.project.default.models_location_id'),
                     $this->container->getParameter('edgarez_sb.project.default.media_models_location_id'),
-                    $this->container->getParameter('edgarez_sb.customer.' . Container::underscore($customerAlias) . '.default.customer_location_id'),
-                    $this->container->getParameter('edgarez_sb.customer.' . Container::underscore($customerAlias) . '.default.media_customer_location_id'),
+                    $this->container->getParameter(
+                        'edgarez_sb.customer.' . Container::underscore($customerAlias) . '.default.customer_location_id'
+                    ),
+                    $this->container->getParameter(
+                        'edgarez_sb.customer.' .
+                        Container::underscore($customerAlias) .
+                        '.default.media_customer_location_id'
+                    ),
                     $customerName
                 )
             )->createView();

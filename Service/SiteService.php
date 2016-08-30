@@ -42,8 +42,7 @@ class SiteService
         URLAliasService $urlAliasService,
         Content $content,
         Role $role
-    )
-    {
+    ) {
         $this->locationService = $locationService;
         $this->urlAliasService = $urlAliasService;
         $this->content = $content;
@@ -68,7 +67,10 @@ class SiteService
             $returnValue['siteLocationID'] = $siteLocationID;
             $newLocation = $this->locationService->loadLocation($siteLocationID);
 
-            $contentPath = $this->urlAliasService->reverseLookup($newLocation, $newLocation->getContentInfo()->mainLanguageCode)->path;
+            $contentPath = $this->urlAliasService->reverseLookup(
+                $newLocation,
+                $newLocation->getContentInfo()->mainLanguageCode
+            )->path;
             $returnValue['excludeUriPrefixes'] = trim($contentPath, '/') . '/';
 
             return $returnValue;
@@ -77,7 +79,7 @@ class SiteService
         } catch (\RuntimeException $e) {
             throw $e;
         }
-     }
+    }
 
     /**
      * Create site media structure
@@ -87,10 +89,14 @@ class SiteService
      * @param string $siteName site name
      * @return array site media root location ID
      */
-     public function createMediaSiteContent($mediaCustomerLocationID, $mediaModelLocationID, $siteName)
+    public function createMediaSiteContent($mediaCustomerLocationID, $mediaModelLocationID, $siteName)
     {
         try {
-            $mediaSiteLocationID = $this->content->copySubtree($mediaModelLocationID, $mediaCustomerLocationID, $siteName);
+            $mediaSiteLocationID = $this->content->copySubtree(
+                $mediaModelLocationID,
+                $mediaCustomerLocationID,
+                $siteName
+            );
 
             return array(
                 'mediaSiteLocationID' => $mediaSiteLocationID
@@ -111,8 +117,7 @@ class SiteService
         \eZ\Publish\API\Repository\Values\User\Role $roleCreator,
         \eZ\Publish\API\Repository\Values\User\Role $roleEditor,
         $siteaccessName
-    )
-    {
+    ) {
         $siteaccess = array();
         $policies = $roleCreator->getPolicies();
         foreach ($policies as $policy) {
@@ -174,6 +179,9 @@ class SiteService
      */
     public function exists($siteName, $customerName, $vendorName, $dir)
     {
-        return file_exists($dir . '/' . $vendorName . '/' . ProjectGenerator::CUSTOMERS . '/' . $customerName . '/' . CustomerGenerator::SITES . '/' . $siteName . 'Bundle');
+        return file_exists(
+            $dir . '/' . $vendorName . '/' . ProjectGenerator::CUSTOMERS . '/' . $customerName .
+            '/' . CustomerGenerator::SITES . '/' . $siteName . 'Bundle'
+        );
     }
 }

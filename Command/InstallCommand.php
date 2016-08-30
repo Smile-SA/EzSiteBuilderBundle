@@ -91,7 +91,9 @@ class InstallCommand extends BaseContainerAwareCommand
         $questionHelper = $this->getQuestionHelper();
         $questionHelper->writeSection($output, 'Welcome to the SiteBuilder installation');
 
-        $installed = $this->getContainer()->hasParameter('edgar_ez_site_builder.installed') ? $this->getContainer()->getParameter('edgar_ez_site_builder.installed') : false;
+        $installed = $this->getContainer()->hasParameter('edgar_ez_site_builder.installed')
+            ? $this->getContainer()->getParameter('edgar_ez_site_builder.installed')
+            : false;
         if ($installed) {
             $output->writeln('<error>SiteBuilder is already installed</error>');
             return;
@@ -126,7 +128,8 @@ class InstallCommand extends BaseContainerAwareCommand
                 $this->rootContentLocationID, $this->rootMediaLocationID,
                 $this->customersLocationID, $this->mediaCustomersLocationID,
                 $this->modelsLocationID, $this->mediaModelsLocationID,
-                $userGroupLocationID, $this->userGroupParenttLocationID, $this->userCreatorsLocationID, $this->userEditorsLocationID
+                $userGroupLocationID, $this->userGroupParenttLocationID,
+                $this->userCreatorsLocationID, $this->userEditorsLocationID
             );
             $installService->createRole($this->userGroupParenttLocationID, $locationIDs);
 
@@ -145,11 +148,22 @@ class InstallCommand extends BaseContainerAwareCommand
 
             $namespace = $this->vendorName . '\\' . ProjectGenerator::BUNDLE;
             $bundle = $this->vendorName . ProjectGenerator::BUNDLE;
-            $this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle);
+            $this->updateKernel(
+                $questionHelper,
+                $input,
+                $output,
+                $this->getContainer()->get('kernel'),
+                $namespace,
+                $bundle
+            );
 
             $output->writeln(array(
                 '',
-                $this->getHelper('formatter')->formatBlock('SiteBuilder Contents and Structure generated', 'bg=blue;fg=white', true),
+                $this->getHelper('formatter')->formatBlock(
+                    'SiteBuilder Contents and Structure generated',
+                    'bg=blue;fg=white',
+                    true
+                ),
                 ''
             ));
         } catch (\RuntimeException $e) {
@@ -176,7 +190,12 @@ class InstallCommand extends BaseContainerAwareCommand
 
         // Get content root location ID
         $parentLocationID = false;
-        $question = new Question($questionHelper->getQuestion('Root Location ID where SiteBuilder content structure will be initialized', $parentLocationID));
+        $question = new Question(
+            $questionHelper->getQuestion(
+                'Root Location ID where SiteBuilder content structure will be initialized',
+                $parentLocationID
+            )
+        );
         $question->setValidator(
             array(
                 'EdgarEz\SiteBuilderBundle\Command\Validators',
@@ -224,7 +243,12 @@ class InstallCommand extends BaseContainerAwareCommand
 
         // Get content root location ID
         $parentLocationID = false;
-        $question = new Question($questionHelper->getQuestion('Root Location ID where SiteBuilder media content structure will be initialized', $parentLocationID));
+        $question = new Question(
+            $questionHelper->getQuestion(
+                'Root Location ID where SiteBuilder media content structure will be initialized',
+                $parentLocationID
+            )
+        );
         $question->setValidator(
             array(
                 'EdgarEz\SiteBuilderBundle\Command\Validators',
@@ -272,7 +296,12 @@ class InstallCommand extends BaseContainerAwareCommand
 
         // Get user root location ID
         $userGroupParenttLocationID = false;
-        $question = new Question($questionHelper->getQuestion('Root User Location ID where SiteBuilder user structure will be initialized: ', $userGroupParenttLocationID));
+        $question = new Question(
+            $questionHelper->getQuestion(
+                'Root User Location ID where SiteBuilder user structure will be initialized: ',
+                $userGroupParenttLocationID
+            )
+        );
         $question->setValidator(
             array(
                 'EdgarEz\SiteBuilderBundle\Command\Validators',

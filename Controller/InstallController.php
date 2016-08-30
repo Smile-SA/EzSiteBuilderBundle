@@ -29,8 +29,7 @@ class InstallController extends BaseController
         InstallDispatcher $actionDispatcher,
         $tabItems,
         SecurityService $securityService
-    )
-    {
+    ) {
         $this->actionDispatcher = $actionDispatcher;
         $this->tabItems = $tabItems;
         $this->securityService = $securityService;

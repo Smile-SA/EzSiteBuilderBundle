@@ -63,21 +63,35 @@ class CustomerGenerator extends Generator
         $vendorName,
         $customerName,
         $targetDir
-    )
-    {
+    ) {
         $namespace = $vendorName . '\\' . ProjectGenerator::CUSTOMERS . '\\' . $customerName . '\\' . self::BUNDLE;
 
         $dir = $targetDir . '/' . strtr($namespace, '\\', '/');
         if (file_exists($dir)) {
             if (!is_dir($dir)) {
-                throw new \RuntimeException(sprintf('Unable to generate the bundle as the target directory "%s" exists but is a file.', realpath($dir)));
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unable to generate the bundle as the target directory "%s" exists but is a file.',
+                        realpath($dir)
+                    )
+                );
             }
             $files = scandir($dir);
             if ($files != array('.', '..')) {
-                throw new \RuntimeException(sprintf('Unable to generate the bundle as the target directory "%s" is not empty.', realpath($dir)));
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unable to generate the bundle as the target directory "%s" is not empty.',
+                        realpath($dir)
+                    )
+                );
             }
             if (!is_writable($dir)) {
-                throw new \RuntimeException(sprintf('Unable to generate the bundle as the target directory "%s" is not writable.', realpath($dir)));
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unable to generate the bundle as the target directory "%s" is not writable.',
+                        realpath($dir)
+                    )
+                );
             }
         }
 
@@ -99,10 +113,26 @@ class CustomerGenerator extends Generator
         );
 
         $this->setSkeletonDirs(array($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/skeleton')));
-        $this->renderFile('customer/Bundle.php.twig', $dir . '/' . $vendorName . $basename . 'Bundle.php', $parameters);
-        $this->renderFile('customer/Extension.php.twig', $dir . '/DependencyInjection/' . $vendorName . $basename . 'Extension.php', $parameters);
-        $this->renderFile('customer/Configuration.php.twig', $dir . '/DependencyInjection/Configuration.php', $parameters);
-        $this->renderFile('customer/default_settings.yml.twig', $dir . '/Resources/config/default_settings.yml', $parameters);
+        $this->renderFile(
+            'customer/Bundle.php.twig',
+            $dir . '/' . $vendorName . $basename . 'Bundle.php',
+            $parameters
+        );
+        $this->renderFile(
+            'customer/Extension.php.twig',
+            $dir . '/DependencyInjection/' . $vendorName . $basename . 'Extension.php',
+            $parameters
+        );
+        $this->renderFile(
+            'customer/Configuration.php.twig',
+            $dir . '/DependencyInjection/Configuration.php',
+            $parameters
+        );
+        $this->renderFile(
+            'customer/default_settings.yml.twig',
+            $dir . '/Resources/config/default_settings.yml',
+            $parameters
+        );
 
         $configFile = $targetDir . '/' . $vendorName . '/ProjectBundle/Resources/config/edgarezsb.yml';
         $edgarezYaml = Yaml::parse(file_get_contents($configFile));
@@ -111,6 +141,8 @@ class CustomerGenerator extends Generator
         $edgarezYaml['parameters']['edgar_ez_site_builder.customer'] = $customers;
         file_put_contents($configFile, Yaml::dump($edgarezYaml));
 
-        $this->filesystem->mkdir($targetDir . '/' . $vendorName . '/' . ProjectGenerator::CUSTOMERS . '/' . $customerName . '/' . self::SITES);
+        $this->filesystem->mkdir(
+            $targetDir . '/' . $vendorName . '/' . ProjectGenerator::CUSTOMERS . '/' . $customerName . '/' . self::SITES
+        );
     }
 }

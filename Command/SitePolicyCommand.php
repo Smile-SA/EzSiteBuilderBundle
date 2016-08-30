@@ -51,7 +51,10 @@ class SitePolicyCommand extends BaseContainerAwareCommand
         $repository->setCurrentUser($repository->getUserService()->loadUser($adminID));
 
         $questionHelper = $this->getQuestionHelper();
-        $questionHelper->writeSection($output, 'SiteBuilder Site limitation policies managment for user creator/editor');
+        $questionHelper->writeSection(
+            $output,
+            'SiteBuilder Site limitation policies managment for user creator/editor'
+        );
 
         $this->getVendorNameDir();
 
@@ -59,7 +62,10 @@ class SitePolicyCommand extends BaseContainerAwareCommand
         $this->askSiteName($input, $output);
 
         try {
-            $this->addSiteaccessLimitation($this->customerName, Container::underscore($this->vendorName . $this->customerName . $this->siteName));
+            $this->addSiteaccessLimitation(
+                $this->customerName,
+                Container::underscore($this->vendorName . $this->customerName . $this->siteName)
+            );
 
             $output->writeln(array(
                 '',
@@ -140,9 +146,15 @@ class SitePolicyCommand extends BaseContainerAwareCommand
         /** @var SiteService $siteSerice */
         $siteService = $this->getContainer()->get('edgar_ez_site_builder.site.service');
 
-        $extensionAlias = Container::underscore(ProjectGenerator::CUSTOMERS . $customerName . CustomerGenerator::SITES);
-        $roleCreatorID = $this->getContainer()->getParameter('edgarez_sb.customer.' . $extensionAlias . '.default.customer_user_creator_role_id');
-        $roleEditorID = $this->getContainer()->getParameter('edgarez_sb.customer.' . $extensionAlias . '.default.customer_user_editor_role_id');
+        $extensionAlias = Container::underscore(
+            ProjectGenerator::CUSTOMERS . $customerName . CustomerGenerator::SITES
+        );
+        $roleCreatorID = $this->getContainer()->getParameter(
+            'edgarez_sb.customer.' . $extensionAlias . '.default.customer_user_creator_role_id'
+        );
+        $roleEditorID = $this->getContainer()->getParameter(
+            'edgarez_sb.customer.' . $extensionAlias . '.default.customer_user_editor_role_id'
+        );
 
         /** @var Repository $repository */
         $repository = $this->getContainer()->get('ezpublish.api.repository');

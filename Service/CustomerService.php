@@ -74,8 +74,7 @@ class CustomerService
         Content $content,
         Role $role,
         array $siteaccessGroups
-    )
-    {
+    ) {
         $this->kernel = $kernel;
         $this->roleService = $roleService;
         $this->locationService = $locationService;
@@ -95,14 +94,25 @@ class CustomerService
      * @param int $customerUserCreatorsGroupLocationID group location ID
      * @return string
      */
-    public function initializeUserCreator($userFirstName, $userLastName, $userEmail, $customerUserCreatorsGroupLocationID)
-    {
+    public function initializeUserCreator(
+        $userFirstName,
+        $userLastName,
+        $userEmail,
+        $customerUserCreatorsGroupLocationID
+    ) {
         $userLogin = $userEmail;
-        $userPassword = substr(str_shuffle(strtolower(sha1(rand() . time() . $userLogin))),0, 8);;
+        $userPassword = substr(str_shuffle(strtolower(sha1(rand() . time() . $userLogin))), 0, 8);
+        ;
 
         try {
             $contentType = $this->contentTypeService->loadContentTypeByIdentifier('edgar_ez_sb_user');
-            $userCreateStruct = $this->userService->newUserCreateStruct($userLogin, $userEmail, $userPassword, 'eng-GB', $contentType);
+            $userCreateStruct = $this->userService->newUserCreateStruct(
+                $userLogin,
+                $userEmail,
+                $userPassword,
+                'eng-GB',
+                $contentType
+            );
             $userCreateStruct->setField('first_name', $userFirstName);
             $userCreateStruct->setField('last_name', $userLastName);
 
@@ -135,7 +145,11 @@ class CustomerService
     public function createContentStructure($parentLocationID, $name)
     {
         try {
-            $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/customercontent.yml')));
+            $contentDefinition = Yaml::parse(
+                file_get_contents(
+                    $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/customercontent.yml')
+                )
+            );
             $contentDefinition['parentLocationID'] = $parentLocationID;
             $contentDefinition['fields']['title']['value'] = $name;
             $contentAdded = $this->content->add($contentDefinition);
@@ -160,7 +174,11 @@ class CustomerService
     public function createMediaContentStructure($parentLocationID, $name)
     {
         try {
-            $contentDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediacustomercontent.yml')));
+            $contentDefinition = Yaml::parse(
+                file_get_contents(
+                    $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediacustomercontent.yml')
+                )
+            );
             $contentDefinition['parentLocationID'] = $parentLocationID;
             $contentDefinition['fields']['title']['value'] = $name;
             $contentAdded = $this->content->add($contentDefinition);
@@ -188,19 +206,33 @@ class CustomerService
         $contents = array();
 
         try {
-            $userGroupDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/customerusergroup_creators.yml')));
+            $userGroupDefinition = Yaml::parse(
+                file_get_contents(
+                    $this->kernel->locateResource(
+                        '@EdgarEzSiteBuilderBundle/Resources/datas/customerusergroup_creators.yml'
+                    )
+                )
+            );
             $userGroupDefinition['parentLocationID'] = $parentCreatorLocationID;
             $userGroupDefinition['fields']['name']['value'] = $name;
             $contents['customerUserCreatorsGroup'] = $this->content->add($userGroupDefinition);
 
-            $userGroupDefinition = Yaml::parse(file_get_contents($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/customerusergroup_editors.yml')));
+            $userGroupDefinition = Yaml::parse(
+                file_get_contents(
+                    $this->kernel->locateResource(
+                        '@EdgarEzSiteBuilderBundle/Resources/datas/customerusergroup_editors.yml'
+                    )
+                )
+            );
             $userGroupDefinition['parentLocationID'] = $parentEditorLocationID;
             $userGroupDefinition['fields']['name']['value'] = $name;
             $contents['customerUserEditorsGroup'] = $this->content->add($userGroupDefinition);
 
             return array(
-                'customerUserCreatorsGroupLocationID' => $contents['customerUserCreatorsGroup']->contentInfo->mainLocationId,
-                'customerUserEditorsGroupLocationID' => $contents['customerUserEditorsGroup']->contentInfo->mainLocationId
+                'customerUserCreatorsGroupLocationID' =>
+                    $contents['customerUserCreatorsGroup']->contentInfo->mainLocationId,
+                'customerUserEditorsGroupLocationID' =>
+                    $contents['customerUserEditorsGroup']->contentInfo->mainLocationId
             );
         } catch (ParseException $e) {
             throw new \RuntimeException($e->getMessage());
@@ -225,8 +257,7 @@ class CustomerService
         $mediaCustomerLocationID,
         $customerUserCreatorsGroupLocationID,
         $customerUserEditorsGroupLocationID
-    )
-    {
+    ) {
         try {
             /** @var \eZ\Publish\API\Repository\Values\User\Role $roleCreator */
             $roleCreator = $this->role->add('SiteBuilder ' . $customerName . ' creator');
@@ -331,7 +362,18 @@ class CustomerService
                             $policyUpdateStruct = new PolicyUpdateStruct();
                             $policyUpdateStruct->addLimitation($limitation);
 
-                            $policyDraft = new PolicyDraft(['innerPolicy' => new \eZ\Publish\Core\Repository\Values\User\Policy(['id' => $policy->id, 'module' => 'content', 'function' => 'read', 'roleId' => $roleDraft->id])]);
+                            $policyDraft = new PolicyDraft(
+                                [
+                                    'innerPolicy' => new \eZ\Publish\Core\Repository\Values\User\Policy(
+                                        [
+                                            'id' => $policy->id,
+                                            'module' => 'content',
+                                            'function' => 'read',
+                                            'roleId' => $roleDraft->id
+                                        ]
+                                    )
+                                ]
+                            );
 
                             $this->roleService->updatePolicyByRoleDraft(
                                 $roleDraft,

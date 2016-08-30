@@ -2,7 +2,6 @@
 
 namespace EdgarEz\SiteBuilderBundle\Data\Model;
 
-
 use EdgarEz\SiteBuilderBundle\Values\Content\Model;
 
 trait ModelDataTrait

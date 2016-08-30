@@ -30,8 +30,7 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
         Kernel $kernel,
         ModelService $modelService,
         $kernelRootDir
-    )
-    {
+    ) {
         $this->filesystem = $filesystem;
         $this->kernel = $kernel;
         $this->modelService = $modelService;
@@ -61,7 +60,11 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
                     $extensionAlias = 'edgarez_sb.' . Container::underscore($basename);
                     $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
-                    $exists = $this->modelService->exists($parameters['modelName'], $vendorName, $this->kernelRootDir . '/../src');
+                    $exists = $this->modelService->exists(
+                        $parameters['modelName'],
+                        $vendorName,
+                        $this->kernelRootDir . '/../src'
+                    );
                     if ($exists) {
                         $this->message = 'Model already exists with this name';
                         return false;
@@ -69,13 +72,23 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
 
                     $basename = ProjectGenerator::MAIN ;
 
-                    $modelsLocationID = $container->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.models_location_id');
-                    $returnValue = $this->modelService->createModelContent($modelsLocationID, $parameters['modelName']);
+                    $modelsLocationID = $container->getParameter(
+                        'edgarez_sb.' . Container::underscore($basename) . '.default.models_location_id'
+                    );
+                    $returnValue = $this->modelService->createModelContent(
+                        $modelsLocationID,
+                        $parameters['modelName']
+                    );
                     $excludeUriPrefixes = $returnValue['excludeUriPrefixes'];
                     $modelLocationID = $returnValue['modelLocationID'];
 
-                    $mediaModelsLocationID = $container->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.media_models_location_id');
-                    $returnValue = $this->modelService->createMediaModelContent($mediaModelsLocationID, $parameters['modelName']);
+                    $mediaModelsLocationID = $container->getParameter(
+                        'edgarez_sb.' . Container::underscore($basename) . '.default.media_models_location_id'
+                    );
+                    $returnValue = $this->modelService->createMediaModelContent(
+                        $mediaModelsLocationID,
+                        $parameters['modelName']
+                    );
                     $mediaModelLocationID = $returnValue['mediaModelLocationID'];
 
                     $this->modelService->updateGlobalRole($modelLocationID, $mediaModelLocationID);
@@ -95,7 +108,8 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
                         $this->kernelRootDir . '/../src'
                     );
 
-                    $namespace = $vendorName . '\\' . ProjectGenerator::MODELS . '\\' . $parameters['modelName'] . 'Bundle';
+                    $namespace = $vendorName . '\\' . ProjectGenerator::MODELS .
+                        '\\' . $parameters['modelName'] . 'Bundle';
                     $bundle = $vendorName . ProjectGenerator::MODELS . $parameters['modelName'] . 'Bundle';
                     $this->updateKernel($this->kernel, $namespace, $bundle);
                 } catch (\RuntimeException $e) {
@@ -115,7 +129,10 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
                     $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
                     $customers = $container->getParameter('edgar_ez_site_builder.customer');
-                    $this->modelService->addSiteaccessLimitation(Container::underscore($vendorName . $parameters['modelName']), $customers);
+                    $this->modelService->addSiteaccessLimitation(
+                        Container::underscore($vendorName . $parameters['modelName']),
+                        $customers
+                    );
                 } catch (\RuntimeException $e) {
                     $this->message = $e->getMessage();
                     return false;

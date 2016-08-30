@@ -74,12 +74,16 @@ class ModelCommand extends BaseContainerAwareCommand
         try {
             $basename = ProjectGenerator::MAIN ;
 
-            $modelsLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.models_location_id');
+            $modelsLocationID = $this->getContainer()->getParameter(
+                'edgarez_sb.' . Container::underscore($basename) . '.default.models_location_id'
+            );
             $returnValue = $modelService->createModelContent($modelsLocationID, $this->modelName);
             $this->excludeUriPrefixes = $returnValue['excludeUriPrefixes'];
             $this->modelLocationID = $returnValue['modelLocationID'];
 
-            $mediaModelsLocationID = $this->getContainer()->getParameter('edgarez_sb.' . Container::underscore($basename) . '.default.media_models_location_id');
+            $mediaModelsLocationID = $this->getContainer()->getParameter(
+                'edgarez_sb.' . Container::underscore($basename) . '.default.media_models_location_id'
+            );
             $returnValue = $modelService->createMediaModelContent($mediaModelsLocationID, $this->modelName);
             $this->mediaModelLocationID = $returnValue['mediaModelLocationID'];
 
@@ -100,11 +104,22 @@ class ModelCommand extends BaseContainerAwareCommand
 
             $namespace = $this->vendorName . '\\' . ProjectGenerator::MODELS . '\\' . $this->modelName . 'Bundle';
             $bundle = $this->vendorName . ProjectGenerator::MODELS . $this->modelName . 'Bundle';
-            $this->updateKernel($questionHelper, $input, $output, $this->getContainer()->get('kernel'), $namespace, $bundle);
+            $this->updateKernel(
+                $questionHelper,
+                $input,
+                $output,
+                $this->getContainer()->get('kernel'),
+                $namespace,
+                $bundle
+            );
 
             $output->writeln(array(
                 '',
-                $this->getHelper('formatter')->formatBlock('New model content and bundle generated', 'bg=blue;fg=white', true),
+                $this->getHelper('formatter')->formatBlock(
+                    'New model content and bundle generated',
+                    'bg=blue;fg=white',
+                    true
+                ),
                 ''
             ));
         } catch (\RuntimeException $e) {

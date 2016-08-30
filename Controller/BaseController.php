@@ -57,8 +57,12 @@ abstract class BaseController extends Controller
         }
     }
 
-    protected function dispatchFormAction(ActionDispatcherInterface $actionDispatcher, Form $form, ValueObject $data, array $options)
-    {
+    protected function dispatchFormAction(
+        ActionDispatcherInterface $actionDispatcher,
+        Form $form,
+        ValueObject $data,
+        array $options
+    ) {
         $actionDispatcher->dispatchFormAction(
             $form,
             $data,
@@ -66,6 +70,4 @@ abstract class BaseController extends Controller
             $options
         );
     }
-
-
 }

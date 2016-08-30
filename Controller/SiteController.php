@@ -43,8 +43,7 @@ class SiteController extends BaseController
         SiteDispatcher $actionDispatcher,
         $tabItems,
         SecurityService $securityService
-    )
-    {
+    ) {
         $this->locationService = $locationService;
         $this->searchService = $searchService;
         $this->actionDispatcher = $actionDispatcher;
@@ -55,8 +54,9 @@ class SiteController extends BaseController
     public function generateAction(Request $request)
     {
         $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
-        if (!$this->securityService->checkAuthorization('sitegenerate'))
+        if (!$this->securityService->checkAuthorization('sitegenerate')) {
             return $this->redirectAfterFormPost($actionUrl);
+        }
 
         $form = $this->getForm($request);
         $form->handleRequest($request);
@@ -68,8 +68,9 @@ class SiteController extends BaseController
                 'model' => $this->data->customerContentLocationID . '-' . $this->data->customerMediaLocationID
             ));
 
-            if ($response = $this->actionDispatcher->getResponse())
+            if ($response = $this->actionDispatcher->getResponse()) {
                 return $response;
+            }
 
             $this->initTask($form);
             $this->initPolicyTask($form);
@@ -105,10 +106,18 @@ class SiteController extends BaseController
         $customerName = $this->getCustomerName();
         $customerAlias = ProjectGenerator::CUSTOMERS . $customerName . CustomerGenerator::SITES;
 
-        $contentRootModelsLocationID = $this->container->getParameter('edgarez_sb.project.default.models_location_id');
-        $mediaRootModelsLocationID = $this->container->getParameter('edgarez_sb.project.default.media_models_location_id');
-        $contentRootCustomerLocationID = $this->container->getParameter('edgarez_sb.customer.' . Container::underscore($customerAlias) . '.default.customer_location_id');
-        $mediaRootCustomerLocationID = $this->container->getParameter('edgarez_sb.customer.' . Container::underscore($customerAlias) . '.default.media_customer_location_id');
+        $contentRootModelsLocationID = $this->container->getParameter(
+            'edgarez_sb.project.default.models_location_id'
+        );
+        $mediaRootModelsLocationID = $this->container->getParameter(
+            'edgarez_sb.project.default.media_models_location_id'
+        );
+        $contentRootCustomerLocationID = $this->container->getParameter(
+            'edgarez_sb.customer.' . Container::underscore($customerAlias) . '.default.customer_location_id'
+        );
+        $mediaRootCustomerLocationID = $this->container->getParameter(
+            'edgarez_sb.customer.' . Container::underscore($customerAlias) . '.default.media_customer_location_id'
+        );
         return $this->createForm(
             new SiteType(
                 $this->locationService,
