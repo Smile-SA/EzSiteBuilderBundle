@@ -32,7 +32,7 @@ parameters:
     edgar_ez_site_builder.controller.sb.customer.class: EdgarEz\SiteBuilderBundle\Controller\CustomerController
     edgar_ez_site_builder.controller.sb.model.class: EdgarEz\SiteBuilderBundle\Controller\ModelController
     edgar_ez_site_builder.controller.sb.site.class: EdgarEz\SiteBuilderBundle\Controller\SiteController
-    edgar_ez_site_builder.tabs: [install, dashboard, customergenerate, modelgenerate, sitegenerate, siteactivate]
+    edgar_ez_site_builder.tabs: [install, dashboard, customergenerate, modelgenerate, sitegenerate]
 
     edgarezsb.security.service.class: EdgarEz\SiteBuilderBundle\Service\SecurityService
     edgarezsb.security.twig.extension.class: EdgarEz\SiteBuilderBundle\Twig\Extension\SecurityExtension

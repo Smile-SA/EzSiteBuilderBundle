@@ -5,8 +5,14 @@
 [![License](https://poser.pugx.org/edgarez/sitebuilderbundle/license)](https://packagist.org/packages/edgarez/sitebuilderbundle)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/6f66ce27-9b99-411c-a52b-d3fcc715684e/mini.png)](https://insight.sensiolabs.com/projects/6f66ce27-9b99-411c-a52b-d3fcc715684e)
 
-eZ Platform Site Builder using models (content architecture and model bundles) to generate multi sites based on this models
+This bundle aims to provide a webFactory tool in eZ Platform context.
 
-[TODO](TODO.md)
+> This bundle is a pre-release, continue to evolve
+> Your help is welcom to fix, evolve or customize this project
 
-Still in dev until end of August 2017
+## Documentation
+
+French : [documentation](Resources/doc/fr/README.md)
+
+English : coming soon
+ 
