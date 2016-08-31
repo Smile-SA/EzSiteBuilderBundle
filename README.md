@@ -16,3 +16,6 @@ French : [documentation](Resources/doc/fr/README.md)
 
 English : coming soon
  
+## Screencast (in french)
+
+[![Screencast](/Resources/doc/images/screencast.png)](https://youtu.be/dh_zID7Lcss "Screencast")
