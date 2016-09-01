@@ -29,6 +29,18 @@ class AppKernel extends Kernel
             new EdgarEz\SiteBuilderBundle\EdgarEzSiteBuilderBundle()
 ```
 
+### Ajout paramètres par défaut
+
+Ajouter dans le fichier app/parameters.yml
+
+```yml
+parameters:
+    ...
+    edgar_ez_tools.adminid: 14
+    edgar_ez_site_builder.host: <your_host>
+    edgar_ez_site_builder.sysadminemail: <your_admin_email>
+```
+
 ### Ajout support Doctrine ORM
 
 Ajouter dans la configuration globale app/config/ezplatform.yml
@@ -54,23 +66,11 @@ edgarezsb_platform:
     resource: '@EdgarEzSiteBuilderBundle/Resources/config/routing.yml'
 ```
 
-### Ajout paramètres par défaut
-
-Ajouter dans le fichier app/parameters.yml
-
-```yml
-parameters:
-    ...
-    edgar_ez_tools.adminid: 14
-    edgar_ez_site_builder.host: <your_host>
-    edgar_ez_site_builder.sysadminemail: <your_admin_email>
-```
-
 ### Redéfinir les assets
 
 ```console
 php app/console assets:install --symlink web
-php app/console assets:dump web
+php app/console assetic:dump web
 ```
 
 ### Installation SiteBuilder
