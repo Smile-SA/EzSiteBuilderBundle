@@ -95,22 +95,22 @@ class CustomerCommand extends BaseContainerAwareCommand
             $basename = ProjectGenerator::MAIN;
 
             $parentLocationID = $this->getContainer()->getParameter(
-                'edgarez_sb.' . Container::underscore($basename) . '.default.customers_location_id'
+                'edgarez_sb.' . strtolower($basename) . '.default.customers_location_id'
             );
             $returnValue = $customerService->createContentStructure($parentLocationID, $this->customerName);
             $this->customerLocationID = $returnValue['customerLocationID'];
 
             $parentLocationID = $this->getContainer()->getParameter(
-                'edgarez_sb.' . Container::underscore($basename) . '.default.media_customers_location_id'
+                'edgarez_sb.' . strtolower($basename) . '.default.media_customers_location_id'
             );
             $returnValue = $customerService->createMediaContentStructure($parentLocationID, $this->customerName);
             $this->mediaCustomerLocationID = $returnValue['mediaCustomerLocationID'];
 
             $parentCreatorLocationID = $this->getContainer()->getParameter(
-                'edgarez_sb.' . Container::underscore($basename) . '.default.user_creators_location_id'
+                'edgarez_sb.' . strtolower($basename) . '.default.user_creators_location_id'
             );
             $parentEditorLocationID = $this->getContainer()->getParameter(
-                'edgarez_sb.' . Container::underscore($basename) . '.default.user_editors_location_id'
+                'edgarez_sb.' . strtolower($basename) . '.default.user_editors_location_id'
             );
             $returnValue = $customerService->createUserGroups(
                 $parentCreatorLocationID,

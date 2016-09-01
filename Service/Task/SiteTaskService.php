@@ -86,8 +86,8 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                 try {
                     $this->validateParameters($parameters);
 
-                    $basename = substr(ProjectGenerator::BUNDLE, 0, -6);
-                    $extensionAlias = 'edgarez_sb.' . Container::underscore($basename);
+                    $basename = ProjectGenerator::MAIN;
+                    $extensionAlias = 'edgarez_sb.' . strtolower($basename);
                     $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
                     $exists = $this->siteService->exists(
@@ -153,8 +153,8 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
 
                     $this->validateParameters($parameters);
 
-                    $extensionAlias = Container::underscore(
-                        ProjectGenerator::CUSTOMERS . $parameters['customerName'] . CustomerGenerator::SITES
+                    $extensionAlias = strtolower(
+                        ProjectGenerator::CUSTOMERS . '_' . $parameters['customerName'] . '_' . CustomerGenerator::SITES
                     );
                     $roleCreatorID = $container->getParameter(
                         'edgarez_sb.customer.' . $extensionAlias . '.default.customer_user_creator_role_id'
@@ -166,12 +166,12 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                     $roleCreator = $this->roleService->loadRole($roleCreatorID);
                     $roleEditor = $this->roleService->loadRole($roleEditorID);
 
-                    $basename = substr(ProjectGenerator::BUNDLE, 0, -6);
-                    $extensionAlias = 'edgarez_sb.' . Container::underscore($basename);
+                    $basename = ProjectGenerator::MAIN;
+                    $extensionAlias = 'edgarez_sb.' . strtolower($basename);
                     $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
-                    $siteaccessName = Container::underscore(
-                        $vendorName . $parameters['customerName'] . $parameters['siteName']
+                    $siteaccessName = strtolower(
+                        $vendorName . '_' . $parameters['customerName'] . '_' . $parameters['siteName']
                     );
                     $this->siteService->addSiteaccessLimitation($roleCreator, $roleEditor, $siteaccessName);
                 } catch (\RuntimeException $e) {

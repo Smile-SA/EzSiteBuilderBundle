@@ -56,8 +56,8 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
                 try {
                     $this->validateParameters($parameters);
 
-                    $basename = substr(ProjectGenerator::BUNDLE, 0, -6);
-                    $extensionAlias = 'edgarez_sb.' . Container::underscore($basename);
+                    $basename = ProjectGenerator::MAIN;
+                    $extensionAlias = 'edgarez_sb.' . strtolower($basename);
                     $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
                     $exists = $this->modelService->exists(
@@ -73,7 +73,7 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
                     $basename = ProjectGenerator::MAIN ;
 
                     $modelsLocationID = $container->getParameter(
-                        'edgarez_sb.' . Container::underscore($basename) . '.default.models_location_id'
+                        'edgarez_sb.' . strtolower($basename) . '.default.models_location_id'
                     );
                     $returnValue = $this->modelService->createModelContent(
                         $modelsLocationID,
@@ -83,7 +83,7 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
                     $modelLocationID = $returnValue['modelLocationID'];
 
                     $mediaModelsLocationID = $container->getParameter(
-                        'edgarez_sb.' . Container::underscore($basename) . '.default.media_models_location_id'
+                        'edgarez_sb.' . strtolower($basename) . '.default.media_models_location_id'
                     );
                     $returnValue = $this->modelService->createMediaModelContent(
                         $mediaModelsLocationID,
@@ -124,13 +124,13 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
                 try {
                     $this->validateParameters($parameters);
 
-                    $basename = substr(ProjectGenerator::BUNDLE, 0, -6);
-                    $extensionAlias = 'edgarez_sb.' . Container::underscore($basename);
+                    $basename = ProjectGenerator::MAIN;
+                    $extensionAlias = 'edgarez_sb.' . strtolower($basename);
                     $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
                     $customers = $container->getParameter('edgar_ez_site_builder.customer');
                     $this->modelService->addSiteaccessLimitation(
-                        Container::underscore($vendorName . $parameters['modelName']),
+                        strtolower($vendorName . '_' . $parameters['modelName']),
                         $customers
                     );
                 } catch (\RuntimeException $e) {

@@ -95,13 +95,14 @@ class CustomerGenerator extends Generator
             }
         }
 
-        $basename = substr(ProjectGenerator::CUSTOMERS . $customerName . self::BUNDLE, 0, -6);
+        $basename = ProjectGenerator::CUSTOMERS . $customerName . self::SITES;
+        $basenameUnderscore = strtolower(ProjectGenerator::CUSTOMERS . '_' . $customerName . '_' . self::SITES);
         $parameters = array(
             'namespace' => $namespace,
             'bundle'    => self::BUNDLE,
             'format'    => 'yml',
             'bundle_basename' => $vendorName . $basename,
-            'extension_alias' => Container::underscore($basename),
+            'extension_alias' => $basenameUnderscore,
             'settings' => array(
                 'customerLocationID' => $customerLocationID,
                 'mediaCustomerLocationID' => $mediaCustomerLocationID,

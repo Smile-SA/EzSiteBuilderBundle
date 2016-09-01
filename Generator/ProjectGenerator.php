@@ -3,7 +3,6 @@
 namespace EdgarEz\SiteBuilderBundle\Generator;
 
 use Sensio\Bundle\GeneratorBundle\Generator\Generator;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
 
@@ -94,13 +93,13 @@ class ProjectGenerator extends Generator
             }
         }
 
-        $basename = substr(self::BUNDLE, 0, -6);
+        $basename = self::MAIN;
         $parameters = array(
             'namespace' => $namespace,
             'bundle'    => self::BUNDLE,
             'format'    => 'yml',
             'bundle_basename' => $vendorName . $basename,
-            'extension_alias' => Container::underscore($basename),
+            'extension_alias' => strtolower($basename),
             'settings' => array(
                 'vendor_name' => $vendorName,
                 'dir' => $targetDir,

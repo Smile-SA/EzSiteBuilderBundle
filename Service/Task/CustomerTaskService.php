@@ -69,8 +69,8 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
                 try {
                     $this->validateParameters($parameters);
 
-                    $basename = substr(ProjectGenerator::BUNDLE, 0, -6);
-                    $extensionAlias = 'edgarez_sb.' . Container::underscore($basename);
+                    $basename = ProjectGenerator::MAIN;
+                    $extensionAlias = 'edgarez_sb.' . strtolower($basename);
                     $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
                     $exists = $this->customerService->exists(
@@ -86,7 +86,7 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
                     $basename = ProjectGenerator::MAIN;
 
                     $parentLocationID = $container->getParameter(
-                        'edgarez_sb.' . Container::underscore($basename) . '.default.customers_location_id'
+                        'edgarez_sb.' . strtolower($basename) . '.default.customers_location_id'
                     );
                     $returnValue = $this->customerService->createContentStructure(
                         $parentLocationID,
@@ -95,7 +95,7 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
                     $customerLocationID = $returnValue['customerLocationID'];
 
                     $parentLocationID = $container->getParameter(
-                        'edgarez_sb.' . Container::underscore($basename) . '.default.media_customers_location_id'
+                        'edgarez_sb.' . strtolower($basename) . '.default.media_customers_location_id'
                     );
                     $returnValue = $this->customerService->createMediaContentStructure(
                         $parentLocationID,
@@ -104,10 +104,10 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
                     $mediaCustomerLocationID = $returnValue['mediaCustomerLocationID'];
 
                     $parentCreatorLocationID = $container->getParameter(
-                        'edgarez_sb.' . Container::underscore($basename) . '.default.user_creators_location_id'
+                        'edgarez_sb.' . strtolower($basename) . '.default.user_creators_location_id'
                     );
                     $parentEditorLocationID = $container->getParameter(
-                        'edgarez_sb.' . Container::underscore($basename) . '.default.user_editors_location_id'
+                        'edgarez_sb.' . strtolower($basename) . '.default.user_editors_location_id'
                     );
                     $returnValue = $this->customerService->createUserGroups(
                         $parentCreatorLocationID,

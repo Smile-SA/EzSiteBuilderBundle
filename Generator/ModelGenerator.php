@@ -4,7 +4,6 @@ namespace EdgarEz\SiteBuilderBundle\Generator;
 
 use Sensio\Bundle\GeneratorBundle\Generator\Generator;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**
@@ -87,18 +86,19 @@ class ModelGenerator extends Generator
             }
         }
 
-        $basename = substr(ProjectGenerator::MODELS . $modelName . 'Bundle', 0, -6);
+        $basename = ProjectGenerator::MODELS . $modelName;
+        $basenameUnderscore = strtolower(ProjectGenerator::MODELS . '_' . $modelName);
         $parameters = array(
             'namespace' => $namespace,
             'bundle'    => $modelName . 'Bundle',
             'format'    => 'yml',
             'bundle_basename' => $vendorName . $basename,
-            'extension_alias' => Container::underscore($basename),
+            'extension_alias' => $basenameUnderscore,
             'vendor_name' => $vendorName,
             'model_name' => $modelName,
             'modelLocationID' => $modelLocationID,
             'mediaModelLocationID' => $mediaModelLocationID,
-            'siteaccess' => Container::underscore($vendorName . $modelName),
+            'siteaccess' => strtolower($vendorName .  '_' . $modelName),
             'host' => $host,
             'exclude_uri_prefixes' => $excludeUriPrefixes
         );

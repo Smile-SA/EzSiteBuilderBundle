@@ -11,7 +11,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
@@ -197,7 +196,7 @@ abstract class BaseContainerAwareCommand extends GeneratorCommand
     protected function getVendorNameDir()
     {
         $basename = substr(ProjectGenerator::BUNDLE, 0, -6);
-        $extensionAlias = 'edgarez_sb.' . Container::underscore($basename);
+        $extensionAlias = 'edgarez_sb.' . strtolower($basename);
 
         $this->vendorName = $this->getContainer()->getParameter($extensionAlias . '.default.vendor_name');
         $this->dir = $this->getContainer()->getParameter($extensionAlias . '.default.dir');

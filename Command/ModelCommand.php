@@ -9,7 +9,6 @@ use eZ\Publish\API\Repository\Repository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
-use Symfony\Component\DependencyInjection\Container;
 
 /**
  * Class ModelCommand
@@ -75,14 +74,14 @@ class ModelCommand extends BaseContainerAwareCommand
             $basename = ProjectGenerator::MAIN ;
 
             $modelsLocationID = $this->getContainer()->getParameter(
-                'edgarez_sb.' . Container::underscore($basename) . '.default.models_location_id'
+                'edgarez_sb.' . strtolower($basename) . '.default.models_location_id'
             );
             $returnValue = $modelService->createModelContent($modelsLocationID, $this->modelName);
             $this->excludeUriPrefixes = $returnValue['excludeUriPrefixes'];
             $this->modelLocationID = $returnValue['modelLocationID'];
 
             $mediaModelsLocationID = $this->getContainer()->getParameter(
-                'edgarez_sb.' . Container::underscore($basename) . '.default.media_models_location_id'
+                'edgarez_sb.' . strtolower($basename) . '.default.media_models_location_id'
             );
             $returnValue = $modelService->createMediaModelContent($mediaModelsLocationID, $this->modelName);
             $this->mediaModelLocationID = $returnValue['mediaModelLocationID'];

@@ -9,7 +9,6 @@ use eZ\Publish\API\Repository\Repository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
-use Symfony\Component\DependencyInjection\Container;
 
 /**
  * Class SitePolicyCommand
@@ -64,7 +63,7 @@ class SitePolicyCommand extends BaseContainerAwareCommand
         try {
             $this->addSiteaccessLimitation(
                 $this->customerName,
-                Container::underscore($this->vendorName . $this->customerName . $this->siteName)
+                strtolower($this->vendorName . '_' . $this->customerName . '_' . $this->siteName)
             );
 
             $output->writeln(array(
@@ -146,8 +145,8 @@ class SitePolicyCommand extends BaseContainerAwareCommand
         /** @var SiteService $siteSerice */
         $siteService = $this->getContainer()->get('edgar_ez_site_builder.site.service');
 
-        $extensionAlias = Container::underscore(
-            ProjectGenerator::CUSTOMERS . $customerName . CustomerGenerator::SITES
+        $extensionAlias = strtolower(
+            ProjectGenerator::CUSTOMERS . '_' . $customerName . '_' . CustomerGenerator::SITES
         );
         $roleCreatorID = $this->getContainer()->getParameter(
             'edgarez_sb.customer.' . $extensionAlias . '.default.customer_user_creator_role_id'

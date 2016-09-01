@@ -3,7 +3,6 @@
 namespace EdgarEz\SiteBuilderBundle\Generator;
 
 use Sensio\Bundle\GeneratorBundle\Generator\Generator;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
 
@@ -96,27 +95,24 @@ class SiteGenerator extends Generator
             }
         }
 
-        $basename = substr(
-            ProjectGenerator::CUSTOMERS . $customerName . CustomerGenerator::SITES . $siteName . 'Bundle',
-            0,
-            -6
-        );
+        $basename = ProjectGenerator::CUSTOMERS . $customerName . CustomerGenerator::SITES . $siteName;
+        $basenameUnderscore = ProjectGenerator::CUSTOMERS . '_' . $customerName . '_' . CustomerGenerator::SITES . '_' . $siteName;
         $parameters = array(
             'namespace' => $namespace,
             'bundle'    => $siteName . 'Bundle',
             'format'    => 'yml',
             'bundle_basename' => $vendorName . $basename,
-            'extension_alias' => Container::underscore($basename),
+            'extension_alias' => strtolower($basenameUnderscore),
             'vendor_name' => $vendorName,
             'customer_name' => $customerName,
             'model_name' => $modelName,
             'site_name' => $siteName,
             'siteLocationID' => $siteLocationID,
             'mediaSiteLocationID' => $mediaSiteLocationID,
-            'parent_model_bundle' => substr($vendorName . ProjectGenerator::MODELS . $modelName . 'Bundle', 0, -6),
-            'siteaccess_model' => Container::underscore($vendorName . $modelName),
-            'siteaccess' => Container::underscore($vendorName . $customerName . $siteName),
-            'customer' => Container::underscore($customerName),
+            'parent_model_bundle' => $vendorName . ProjectGenerator::MODELS . $modelName,
+            'siteaccess_model' => strtolower($vendorName . '_' . $modelName),
+            'siteaccess' => strtolower($vendorName . '_' . $customerName . '_' . $siteName),
+            'customer' => strtolower($customerName),
             'exclude_uri_prefixes' => $excludeUriPrefixes,
             'host' => $host,
             'mapuri' => $mapuri,

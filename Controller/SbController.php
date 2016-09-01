@@ -11,7 +11,6 @@ use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Values\User\User;
 use EzSystems\PlatformUIBundle\Controller\Controller;
-use Symfony\Component\DependencyInjection\Container;
 
 class SbController extends Controller
 {
@@ -112,7 +111,9 @@ class SbController extends Controller
         } else {
             $customerName = $this->getCustomerName();
 
-            $customerAlias = ProjectGenerator::CUSTOMERS . $customerName . CustomerGenerator::SITES;
+            $customerAlias = strtolower(
+                ProjectGenerator::CUSTOMERS . '_' . $customerName . '_' . CustomerGenerator::SITES
+            );
             $params['siteForm'] = $this->createForm(
                 new SiteType(
                     $this->container->get('ezpublish.api.service.location'),
@@ -120,12 +121,10 @@ class SbController extends Controller
                     $this->container->getParameter('edgarez_sb.project.default.models_location_id'),
                     $this->container->getParameter('edgarez_sb.project.default.media_models_location_id'),
                     $this->container->getParameter(
-                        'edgarez_sb.customer.' . Container::underscore($customerAlias) . '.default.customer_location_id'
+                        'edgarez_sb.customer.' . $customerAlias . '.default.customer_location_id'
                     ),
                     $this->container->getParameter(
-                        'edgarez_sb.customer.' .
-                        Container::underscore($customerAlias) .
-                        '.default.media_customer_location_id'
+                        'edgarez_sb.customer.' . $customerAlias . '.default.media_customer_location_id'
                     ),
                     $customerName
                 )

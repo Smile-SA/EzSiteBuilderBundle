@@ -14,7 +14,6 @@ use EdgarEz\SiteBuilderBundle\Values\Content\Site;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\SearchService;
 use eZ\Publish\Core\MVC\Symfony\Security\User;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -104,7 +103,9 @@ class SiteController extends BaseController
         $this->data = (new SiteMapper())->mapToFormData($site);
 
         $customerName = $this->getCustomerName();
-        $customerAlias = ProjectGenerator::CUSTOMERS . $customerName . CustomerGenerator::SITES;
+        $customerAlias = strtolower(
+            ProjectGenerator::CUSTOMERS . '_' . $customerName . '_' . CustomerGenerator::SITES
+        );
 
         $contentRootModelsLocationID = $this->container->getParameter(
             'edgarez_sb.project.default.models_location_id'
@@ -113,10 +114,10 @@ class SiteController extends BaseController
             'edgarez_sb.project.default.media_models_location_id'
         );
         $contentRootCustomerLocationID = $this->container->getParameter(
-            'edgarez_sb.customer.' . Container::underscore($customerAlias) . '.default.customer_location_id'
+            'edgarez_sb.customer.' . $customerAlias . '.default.customer_location_id'
         );
         $mediaRootCustomerLocationID = $this->container->getParameter(
-            'edgarez_sb.customer.' . Container::underscore($customerAlias) . '.default.media_customer_location_id'
+            'edgarez_sb.customer.' . $customerAlias . '.default.media_customer_location_id'
         );
         return $this->createForm(
             new SiteType(

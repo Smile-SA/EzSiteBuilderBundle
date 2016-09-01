@@ -7,7 +7,6 @@ use eZ\Publish\API\Repository\Repository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
-use Symfony\Component\DependencyInjection\Container;
 
 /**
  * Class ModelPolicyCommand
@@ -56,7 +55,7 @@ class ModelPolicyCommand extends BaseContainerAwareCommand
         try {
             $customers = $this->getContainer()->getParameter('edgar_ez_site_builder.customer');
             $modelService->addSiteaccessLimitation(
-                Container::underscore($this->vendorName . $this->modelName),
+                strtolower($this->vendorName . '_' . $this->modelName),
                 $customers
             );
 

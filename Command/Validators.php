@@ -36,7 +36,7 @@ class Validators
      */
     public static function validateVendorName($vendorName)
     {
-        if (!preg_match('/^[A-Z][a-z]*$/', $vendorName)) {
+        if (!preg_match('/^[A-Z][a-zA-Z]*$/', $vendorName)) {
             throw new InvalidArgumentException(
                 $vendorName,
                 'Input is not a valid Vendor name. Vendor name should contains only alphabetic ' .
@@ -56,7 +56,7 @@ class Validators
      */
     public static function validateCustomerName($customerName)
     {
-        if (!preg_match('/^[A-Z][a-z]*$/', $customerName)) {
+        if (!preg_match('/^[A-Z][a-zA-Z]*$/', $customerName)) {
             throw new InvalidArgumentException(
                 $customerName,
                 'Input is not a valid Customer name. Customer name should contains ' .
@@ -76,7 +76,7 @@ class Validators
      */
     public static function validateModelName($modelName)
     {
-        if (!preg_match('/^[A-Z][a-z]*$/', $modelName)) {
+        if (!preg_match('/^[A-Z][a-zA-Z]*$/', $modelName)) {
             throw new InvalidArgumentException(
                 $modelName,
                 'Input is not a valid Model name. Model name should contains ' .
@@ -96,7 +96,7 @@ class Validators
      */
     public static function validateSiteName($siteName)
     {
-        if (!preg_match('/^[A-Z][a-z]*$/', $siteName)) {
+        if (!preg_match('/^[A-Z][a-zA-Z]*$/', $siteName)) {
             throw new InvalidArgumentException(
                 $siteName,
                 'Input is not a valid Site name. Site name should contains ' .
