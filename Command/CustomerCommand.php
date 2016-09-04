@@ -10,7 +10,6 @@ use eZ\Publish\API\Repository\Repository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
-use Symfony\Component\DependencyInjection\Container;
 
 /**
  * Class CustomerCommand
