@@ -6,7 +6,10 @@ use EdgarEz\SiteBuilderBundle\Command\Validators;
 use EdgarEz\SiteBuilderBundle\Generator\ModelGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\SiteBuilderBundle\Service\ModelService;
+use eZ\Publish\API\Repository\ContentService;
 use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
+use eZ\Publish\API\Repository\LocationService;
+use eZ\Publish\Core\FieldType\Checkbox\Value;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
@@ -22,6 +25,12 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
     /** @var Kernel $kernel */
     protected $kernel;
 
+    /** @var LocationService $locationService */
+    protected $locationService;
+
+    /** @var ContentService $contentService */
+    protected $contentService;
+
     /** @var string $kernelRootDir */
     protected $kernelRootDir;
 
@@ -29,11 +38,15 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
         Filesystem $filesystem,
         Kernel $kernel,
         ModelService $modelService,
+        LocationService $locationService,
+        ContentService $contentService,
         $kernelRootDir
     ) {
         $this->filesystem = $filesystem;
         $this->kernel = $kernel;
         $this->modelService = $modelService;
+        $this->locationService = $locationService;
+        $this->contentService = $contentService;
         $this->kernelRootDir = $kernelRootDir;
 
         $this->message = false;
@@ -44,6 +57,15 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
     {
         try {
             Validators::validateModelName($parameters['modelName']);
+        } catch (InvalidArgumentException $e) {
+            throw new \Exception($e->getMessage());
+        }
+    }
+
+    public function validateActivateParameters($parameters)
+    {
+        try {
+            Validators::validateLocationID($parameters['modelID']);
         } catch (InvalidArgumentException $e) {
             throw new \Exception($e->getMessage());
         }
@@ -141,6 +163,29 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
                     return false;
                 }
                 break;
+            case 'activate':
+                try {
+                    $this->validateActivateParameters($parameters);
+
+                    $model = $this->locationService->loadLocation($parameters['modelID']);
+
+                    $contentInfo = $model->getContentInfo();
+                    $contentDraft = $this->contentService->createContentDraft($contentInfo);
+                    $contentUpdateStruct = $this->contentService->newContentUpdateStruct();
+                    $contentUpdateStruct->initialLanguageCode = $contentInfo->mainLanguageCode;
+                    $contentUpdateStruct->setField('activated', new Value(true));
+                    $contentDraft = $this->contentService->updateContent(
+                        $contentDraft->versionInfo,
+                        $contentUpdateStruct
+                    );
+                    $this->contentService->publishVersion($contentDraft->versionInfo);
+                } catch (\RuntimeException $e) {
+                    $this->message = $e->getMessage();
+                    return false;
+                } catch (\Exception $e) {
+                    $this->message = $e->getMessage();
+                    return false;
+                }
         }
 
         return true;

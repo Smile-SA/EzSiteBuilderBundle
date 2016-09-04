@@ -13,6 +13,7 @@ use eZ\Publish\API\Repository\RoleService;
 use eZ\Publish\API\Repository\URLAliasService;
 use eZ\Publish\API\Repository\Values\User\Limitation;
 use eZ\Publish\API\Repository\Values\User\Role;
+use eZ\Publish\Core\FieldType\Checkbox\Value;
 use eZ\Publish\Core\Repository\Values\User\Policy;
 use eZ\Publish\Core\Repository\Values\User\PolicyDraft;
 use eZ\Publish\Core\Repository\Values\User\PolicyUpdateStruct;
@@ -146,6 +147,7 @@ class ModelService
             );
             $contentDefinition['parentLocationID'] = $modelsLocationID;
             $contentDefinition['fields']['title']['value'] = $modelName;
+            $contentDefinition['fields']['activated']['value'] = new Value(false);
             $contentAdded = $this->content->add($contentDefinition);
 
             $contentLocation = $this->locationService->loadLocation($contentAdded->contentInfo->mainLocationId);

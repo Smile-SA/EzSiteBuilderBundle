@@ -2,13 +2,21 @@
 
 namespace EdgarEz\SiteBuilderBundle\Controller;
 
+use EdgarEz\SiteBuilderBundle\Data\Mapper\ModelActivateMapper;
 use EdgarEz\SiteBuilderBundle\Data\Mapper\ModelMapper;
+use EdgarEz\SiteBuilderBundle\Data\Model\ModelActivateData;
 use EdgarEz\SiteBuilderBundle\Data\Model\ModelData;
 use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
+use EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\ModelActivateDispatcher;
 use EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\ModelDispatcher;
+use EdgarEz\SiteBuilderBundle\Form\Type\ModelActivateType;
 use EdgarEz\SiteBuilderBundle\Form\Type\ModelType;
 use EdgarEz\SiteBuilderBundle\Service\SecurityService;
 use EdgarEz\SiteBuilderBundle\Values\Content\Model;
+use EdgarEz\SiteBuilderBundle\Values\Content\ModelActivate;
+use eZ\Publish\API\Repository\SearchService;
+use eZ\Publish\API\Repository\Values\Content\Query;
+use eZ\Publish\API\Repository\Values\Content\Search\SearchResult;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -16,6 +24,9 @@ class ModelController extends BaseController
 {
     /** @var ModelDispatcher $actionDispatcher */
     protected $actionDispatcher;
+
+    /** @var ModelActivateDispatcher $activateActionDispatcher */
+    protected $activateActionDispatcher;
 
     /** @var ModelData $data */
     protected $data;
@@ -25,14 +36,21 @@ class ModelController extends BaseController
     /** @var SecurityService $securityService */
     protected $securityService;
 
+    /** @var SearchService $searchService */
+    protected $searchService;
+
     public function __construct(
         ModelDispatcher $actionDispatcher,
+        ModelActivateDispatcher $activateActionDispatcher,
         $tabItems,
-        SecurityService $securityService
+        SecurityService $securityService,
+    SearchService $searchService
     ) {
         $this->actionDispatcher = $actionDispatcher;
+        $this->activateActionDispatcher = $activateActionDispatcher;
         $this->tabItems = $tabItems;
         $this->securityService = $securityService;
+        $this->searchService = $searchService;
     }
 
     public function generateAction(Request $request)
@@ -42,7 +60,7 @@ class ModelController extends BaseController
             return $this->redirectAfterFormPost($actionUrl);
         }
 
-        $form = $this->getForm($request);
+        $form = $this->getForm();
         $form->handleRequest($request);
         if ($form->isValid()) {
             $this->dispatchFormAction($this->actionDispatcher, $form, $this->data, array(
@@ -70,7 +88,41 @@ class ModelController extends BaseController
         ]);
     }
 
-    protected function getForm(Request $request)
+    public function activateAction(Request $request)
+    {
+        $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
+        if (!$this->securityService->checkAuthorization('modelactivate')) {
+            return $this->redirectAfterFormPost($actionUrl);
+        }
+
+        $form = $this->getActivateForm();
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $this->dispatchFormAction($this->activateActionDispatcher, $form, $this->data, array(
+                'modelID' => $this->data->modelID
+            ));
+
+            if ($response = $this->activateActionDispatcher->getResponse()) {
+                return $response;
+            }
+
+            $this->initActivateTask($form);
+            return $this->redirectAfterFormPost($actionUrl);
+        }
+
+        $this->getErrors($form, 'edgarezsb_form_modelactivate');
+
+        $tabItems = $this->tabItems;
+        unset($tabItems[0]);
+        return $this->render('EdgarEzSiteBuilderBundle:sb:index.html.twig', [
+            'tab_items' => $tabItems,
+            'tab_item_selected' => 'modelactivate',
+            'params' => array(),
+            'hasErrors' => true
+        ]);
+    }
+
+    protected function getForm()
     {
         $model = new Model([
             'modelName' => 'Foo',
@@ -78,6 +130,16 @@ class ModelController extends BaseController
         $this->data = (new ModelMapper())->mapToFormData($model);
 
         return $this->createForm(new ModelType(), $this->data);
+    }
+
+    protected function getActivateForm($modelID = null)
+    {
+        $modelActivate = new ModelActivate([
+            'modelID' => $modelID,
+        ]);
+        $this->data = (new ModelActivateMapper())->mapToFormData($modelActivate);
+
+        return $this->createForm(new ModelActivateType($modelID), $this->data);
     }
 
     protected function initTask(Form $form)
@@ -90,6 +152,23 @@ class ModelController extends BaseController
             'command'    => 'generate',
             'parameters' => array(
                 'modelName' => $data->modelName
+            )
+        );
+
+        $task = new SiteBuilderTask();
+        $this->submitTask($task, $action);
+    }
+
+    protected function initActivateTask(Form $form)
+    {
+        /** @var ModelActivateData $data */
+        $data = $form->getData();
+
+        $action = array(
+            'service'    => 'model',
+            'command'    => 'activate',
+            'parameters' => array(
+                'modelID' => $data->modelID
             )
         );
 
@@ -111,5 +190,42 @@ class ModelController extends BaseController
         );
 
         $this->submitFuturTask($action);
+    }
+
+    public function listAction()
+    {
+        /** @var SearchResult $datas */
+        $datas = $this->getModels();
+
+        $models = array();
+        if ($datas->totalCount) {
+            foreach ($datas->searchHits as $data) {
+                $models[] = array(
+                    'data' => $data,
+                    'form' => $this->getActivateForm($data->valueObject->contentInfo->mainLocationId)->createView()
+                );
+            }
+        }
+
+        return $this->render('EdgarEzSiteBuilderBundle:sb:tab/model/list.html.twig', [
+            'totalCount' => $datas->totalCount,
+            'datas' => $models
+        ]);
+    }
+
+    protected function getModels()
+    {
+        $query = new Query();
+        $locationCriterion = new Query\Criterion\ParentLocationId(
+            $this->container->getParameter('edgarez_sb.project.default.models_location_id')
+        );
+        $contentTypeIdentifier = new Query\Criterion\ContentTypeIdentifier('edgar_ez_sb_model');
+        $activated = new Query\Criterion\Field('activated', Query\Criterion\Operator::EQ, false);
+
+        $query->filter = new Query\Criterion\LogicalAnd(
+            array($locationCriterion, $contentTypeIdentifier, $activated)
+        );
+
+        return $this->searchService->findContent($query);
     }
 }

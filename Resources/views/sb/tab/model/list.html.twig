@@ -1,0 +1,26 @@
+
+{% if totalCount == 0 %}
+    <tr class="ez-block-row">
+        <td class="ez-block-cell ez-block-cell-no-result" colspan="2">
+            {{ 'sb.model.nodata'|trans }}
+        </td>
+    </tr>
+{% else %}
+    {% for model in datas %}
+        <tr class="ez-block-row">
+            <td class="ez-block-cell">{{ ez_render_field(model.data.valueObject, 'title') }}</td>
+            <td class="ez-block-cell">
+                {{ form_start(model.form, {"action": path("edgarezsb_modelactivate_post", {}), "attr": {"class": "pure-form pure-form-aligned ez-confirm-action"}}) }}
+                {{ form_widget(model.form.modelID) }}
+                {{ form_widget(
+                model.form.modelactivate,
+                {
+                    "disabled": false,
+                    "attr": {"class": "pure-button ez-button ez-modelactivate-button ez-font-icon ez-button-modelactivate"}
+                }
+                ) }}
+                {{ form_end(model.form) }}
+            </td>
+        </tr>
+    {% endfor %}
+{% endif %}

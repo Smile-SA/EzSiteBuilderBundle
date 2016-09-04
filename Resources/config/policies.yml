@@ -3,5 +3,6 @@ sitebuilder:
     dashboard: ~
     customergenerate: ~
     modelgenerate: ~
+    modelactivate: ~
     sitegenerate: ~
 

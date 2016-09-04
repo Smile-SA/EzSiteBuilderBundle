@@ -10,3 +10,10 @@ fields:
         mainLanguage: eng-GB
         type: ezstring
         name: Title
+    activated:
+        identifier: activated
+        mainLanguage: eng-GB
+        type: ezboolean
+        name: Activated
+        isRequired: false
+

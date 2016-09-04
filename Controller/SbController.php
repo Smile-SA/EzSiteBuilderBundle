@@ -104,6 +104,10 @@ class SbController extends Controller
         return $params;
     }
 
+    protected function tabItemModelactivate($paramsTwig)
+    {
+    }
+
     protected function tabItemSitegenerate($paramsTwig)
     {
         if (isset($paramsTwig['sitegenerate'])) {

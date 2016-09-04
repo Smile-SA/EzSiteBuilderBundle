@@ -124,9 +124,10 @@ class SiteType extends AbstractType
         $query = new \eZ\Publish\API\Repository\Values\Content\Query();
         $locationCriterion = new Query\Criterion\ParentLocationId($this->contentRootModelsLocationID);
         $contentTypeIdentifier = new Query\Criterion\ContentTypeIdentifier('edgar_ez_sb_model');
+        $activated = new Query\Criterion\Field('activated', Query\Criterion\Operator::EQ, true);
 
         $query->filter = new Query\Criterion\LogicalAnd(
-            array($locationCriterion, $contentTypeIdentifier)
+            array($locationCriterion, $contentTypeIdentifier, $activated)
         );
 
         /** @var SearchResult $result */

@@ -4,4 +4,7 @@ fields:
     title:
         identifier: title
         value:
+    activated:
+        identifier: activated
+        value:
 

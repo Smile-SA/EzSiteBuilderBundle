@@ -24,6 +24,7 @@ parameters:
     edgar_ez_site_builder.action_dispatcher.install.class: EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\InstallDispatcher
     edgar_ez_site_builder.action_dispatcher.customer.class: EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\CustomerDispatcher
     edgar_ez_site_builder.action_dispatcher.model.class: EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\ModelDispatcher
+    edgar_ez_site_builder.action_dispatcher.modelactivate.class: EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\ModelActivateDispatcher
     edgar_ez_site_builder.action_dispatcher.site.class: EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\SiteDispatcher
 
     edgar_ez_site_builder.controller.sb.class: EdgarEz\SiteBuilderBundle\Controller\SbController
@@ -32,7 +33,7 @@ parameters:
     edgar_ez_site_builder.controller.sb.customer.class: EdgarEz\SiteBuilderBundle\Controller\CustomerController
     edgar_ez_site_builder.controller.sb.model.class: EdgarEz\SiteBuilderBundle\Controller\ModelController
     edgar_ez_site_builder.controller.sb.site.class: EdgarEz\SiteBuilderBundle\Controller\SiteController
-    edgar_ez_site_builder.tabs: [install, dashboard, customergenerate, modelgenerate, sitegenerate]
+    edgar_ez_site_builder.tabs: [install, dashboard, customergenerate, modelgenerate, modelactivate, sitegenerate]
 
     edgarezsb.security.service.class: EdgarEz\SiteBuilderBundle\Service\SecurityService
     edgarezsb.security.twig.extension.class: EdgarEz\SiteBuilderBundle\Twig\Extension\SecurityExtension
@@ -108,6 +109,8 @@ services:
             - @filesystem
             - @kernel
             - @edgar_ez_site_builder.model.service
+            - @ezpublish.api.service.location
+            - @ezpublish.api.service.content
             - %kernel.root_dir%
 
     edgar_ez_site_builder.site.task.service:
@@ -184,6 +187,10 @@ services:
         class: %edgar_ez_site_builder.action_dispatcher.model.class%
         parent: ezrepoforms.action_dispatcher.base
 
+    edgar_ez_site_builder.action_dispatcher.modelactivate:
+        class: %edgar_ez_site_builder.action_dispatcher.modelactivate.class%
+        parent: ezrepoforms.action_dispatcher.base
+
     edgar_ez_site_builder.action_dispatcher.site:
         class: %edgar_ez_site_builder.action_dispatcher.site.class%
         parent: ezrepoforms.action_dispatcher.base
@@ -222,8 +229,10 @@ services:
         class: %edgar_ez_site_builder.controller.sb.model.class%
         arguments:
             - @edgar_ez_site_builder.action_dispatcher.model
+            - @edgar_ez_site_builder.action_dispatcher.modelactivate
             - %edgar_ez_site_builder.tabs%
             - @edgarezsb.security.service
+            - @ezpublish.api.service.search
         parent: ezsystems.platformui.controller.base
 
     edgar_ez_site_builder.controller.sb.site:
