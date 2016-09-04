@@ -31,6 +31,9 @@ class ModelController extends BaseController
     /** @var ModelData $data */
     protected $data;
 
+    /** @var ModelActivateData $dataActivate */
+    protected $dataActivate;
+
     protected $tabItems;
 
     /** @var SecurityService $securityService */
@@ -98,8 +101,8 @@ class ModelController extends BaseController
         $form = $this->getActivateForm();
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $this->dispatchFormAction($this->activateActionDispatcher, $form, $this->data, array(
-                'modelID' => $this->data->modelID
+            $this->dispatchFormAction($this->activateActionDispatcher, $form, $this->dataActivate, array(
+                'modelID' => $this->dataActivate->modelID
             ));
 
             if ($response = $this->activateActionDispatcher->getResponse()) {
@@ -137,9 +140,9 @@ class ModelController extends BaseController
         $modelActivate = new ModelActivate([
             'modelID' => $modelID,
         ]);
-        $this->data = (new ModelActivateMapper())->mapToFormData($modelActivate);
+        $this->dataActivate = (new ModelActivateMapper())->mapToFormData($modelActivate);
 
-        return $this->createForm(new ModelActivateType($modelID), $this->data);
+        return $this->createForm(new ModelActivateType($modelID), $this->dataActivate);
     }
 
     protected function initTask(Form $form)

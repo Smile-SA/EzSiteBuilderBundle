@@ -269,6 +269,7 @@ class CustomerService
 
             $this->role->addPolicy($roleCreator->id, 'sitebuilder', 'dashboard');
             $this->role->addPolicy($roleCreator->id, 'sitebuilder', 'sitegenerate');
+            $this->role->addPolicy($roleCreator->id, 'sitebuilder', 'siteactivate');
 
             /** @var \eZ\Publish\API\Repository\Values\User\Role $roleEditor */
             $roleEditor = $this->role->add('SiteBuilder ' . $customerName . ' editor');

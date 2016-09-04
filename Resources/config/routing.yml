@@ -34,3 +34,9 @@ edgarezsb_site_post:
     defaults:
         _controller: edgar_ez_site_builder.controller.sb.site:generateAction
 
+edgarezsb_siteactivate_post:
+    path: /sb/tab/site/activate
+    methods: [POST]
+    defaults:
+        _controller: edgar_ez_site_builder.controller.sb.site:activateAction
+

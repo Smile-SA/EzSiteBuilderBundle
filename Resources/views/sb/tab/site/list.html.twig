@@ -1,0 +1,26 @@
+
+{% if totalCount == 0 %}
+    <tr class="ez-block-row">
+        <td class="ez-block-cell ez-block-cell-no-result" colspan="2">
+            {{ 'sb.site.nodata'|trans }}
+        </td>
+    </tr>
+{% else %}
+    {% for site in datas %}
+        <tr class="ez-block-row">
+            <td class="ez-block-cell">{{ ez_render_field(site.data.valueObject, 'title') }}</td>
+            <td class="ez-block-cell">
+                {{ form_start(site.form, {"action": path("edgarezsb_siteactivate_post", {}), "attr": {"class": "pure-form pure-form-aligned ez-confirm-action"}}) }}
+                {{ form_widget(site.form.siteID) }}
+                {{ form_widget(
+                site.form.siteactivate,
+                {
+                    "disabled": false,
+                    "attr": {"class": "pure-button ez-button ez-siteactivate-button ez-font-icon ez-button-siteactivate"}
+                }
+                ) }}
+                {{ form_end(site.form) }}
+            </td>
+        </tr>
+    {% endfor %}
+{% endif %}

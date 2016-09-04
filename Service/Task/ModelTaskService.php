@@ -186,6 +186,7 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
                     $this->message = $e->getMessage();
                     return false;
                 }
+                break;
         }
 
         return true;

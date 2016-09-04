@@ -7,10 +7,12 @@ use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\SiteGenerator;
 use EdgarEz\SiteBuilderBundle\Service\SiteService;
+use eZ\Publish\API\Repository\ContentService;
 use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\RoleService;
+use eZ\Publish\Core\FieldType\Checkbox\Value;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
@@ -32,6 +34,9 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
     /** @var LocationService $locationService */
     protected $locationService;
 
+    /** @var ContentService $contentService */
+    protected $contentService;
+
     /** @var string $kernelRootDir */
     protected $kernelRootDir;
 
@@ -39,6 +44,7 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
         Filesystem $filesystem,
         Kernel $kernel,
         LocationService $locationService,
+        ContentService $contentService,
         SiteService $siteService,
         RoleService $roleService,
         $kernelRootDir
@@ -46,6 +52,7 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
         $this->filesystem = $filesystem;
         $this->kernel = $kernel;
         $this->locationService = $locationService;
+        $this->contentService = $contentService;
         $this->siteService = $siteService;
         $this->roleService = $roleService;
         $this->kernelRootDir = $kernelRootDir;
@@ -72,6 +79,19 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
 
             $this->locationService->loadLocation($model[0]);
             $this->locationService->loadLocation($model[1]);
+        } catch (InvalidArgumentException $e) {
+            throw new \Exception($e->getMessage());
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
+    public function validateActivateParameters($parameters)
+    {
+        try {
+            Validators::validateLocationID($parameters['siteID']);
+
+            $this->locationService->loadLocation($parameters['siteID']);
         } catch (InvalidArgumentException $e) {
             throw new \Exception($e->getMessage());
         } catch (\Exception $e) {
@@ -174,6 +194,30 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                         $vendorName . '_' . $parameters['customerName'] . '_' . $parameters['siteName']
                     );
                     $this->siteService->addSiteaccessLimitation($roleCreator, $roleEditor, $siteaccessName);
+                } catch (\RuntimeException $e) {
+                    $this->message = $e->getMessage();
+                    return false;
+                } catch (\Exception $e) {
+                    $this->message = $e->getMessage();
+                    return false;
+                }
+                break;
+            case 'activate':
+                try {
+                    $this->validateActivateParameters($parameters);
+
+                    $site = $this->locationService->loadLocation($parameters['siteID']);
+
+                    $contentInfo = $site->getContentInfo();
+                    $contentDraft = $this->contentService->createContentDraft($contentInfo);
+                    $contentUpdateStruct = $this->contentService->newContentUpdateStruct();
+                    $contentUpdateStruct->initialLanguageCode = $contentInfo->mainLanguageCode;
+                    $contentUpdateStruct->setField('activated', new Value(true));
+                    $contentDraft = $this->contentService->updateContent(
+                        $contentDraft->versionInfo,
+                        $contentUpdateStruct
+                    );
+                    $this->contentService->publishVersion($contentDraft->versionInfo);
                 } catch (\RuntimeException $e) {
                     $this->message = $e->getMessage();
                     return false;

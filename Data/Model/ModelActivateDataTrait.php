@@ -14,7 +14,7 @@ trait ModelActivateDataTrait
     /**
      * @param ModelActivate $modelActivate
      */
-    public function setModel(ModelActivate $modelActivate)
+    public function setModelActivate(ModelActivate $modelActivate)
     {
         $this->modelActivate = $modelActivate;
     }
