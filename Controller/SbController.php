@@ -107,7 +107,7 @@ class SbController extends Controller
     protected function tabItemSitegenerate($paramsTwig)
     {
         if (isset($paramsTwig['sitegenerate'])) {
-            $params['sitegenerate'] = $paramsTwig['sitegenerate'];
+            $params['siteForm'] = $paramsTwig['sitegenerate'];
         } else {
             $customerName = $this->getCustomerName();
 
