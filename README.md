@@ -19,3 +19,20 @@ English : coming soon
 ## Screencast (in french)
 
 [![Screencast](/Resources/doc/images/screencast.png)](https://youtu.be/dh_zID7Lcss "Screencast")
+
+## Changelog
+
+### 1.0.6 -> 1.0.7
+
+* vendor/customer/model/site name can now have uppercase not only for first letter
+* fix site generate form
+* add model activate
+* add site activate
+
+if you upgrade from 1.0.6 to 1.0.7, add to 'edgar_ez_sb_model'
+content type new field :
+
+* type : ezboolean (checkbox)
+* name : activated
+* identifier : activated
+* not required
