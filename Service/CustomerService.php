@@ -263,6 +263,7 @@ class CustomerService
             $roleCreator = $this->role->add('SiteBuilder ' . $customerName . ' creator');
 
             $this->role->addPolicy($roleCreator->id, 'content', 'read');
+            $this->role->addPolicy($roleCreator->id, 'content', 'versionread');
             $this->role->addPolicy($roleCreator->id, 'content', 'create');
             $this->role->addPolicy($roleCreator->id, 'content', 'edit');
             $this->role->addPolicy($roleCreator->id, 'user', 'login');
