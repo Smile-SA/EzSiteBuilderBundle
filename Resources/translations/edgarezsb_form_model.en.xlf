@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2016-08-28T20:16:40Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2016-09-05T16:43:25Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
+      <trans-unit id="dedbcde441bc9bcb486069769d8dd6efd02e57b1" resname="form.model.modelid.label">
+        <source>form.model.modelid.label</source>
+        <target state="new">ID model</target>
+        <jms:reference-file line="37">/../src/EdgarEz/SiteBuilderBundle/Form/Type/ModelActivateType.php</jms:reference-file>
+      </trans-unit>
       <trans-unit id="dabe86e3a43680f12ac55d0d2ee781ba17441798" resname="form.model.modelname.label">
         <source>form.model.modelname.label</source>
         <target>Model name</target>
@@ -15,6 +20,11 @@
         <source>model.button</source>
         <target>Generate</target>
         <jms:reference-file line="34">/../src/EdgarEz/SiteBuilderBundle/Form/Type/ModelType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="12355f9d2943f6d05fc89b3d3e8e94ccf7402817" resname="modelactivate.button">
+        <source>modelactivate.button</source>
+        <target state="new">Activate</target>
+        <jms:reference-file line="41">/../src/EdgarEz/SiteBuilderBundle/Form/Type/ModelActivateType.php</jms:reference-file>
       </trans-unit>
     </body>
   </file>

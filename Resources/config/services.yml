@@ -121,9 +121,13 @@ services:
             - @kernel
             - @ezpublish.api.service.location
             - @ezpublish.api.service.content
+            - @ezpublish.api.service.user
+            - @edgar_ez_tools.role.service
             - @edgar_ez_site_builder.site.service
             - @ezpublish.api.service.role
             - %kernel.root_dir%
+        calls:
+            - [setAnonymousUserID, [$anonymous_user_id;ezsettings$]]
 
     edgar_ez_site_builder.mailer:
         class: %edgar_ez_site_builder.mailer.class%

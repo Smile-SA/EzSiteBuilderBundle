@@ -7,11 +7,14 @@ use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\SiteGenerator;
 use EdgarEz\SiteBuilderBundle\Service\SiteService;
+use EdgarEz\ToolsBundle\Service\Role;
 use eZ\Publish\API\Repository\ContentService;
 use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\RoleService;
+use eZ\Publish\API\Repository\UserService;
+use eZ\Publish\API\Repository\Values\User\Limitation;
 use eZ\Publish\Core\FieldType\Checkbox\Value;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Filesystem\Filesystem;
@@ -37,14 +40,25 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
     /** @var ContentService $contentService */
     protected $contentService;
 
+    /** @var UserService $userService */
+    protected $userService;
+
+    /** @var Role $role */
+    protected $role;
+
     /** @var string $kernelRootDir */
     protected $kernelRootDir;
+
+    /** @var int $anonymousUserID */
+    protected $anonymousUserID;
 
     public function __construct(
         Filesystem $filesystem,
         Kernel $kernel,
         LocationService $locationService,
         ContentService $contentService,
+        UserService $userService,
+        Role $role,
         SiteService $siteService,
         RoleService $roleService,
         $kernelRootDir
@@ -53,11 +67,18 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
         $this->kernel = $kernel;
         $this->locationService = $locationService;
         $this->contentService = $contentService;
+        $this->userService = $userService;
+        $this->role = $role;
         $this->siteService = $siteService;
         $this->roleService = $roleService;
         $this->kernelRootDir = $kernelRootDir;
 
         $this->message = false;
+    }
+
+    public function setAnonymousUserID($anonymousUserID)
+    {
+        $this->anonymousUserID = $anonymousUserID;
     }
 
     public function validateParameters($parameters)
@@ -204,9 +225,23 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                 break;
             case 'activate':
                 try {
+                    $adminID = $container->getParameter('edgar_ez_tools.adminid');
+                    /** @var Repository $repository */
+                    $repository = $container->get('ezpublish.api.repository');
+                    $repository->setCurrentUser($repository->getUserService()->loadUser($adminID));
+
                     $this->validateActivateParameters($parameters);
 
                     $site = $this->locationService->loadLocation($parameters['siteID']);
+                    $parent = $this->locationService->loadLocation($site->parentLocationId);
+
+                    $basename = ProjectGenerator::MAIN;
+                    $extensionAlias = 'edgarez_sb.' . strtolower($basename);
+                    $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
+
+                    $siteaccessName = strtolower(
+                        $vendorName . '_' . $parent->contentInfo->name . '_' . $site->contentInfo->name
+                    );
 
                     $contentInfo = $site->getContentInfo();
                     $contentDraft = $this->contentService->createContentDraft($contentInfo);
@@ -218,6 +253,31 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                         $contentUpdateStruct
                     );
                     $this->contentService->publishVersion($contentDraft->versionInfo);
+
+                    /**
+                     * update Anonymous user/login to add
+                     * new siteaccess available
+                     */
+                    $policies = $this->roleService->loadPoliciesByUserId($this->anonymousUserID);
+                    foreach ($policies as $policy) {
+                        if ($policy->module == 'user' && $policy->function == 'login') {
+                            $siteaccess = array();
+                            $limitations = $policy->getLimitations();
+                            foreach ($limitations as $limitation) {
+                                if ($limitation->getIdentifier() == Limitation::SITEACCESS) {
+                                    $siteaccessLogin = $limitation->limitationValues;
+                                    foreach ($siteaccessLogin as $s) {
+                                        if (!empty($s)) {
+                                            $siteaccess[] = $s;
+                                        }
+                                    }
+                                    $siteaccess[] = sprintf('%u', crc32($siteaccessName));
+                                }
+                            }
+                            $role = $this->roleService->loadRole($policy->roleId);
+                            $this->role->addSiteaccessLimitation($role, $siteaccess);
+                        }
+                    }
                 } catch (\RuntimeException $e) {
                     $this->message = $e->getMessage();
                     return false;
