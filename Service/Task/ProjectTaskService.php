@@ -156,14 +156,18 @@ class ProjectTaskService extends BaseTaskService implements TaskInterface
                     $this->userCreatorsLocationID = $returnValue['userCreatorsLocationID'];
                     $this->userEditorsLocationID = $returnValue['userEditorsLocationID'];
 
-                    $locationIDs = array(
-                        $parameters['contentLocationID'],
-                        $parameters['mediaLocationID'],
-                        $this->customersLocationID,
-                        $this->mediaCustomersLocationID,
-                        $this->modelsLocationID,
-                        $this->mediaModelsLocationID
+                    $contentLocation = $this->locationService->loadLocation($this->customersLocationID);
+                    $mediaLocation = $this->locationService->loadLocation($this->mediaCustomersLocationID);
+                    $userCreatorsLocation = $this->locationService->loadLocation($this->userCreatorsLocationID);
+                    $userEditorsLocation = $this->locationService->loadLocation($this->userEditorsLocationID);
+
+                    $locationIDs = array_merge(
+                        $contentLocation->path,
+                        $mediaLocation->path,
+                        $userCreatorsLocation->path,
+                        $userEditorsLocation->path
                     );
+                    $locationIDs = array_unique($locationIDs, SORT_NUMERIC);
                     $this->installService->createRole($this->userGroupParenttLocationID, $locationIDs);
 
                     $generator = new ProjectGenerator(

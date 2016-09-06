@@ -130,7 +130,6 @@ class InstallCommand extends BaseContainerAwareCommand
             $userCreatorsLocation = $locationService->loadLocation($this->userCreatorsLocationID);
             $userEditorsLocation = $locationService->loadLocation($this->userEditorsLocationID);
 
-            $locationIDs = array();
             $locationIDs = array_merge(
                 $contentLocation->path,
                 $mediaLocation->path,
