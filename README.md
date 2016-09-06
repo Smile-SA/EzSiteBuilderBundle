@@ -22,6 +22,18 @@ English : coming soon
 
 ## Changelog
 
+> During pre-release (1.0.x), you can't just update the bundle
+> Content architecture, Content Field Type, Roles and Policies will change
+> we will not provide update script until stable release
+
+### 1.0.7 -> 1.0.8
+
+* new user generate tab for customer creator users
+  * you can now create new creator/editor users for your customer
+* fix dashboard : adding logs column, label status
+* can't generate new site if no model exists (or activate)
+* check if user with same email exists when creating new customer and user
+
 ### 1.0.6 -> 1.0.7
 
 * vendor/customer/model/site name can now have uppercase not only for first letter
@@ -29,10 +41,3 @@ English : coming soon
 * add model activate
 * add site activate
 
-if you upgrade from 1.0.6 to 1.0.7, add to 'edgar_ez_sb_model'
-content type new field :
-
-* type : ezboolean (checkbox)
-* name : activated
-* identifier : activated
-* not required
