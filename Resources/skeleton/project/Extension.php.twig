@@ -50,7 +50,6 @@ class {{ bundle_basename }}Extension extends Extension implements PrependExtensi
         foreach ($ezConfigFiles as $ezConfigFile) {
             $config = Yaml::parse(file_get_contents($ezConfigFile));
             $container->prependExtensionConfig('ezpublish', $config);
-            $container->addResource(new FileResource($ezConfigFile));
         }
     }
 {% endblock class_body %}
