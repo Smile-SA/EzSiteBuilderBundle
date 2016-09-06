@@ -210,6 +210,7 @@ services:
         class: %edgar_ez_site_builder.controller.sb.class%
         arguments:
             - @ezpublish.api.service.location
+            - @ezpublish.api.service.search
             - %edgar_ez_site_builder.tabs%
         parent: ezsystems.platformui.controller.base
 
