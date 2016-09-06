@@ -17,9 +17,14 @@
                     {% endfor %}
                 </ul>
             </td>
-            <td class="ez-block-cell">{{ data.postedAt.date }}</td>
-            <td class="ez-block-cell">{% if data.executedAt %}{{ data.executedAt.date }}{% endif %}</td>
-            <td class="ez-block-cell">{{ data.status }}</td>
+            <td class="ez-block-cell">{{ data.postedAt.date|date("m/d/Y H:i") }}</td>
+            <td class="ez-block-cell">{% if data.executedAt %}{{ data.executedAt.date|date("m/d/Y H:i") }}{% endif %}</td>
+            <td class="ez-block-cell">{{ data.logs }}</td>
+            <td class="ez-block-cell">
+                {% transchoice data.status %}
+                    {0} Pending|{1} OK|{2} Error
+                {% endtranschoice %}
+            </td>
         </tr>
     {% endfor %}
 {% endif %}
