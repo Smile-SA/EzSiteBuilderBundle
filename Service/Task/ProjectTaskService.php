@@ -134,7 +134,7 @@ class ProjectTaskService extends BaseTaskService implements TaskInterface
      * @param array $parameters
      * @return bool
      */
-    public function execute($command, array $parameters, Container $container)
+    public function execute($command, array $parameters, Container $container, $userID)
     {
         switch ($command) {
             case 'install':

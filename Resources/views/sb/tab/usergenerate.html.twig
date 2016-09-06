@@ -1,0 +1,38 @@
+{% trans_default_domain "sitebuilder_user" %}
+
+{{ form_start(params.userForm, {"action": path("edgarezsb_user_post", {}), "attr": {"class": "pure-form pure-form-aligned ez-confirm-action"}}) }}
+
+<fieldset>
+    <div class="pure-control-group">
+        <label for="{{ params.userForm.userType.vars.id }}">{{ form_label(params.userForm.userType) }}</label>
+        {{ form_widget(params.userForm.userType) }}
+        {{ form_errors(params.userForm.userType) }}
+    </div>
+    <div class="pure-control-group">
+        <label for="{{ params.userForm.userFirstName.vars.id }}">{{ form_label(params.userForm.userFirstName) }}</label>
+        {{ form_widget(params.userForm.userFirstName) }}
+        {{ form_errors(params.userForm.userFirstName) }}
+    </div>
+    <div class="pure-control-group">
+        <label for="{{ params.userForm.userLastName.vars.id }}">{{ form_label(params.userForm.userLastName) }}</label>
+        {{ form_widget(params.userForm.userLastName) }}
+        {{ form_errors(params.userForm.userLastName) }}
+    </div>
+    <div class="pure-control-group">
+        <label for="{{ params.userForm.userEmail.vars.id }}">{{ form_label(params.userForm.userEmail) }}</label>
+        {{ form_widget(params.userForm.userEmail) }}
+        {{ form_errors(params.userForm.userEmail) }}
+    </div>
+</fieldset>
+
+<div class="pure-controls">
+    {{ form_widget(
+    params.userForm.user,
+    {
+        "disabled": false,
+        "attr": {"class": "pure-button ez-button ez-user-button ez-font-icon ez-button-user"}
+    }
+    ) }}
+</div>
+
+{{ form_end(params.userForm) }}

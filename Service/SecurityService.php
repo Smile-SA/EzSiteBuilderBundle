@@ -40,7 +40,10 @@ class SecurityService
          * Users with policies module *, function * will not have access
          * to functions sitegenerate from sitebuilder module.
          */
-        if ($func == 'sitegenerate' || $func == 'siteactivate') {
+        if ($func == 'sitegenerate' ||
+            $func == 'siteactivate' ||
+            $func == 'usergenerate'
+        ) {
             /** @var User $user */
             $user = $this->tokenStorage->getToken()->getUser();
             /** @var Policy[] $policies */

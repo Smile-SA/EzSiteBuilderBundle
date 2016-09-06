@@ -40,3 +40,9 @@ edgarezsb_siteactivate_post:
     defaults:
         _controller: edgar_ez_site_builder.controller.sb.site:activateAction
 
+edgarezsb_user_post:
+    path: /sb/tab/user
+    methods: [POST]
+    defaults:
+        _controller: edgar_ez_site_builder.controller.sb.user:generateAction
+

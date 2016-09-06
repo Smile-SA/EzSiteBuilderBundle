@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2016-09-05T16:43:38Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2016-09-06T17:26:52Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
+      <trans-unit id="3209745f73f5bd05f78c821975d1ed393384f575" resname="sb.model.th.activation">
+        <source>sb.model.th.activation</source>
+        <target state="new">Activation</target>
+        <jms:reference-file line="9">/../src/EdgarEz/SiteBuilderBundle/Resources/views/sb/tab/modelactivate.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="79a74ba17504c573974defa6e0bd235b05195224" resname="sb.model.th.modelname">
         <source>sb.model.th.modelname</source>
-        <target state="new">Nom modèle</target>
+        <target>Nom modèle</target>
         <jms:reference-file line="8">/../src/EdgarEz/SiteBuilderBundle/Resources/views/sb/tab/modelactivate.html.twig</jms:reference-file>
       </trans-unit>
     </body>

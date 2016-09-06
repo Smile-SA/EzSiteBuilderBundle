@@ -6,6 +6,7 @@ use EdgarEz\SiteBuilderBundle\Form\Type\CustomerType;
 use EdgarEz\SiteBuilderBundle\Form\Type\InstallType;
 use EdgarEz\SiteBuilderBundle\Form\Type\ModelType;
 use EdgarEz\SiteBuilderBundle\Form\Type\SiteType;
+use EdgarEz\SiteBuilderBundle\Form\Type\UserType;
 use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use eZ\Publish\API\Repository\LocationService;
@@ -158,6 +159,20 @@ class SbController extends Controller
     protected function tabItemSiteactivate($paramsTwig)
     {
         return array();
+    }
+
+    protected function tabItemUsergenerate($paramsTwig)
+    {
+        if (isset($paramsTwig['usergenerate'])) {
+            $params['userForm'] = $paramsTwig['usergenerate'];
+            return $params;
+        }
+
+        $params['userForm'] = $this->createForm(
+            new UserType()
+        )->createView();
+
+        return $params;
     }
 
     protected function getCustomerName()

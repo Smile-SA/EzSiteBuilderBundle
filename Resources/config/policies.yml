@@ -5,4 +5,5 @@ sitebuilder:
     modelgenerate: ~
     modelactivate: ~
     sitegenerate: ~
+    usergenerate: ~
 

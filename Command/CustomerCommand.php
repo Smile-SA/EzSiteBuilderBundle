@@ -252,6 +252,9 @@ class CustomerCommand extends BaseContainerAwareCommand
 
         $this->userLastName = $userLastName;
 
+        /** @var CustomerService $customerService */
+        $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
+
         $userEmail = false;
         $question = new Question($questionHelper->getQuestion('User email', null));
         $question->setValidator(
@@ -263,6 +266,10 @@ class CustomerCommand extends BaseContainerAwareCommand
 
         while (!$userEmail) {
             $userEmail = $questionHelper->ask($input, $output, $question);
+            if ($customerService->emailExists($userEmail)) {
+                $output->writeln('<error>User email already exist for another user</error>');
+                $userEmail = false;
+            }
         }
 
         $this->userEmail = $userEmail;
@@ -281,7 +288,7 @@ class CustomerCommand extends BaseContainerAwareCommand
         $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
         $output->writeln('User creator initialized');
 
-        $userPassword = $customerService->initializeUserCreator(
+        $userPassword = $customerService->initializeUser(
             $this->userFirstName,
             $this->userLastName,
             $this->userEmail,

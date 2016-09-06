@@ -57,12 +57,18 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
             Validators::validateFirstName($parameters['userFirstName']);
             Validators::validateLastName($parameters['userLastName']);
             Validators::validateEmail($parameters['userEmail']);
+
+            if ($this->customerService->emailExists($parameters['userEmail'])) {
+                throw new \eZ\Publish\Core\Base\Exceptions\InvalidArgumentException(
+                    'email', 'User with same email already exists'
+                );
+            }
         } catch (InvalidArgumentException $e) {
             throw new \Exception($e->getMessage());
         }
     }
 
-    public function execute($command, array $parameters, Container $container)
+    public function execute($command, array $parameters, Container $container, $userID)
     {
         switch ($command) {
             case 'generate':
@@ -133,7 +139,7 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
                     $customerRoleEditorID = $returnValue['customerRoleEditorID'];
 
                     // Generate first user creator
-                    $userPassword = $this->customerService->initializeUserCreator(
+                    $userPassword = $this->customerService->initializeUser(
                         $parameters['userFirstName'],
                         $parameters['userLastName'],
                         $parameters['userEmail'],

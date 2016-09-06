@@ -124,13 +124,20 @@ class InstallCommand extends BaseContainerAwareCommand
             $this->userCreatorsLocationID = $returnValue['userCreatorsLocationID'];
             $this->userEditorsLocationID = $returnValue['userEditorsLocationID'];
 
-            $locationIDs = array(
-                $this->rootContentLocationID, $this->rootMediaLocationID,
-                $this->customersLocationID, $this->mediaCustomersLocationID,
-                $this->modelsLocationID, $this->mediaModelsLocationID,
-                $userGroupLocationID, $this->userGroupParenttLocationID,
-                $this->userCreatorsLocationID, $this->userEditorsLocationID
+            $locationService = $repository->getLocationService();
+            $contentLocation = $locationService->loadLocation($this->customersLocationID);
+            $mediaLocation = $locationService->loadLocation($this->mediaCustomersLocationID);
+            $userCreatorsLocation = $locationService->loadLocation($this->userCreatorsLocationID);
+            $userEditorsLocation = $locationService->loadLocation($this->userEditorsLocationID);
+
+            $locationIDs = array();
+            $locationIDs = array_merge(
+                $contentLocation->path,
+                $mediaLocation->path,
+                $userCreatorsLocation->path,
+                $userEditorsLocation->path
             );
+            $locationIDs = array_unique($locationIDs, SORT_NUMERIC);
             $installService->createRole($this->userGroupParenttLocationID, $locationIDs);
 
             /** @var ProjectGenerator $generator */

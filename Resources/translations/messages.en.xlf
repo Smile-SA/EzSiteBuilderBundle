@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2016-09-05T16:43:25Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2016-09-06T17:26:36Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
+      <trans-unit id="61dbe05c6a18bf34aa80422b7392ac886230a159" resname="                    {0} Pending|{1} OK|{2} Error&#10;                ">
+        <source xml:space="preserve">                    {0} Pending|{1} OK|{2} Error
+                </source>
+        <target xml:space="preserve" state="new">                    {0} Pending|{1} OK|{2} Error
+                </target>
+        <jms:reference-file line="24">/../src/EdgarEz/SiteBuilderBundle/Resources/views/sb/tab/dashboard/list.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="07ec12f4689ee90ade282338b25b99b9677b0d08" resname="form.validation_error">
         <source>form.validation_error</source>
         <target>Validation error</target>
@@ -18,12 +25,12 @@
       </trans-unit>
       <trans-unit id="5c8382c3f7747604f9f6689b9bf7ce5d49facbd4" resname="sb.model.nodata">
         <source>sb.model.nodata</source>
-        <target state="new">No data</target>
+        <target>No data</target>
         <jms:reference-file line="5">/../src/EdgarEz/SiteBuilderBundle/Resources/views/sb/tab/model/list.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5b679c6431905ef16a2f29dd4ede7528e3e1ff9e" resname="sb.site.nodata">
         <source>sb.site.nodata</source>
-        <target state="new">No data</target>
+        <target>No data</target>
         <jms:reference-file line="5">/../src/EdgarEz/SiteBuilderBundle/Resources/views/sb/tab/site/list.html.twig</jms:reference-file>
       </trans-unit>
     </body>

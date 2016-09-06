@@ -71,7 +71,7 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
         }
     }
 
-    public function execute($command, array $parameters, Container $container)
+    public function execute($command, array $parameters, Container $container, $userID)
     {
         switch ($command) {
             case 'generate':

@@ -8,6 +8,7 @@ parameters:
     edgar_ez_site_builder.customer.task.service.class: EdgarEz\SiteBuilderBundle\Service\Task\CustomerTaskService
     edgar_ez_site_builder.model.task.service.class: EdgarEz\SiteBuilderBundle\Service\Task\ModelTaskService
     edgar_ez_site_builder.site.task.service.class: EdgarEz\SiteBuilderBundle\Service\Task\SiteTaskService
+    edgar_ez_site_builder.user.task.service.class: EdgarEz\SiteBuilderBundle\Service\Task\UserTaskService
 
     edgar_ez_site_builder.mailer.class: EdgarEz\SiteBuilderBundle\Mail\Sender
 
@@ -27,6 +28,7 @@ parameters:
     edgar_ez_site_builder.action_dispatcher.modelactivate.class: EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\ModelActivateDispatcher
     edgar_ez_site_builder.action_dispatcher.site.class: EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\SiteDispatcher
     edgar_ez_site_builder.action_dispatcher.siteactivate.class: EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\SiteActivateDispatcher
+    edgar_ez_site_builder.action_dispatcher.user.class: EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\UserDispatcher
 
     edgar_ez_site_builder.controller.sb.class: EdgarEz\SiteBuilderBundle\Controller\SbController
     edgar_ez_site_builder.controller.sb.install.class: EdgarEz\SiteBuilderBundle\Controller\InstallController
@@ -34,7 +36,8 @@ parameters:
     edgar_ez_site_builder.controller.sb.customer.class: EdgarEz\SiteBuilderBundle\Controller\CustomerController
     edgar_ez_site_builder.controller.sb.model.class: EdgarEz\SiteBuilderBundle\Controller\ModelController
     edgar_ez_site_builder.controller.sb.site.class: EdgarEz\SiteBuilderBundle\Controller\SiteController
-    edgar_ez_site_builder.tabs: [install, dashboard, customergenerate, modelgenerate, modelactivate, sitegenerate, siteactivate]
+    edgar_ez_site_builder.controller.sb.user.class: EdgarEz\SiteBuilderBundle\Controller\UserController
+    edgar_ez_site_builder.tabs: [install, dashboard, customergenerate, modelgenerate, modelactivate, sitegenerate, siteactivate, usergenerate]
 
     edgarezsb.security.service.class: EdgarEz\SiteBuilderBundle\Service\SecurityService
     edgarezsb.security.twig.extension.class: EdgarEz\SiteBuilderBundle\Twig\Extension\SecurityExtension
@@ -129,6 +132,15 @@ services:
         calls:
             - [setAnonymousUserID, [$anonymous_user_id;ezsettings$]]
 
+    edgar_ez_site_builder.user.task.service:
+        class: %edgar_ez_site_builder.user.task.service.class%
+        arguments:
+            - @edgar_ez_site_builder.customer.service
+            - @ezpublish.api.service.user
+            - @ezpublish.api.service.location
+            - @edgar_ez_site_builder.mailer
+            - %edgar_ez_site_builder.sysadminemail%
+
     edgar_ez_site_builder.mailer:
         class: %edgar_ez_site_builder.mailer.class%
         arguments:
@@ -205,6 +217,10 @@ services:
         class: %edgar_ez_site_builder.action_dispatcher.siteactivate.class%
         parent: ezrepoforms.action_dispatcher.base
 
+    edgar_ez_site_builder.action_dispatcher.user:
+        class: %edgar_ez_site_builder.action_dispatcher.user.class%
+        parent: ezrepoforms.action_dispatcher.base
+
     # controllers
     edgar_ez_site_builder.controller.sb:
         class: %edgar_ez_site_builder.controller.sb.class%
@@ -253,6 +269,14 @@ services:
             - @ezpublish.api.service.search
             - @edgar_ez_site_builder.action_dispatcher.site
             - @edgar_ez_site_builder.action_dispatcher.siteactivate
+            - %edgar_ez_site_builder.tabs%
+            - @edgarezsb.security.service
+        parent: ezsystems.platformui.controller.base
+
+    edgar_ez_site_builder.controller.sb.user:
+        class: %edgar_ez_site_builder.controller.sb.user.class%
+        arguments:
+            - @edgar_ez_site_builder.action_dispatcher.user
             - %edgar_ez_site_builder.tabs%
             - @edgarezsb.security.service
         parent: ezsystems.platformui.controller.base

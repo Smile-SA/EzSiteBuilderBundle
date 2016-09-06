@@ -78,7 +78,12 @@ class TaskCommand extends ContainerAwareCommand
                 }
 
                 $task->setExecutedAt(new \DateTime());
-                if (!$taskService->execute($action['command'], $action['parameters'], $this->getContainer())) {
+                if (!$taskService->execute(
+                    $action['command'],
+                    $action['parameters'],
+                    $this->getContainer(),
+                    $task->getUserID()
+                )) {
                     $task->setStatus(self::STATUS_FAIL);
                 } else {
                     $task->setStatus(self::STATUS_OK);

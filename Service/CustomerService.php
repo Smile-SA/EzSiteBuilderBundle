@@ -94,7 +94,7 @@ class CustomerService
      * @param int $customerUserCreatorsGroupLocationID group location ID
      * @return string
      */
-    public function initializeUserCreator(
+    public function initializeUser(
         $userFirstName,
         $userLastName,
         $userEmail,
@@ -102,7 +102,6 @@ class CustomerService
     ) {
         $userLogin = $userEmail;
         $userPassword = substr(str_shuffle(strtolower(sha1(rand() . time() . $userLogin))), 0, 8);
-        ;
 
         try {
             $contentType = $this->contentTypeService->loadContentTypeByIdentifier('edgar_ez_sb_user');
@@ -271,11 +270,13 @@ class CustomerService
             $this->role->addPolicy($roleCreator->id, 'sitebuilder', 'dashboard');
             $this->role->addPolicy($roleCreator->id, 'sitebuilder', 'sitegenerate');
             $this->role->addPolicy($roleCreator->id, 'sitebuilder', 'siteactivate');
+            $this->role->addPolicy($roleCreator->id, 'sitebuilder', 'usergenerate');
 
             /** @var \eZ\Publish\API\Repository\Values\User\Role $roleEditor */
             $roleEditor = $this->role->add('SiteBuilder ' . $customerName . ' editor');
 
             $this->role->addPolicy($roleEditor->id, 'content', 'read');
+            $this->role->addPolicy($roleCreator->id, 'content', 'versionread');
             $this->role->addPolicy($roleEditor->id, 'content', 'create');
             $this->role->addPolicy($roleEditor->id, 'content', 'edit');
             $this->role->addPolicy($roleEditor->id, 'user', 'login');
@@ -409,5 +410,19 @@ class CustomerService
     public function exists($customerName, $vendorName, $dir)
     {
         return file_exists($dir . '/' . $vendorName . '/' . ProjectGenerator::CUSTOMERS . '/' . $customerName);
+    }
+
+    public function emailExists($email)
+    {
+        try {
+            $user = $this->userService->loadUsersByEmail($email);
+            if (!$user) {
+                return false;
+            }
+        } catch(\Exception $e) {
+            return false;
+        }
+
+        return true;
     }
 }
