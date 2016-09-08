@@ -93,16 +93,28 @@ class CustomerCommand extends BaseContainerAwareCommand
         try {
             $basename = ProjectGenerator::MAIN;
 
+            $languageCode = $this->getContainer()->getParameter(
+                'edgarez_sb.' . strtolower($basename) . '.default.language_code'
+            );
+
             $parentLocationID = $this->getContainer()->getParameter(
                 'edgarez_sb.' . strtolower($basename) . '.default.customers_location_id'
             );
-            $returnValue = $customerService->createContentStructure($parentLocationID, $this->customerName);
+            $returnValue = $customerService->createContentStructure(
+                $parentLocationID,
+                $this->customerName,
+                $languageCode
+            );
             $this->customerLocationID = $returnValue['customerLocationID'];
 
             $parentLocationID = $this->getContainer()->getParameter(
                 'edgarez_sb.' . strtolower($basename) . '.default.media_customers_location_id'
             );
-            $returnValue = $customerService->createMediaContentStructure($parentLocationID, $this->customerName);
+            $returnValue = $customerService->createMediaContentStructure(
+                $parentLocationID,
+                $this->customerName,
+                $languageCode
+            );
             $this->mediaCustomerLocationID = $returnValue['mediaCustomerLocationID'];
 
             $parentCreatorLocationID = $this->getContainer()->getParameter(
@@ -114,7 +126,8 @@ class CustomerCommand extends BaseContainerAwareCommand
             $returnValue = $customerService->createUserGroups(
                 $parentCreatorLocationID,
                 $parentEditorLocationID,
-                $this->customerName
+                $this->customerName,
+                $languageCode
             );
             $this->customerUserCreatorsGroupLocationID = $returnValue['customerUserCreatorsGroupLocationID'];
             $this->customerUserEditorsGroupLocationID = $returnValue['customerUserEditorsGroupLocationID'];
@@ -134,7 +147,7 @@ class CustomerCommand extends BaseContainerAwareCommand
                 $this->customerUserEditorsGroupLocationID
             );
 
-            $this->initializeUserCreator($output);
+            $this->initializeUserCreator($output, $languageCode);
 
             /** @var CustomerGenerator $generator */
             $generator = $this->getGenerator();
@@ -280,7 +293,7 @@ class CustomerCommand extends BaseContainerAwareCommand
      *
      * @param OutputInterface $output output console
      */
-    protected function initializeUserCreator(OutputInterface $output)
+    protected function initializeUserCreator(OutputInterface $output, $languageCode)
     {
         $questionHelper = $this->getQuestionHelper();
 
@@ -289,6 +302,7 @@ class CustomerCommand extends BaseContainerAwareCommand
         $output->writeln('User creator initialized');
 
         $userPassword = $customerService->initializeUser(
+            $languageCode,
             $this->userFirstName,
             $this->userLastName,
             $this->userEmail,

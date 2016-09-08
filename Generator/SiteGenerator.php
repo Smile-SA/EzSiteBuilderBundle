@@ -51,6 +51,7 @@ class SiteGenerator extends Generator
      * @param string $targetDir bundle target dir
      */
     public function generate(
+        $languageCode,
         $siteLocationID,
         $mediaSiteLocationID,
         $vendorName,
@@ -107,6 +108,7 @@ class SiteGenerator extends Generator
             'customer_name' => $customerName,
             'model_name' => $modelName,
             'site_name' => $siteName,
+            'languageCode' => $languageCode,
             'siteLocationID' => $siteLocationID,
             'mediaSiteLocationID' => $mediaSiteLocationID,
             'parent_model_bundle' => $vendorName . ProjectGenerator::MODELS . $modelName,

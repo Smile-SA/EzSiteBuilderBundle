@@ -23,8 +23,17 @@ English : coming soon
 ## Changelog
 
 > During pre-release (1.0.x), you can't just update the bundle
+>
 > Content architecture, Content Field Type, Roles and Policies will change
+>
 > we will not provide update script until stable release
+
+### 1.0.8 -> 1.0.9
+
+* you can now chosse your language when installing sitebuilder
+  * this language will be default language for all operations : model, customer, user generation ...
+  * beware of using another language than eng-GB : you should enable this language for 'site_group' and translate all content/media/user groups
+* add command cache:clear after generating new siteaccess : new siteaccess is now available for policy user/login manipulation
 
 ### 1.0.7 -> 1.0.8
 

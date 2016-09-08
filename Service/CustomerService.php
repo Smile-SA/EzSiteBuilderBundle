@@ -95,6 +95,7 @@ class CustomerService
      * @return string
      */
     public function initializeUser(
+        $languageCode,
         $userFirstName,
         $userLastName,
         $userEmail,
@@ -109,7 +110,7 @@ class CustomerService
                 $userLogin,
                 $userEmail,
                 $userPassword,
-                'eng-GB',
+                $languageCode,
                 $contentType
             );
             $userCreateStruct->setField('first_name', $userFirstName);
@@ -141,7 +142,7 @@ class CustomerService
      * @param string $name customer name
      * @return array customer content root location ID
      */
-    public function createContentStructure($parentLocationID, $name)
+    public function createContentStructure($parentLocationID, $name, $languageCode)
     {
         try {
             $contentDefinition = Yaml::parse(
@@ -151,6 +152,7 @@ class CustomerService
             );
             $contentDefinition['parentLocationID'] = $parentLocationID;
             $contentDefinition['fields']['title']['value'] = $name;
+            $contentDefinition['languageCode'] = $languageCode;
             $contentAdded = $this->content->add($contentDefinition);
 
             return array(
@@ -170,7 +172,7 @@ class CustomerService
      * @param string $name customer name
      * @return array customer media root location ID
      */
-    public function createMediaContentStructure($parentLocationID, $name)
+    public function createMediaContentStructure($parentLocationID, $name, $languageCode)
     {
         try {
             $contentDefinition = Yaml::parse(
@@ -180,6 +182,7 @@ class CustomerService
             );
             $contentDefinition['parentLocationID'] = $parentLocationID;
             $contentDefinition['fields']['title']['value'] = $name;
+            $contentDefinition['languageCode'] = $languageCode;
             $contentAdded = $this->content->add($contentDefinition);
 
             return array(
@@ -200,7 +203,7 @@ class CustomerService
      * @param string $name customer name
      * @return array customer users root location IDs
      */
-    public function createUserGroups($parentCreatorLocationID, $parentEditorLocationID, $name)
+    public function createUserGroups($parentCreatorLocationID, $parentEditorLocationID, $name, $languageCode)
     {
         $contents = array();
 
@@ -214,6 +217,7 @@ class CustomerService
             );
             $userGroupDefinition['parentLocationID'] = $parentCreatorLocationID;
             $userGroupDefinition['fields']['name']['value'] = $name;
+            $userGroupDefinition['languageCode'] = $languageCode;
             $contents['customerUserCreatorsGroup'] = $this->content->add($userGroupDefinition);
 
             $userGroupDefinition = Yaml::parse(
@@ -225,6 +229,7 @@ class CustomerService
             );
             $userGroupDefinition['parentLocationID'] = $parentEditorLocationID;
             $userGroupDefinition['fields']['name']['value'] = $name;
+            $userGroupDefinition['languageCode'] = $languageCode;
             $contents['customerUserEditorsGroup'] = $this->content->add($userGroupDefinition);
 
             return array(

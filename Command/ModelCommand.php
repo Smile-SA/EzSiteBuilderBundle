@@ -73,17 +73,25 @@ class ModelCommand extends BaseContainerAwareCommand
         try {
             $basename = ProjectGenerator::MAIN ;
 
+            $languageCode = $this->getContainer()->getParameter(
+                'edgarez_sb.' . strtolower($basename) . '.default.language_code'
+            );
+
             $modelsLocationID = $this->getContainer()->getParameter(
                 'edgarez_sb.' . strtolower($basename) . '.default.models_location_id'
             );
-            $returnValue = $modelService->createModelContent($modelsLocationID, $this->modelName);
+            $returnValue = $modelService->createModelContent($modelsLocationID, $this->modelName, $languageCode);
             $this->excludeUriPrefixes = $returnValue['excludeUriPrefixes'];
             $this->modelLocationID = $returnValue['modelLocationID'];
 
             $mediaModelsLocationID = $this->getContainer()->getParameter(
                 'edgarez_sb.' . strtolower($basename) . '.default.media_models_location_id'
             );
-            $returnValue = $modelService->createMediaModelContent($mediaModelsLocationID, $this->modelName);
+            $returnValue = $modelService->createMediaModelContent(
+                $mediaModelsLocationID,
+                $this->modelName,
+                $languageCode
+            );
             $this->mediaModelLocationID = $returnValue['mediaModelLocationID'];
 
 
@@ -92,6 +100,7 @@ class ModelCommand extends BaseContainerAwareCommand
             /** @var ModelGenerator $generator */
             $generator = $this->getGenerator();
             $generator->generate(
+                $languageCode,
                 $this->vendorName,
                 $this->modelName,
                 $this->modelLocationID,

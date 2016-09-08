@@ -163,11 +163,16 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                     );
                     $mediaSiteLocationID = $returnValue['mediaSiteLocationID'];
 
+                    $languageCode = $container->getParameter(
+                        'edgarez_sb.' . strtolower(ProjectGenerator::MAIN) . '.default.language_code'
+                    );
+
                     $generator = new SiteGenerator(
                         $this->filesystem,
                         $this->kernel
                     );
                     $generator->generate(
+                        $languageCode,
                         $siteLocationID,
                         $mediaSiteLocationID,
                         $vendorName,

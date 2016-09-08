@@ -143,15 +143,24 @@ class ProjectTaskService extends BaseTaskService implements TaskInterface
 
                     $this->installService->createContentTypeGroup();
 
-                    $returnValue = $this->installService->createContentStructure($parameters['contentLocationID']);
+                    $returnValue = $this->installService->createContentStructure(
+                        $parameters['contentLocationID'],
+                        $parameters['languageCode']
+                    );
                     $this->modelsLocationID = $returnValue['modelsLocationID'];
                     $this->customersLocationID = $returnValue['customersLocationID'];
 
-                    $returnValue = $this->installService->createMediaContentStructure($parameters['mediaLocationID']);
+                    $returnValue = $this->installService->createMediaContentStructure(
+                        $parameters['mediaLocationID'],
+                        $parameters['languageCode']
+                    );
                     $this->mediaModelsLocationID = $returnValue['mediaModelsLocationID'];
                     $this->mediaCustomersLocationID = $returnValue['mediaCustomersLocationID'];
 
-                    $returnValue = $this->installService->createUserStructure($parameters['userLocationID']);
+                    $returnValue = $this->installService->createUserStructure(
+                        $parameters['userLocationID'],
+                        $parameters['languageCode']
+                    );
                     $this->userGroupParenttLocationID = $returnValue['userGroupParenttLocationID'];
                     $this->userCreatorsLocationID = $returnValue['userCreatorsLocationID'];
                     $this->userEditorsLocationID = $returnValue['userEditorsLocationID'];
@@ -175,6 +184,7 @@ class ProjectTaskService extends BaseTaskService implements TaskInterface
                         $this->kernel
                     );
                     $generator->generate(
+                        $parameters['languageCode'],
                         $this->modelsLocationID,
                         $this->customersLocationID,
                         $this->mediaModelsLocationID,

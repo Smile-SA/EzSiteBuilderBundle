@@ -53,6 +53,7 @@ class ProjectGenerator extends Generator
      * @param string $targetDir bundle target dir
      */
     public function generate(
+        $languageCode,
         $modelsLocationID,
         $customersLocationID,
         $mediaModelsLocationID,
@@ -103,6 +104,7 @@ class ProjectGenerator extends Generator
             'settings' => array(
                 'vendor_name' => $vendorName,
                 'dir' => $targetDir,
+                'languageCode' => $languageCode,
                 'modelsLocationID' => $modelsLocationID,
                 'customersLocationID' => $customersLocationID,
                 'mediaModelsLocationID' => $mediaModelsLocationID,

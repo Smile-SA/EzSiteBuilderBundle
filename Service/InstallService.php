@@ -11,6 +11,7 @@ use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
 use eZ\Publish\API\Repository\Exceptions\LimitationValidationException;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
+use eZ\Publish\API\Repository\LanguageService;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\RoleService;
 use eZ\Publish\API\Repository\UserService;
@@ -18,7 +19,6 @@ use eZ\Publish\API\Repository\Values\User\Limitation\LocationLimitation;
 use eZ\Publish\Core\Repository\Values\User\Policy;
 use eZ\Publish\Core\Repository\Values\User\PolicyDraft;
 use eZ\Publish\Core\Repository\Values\User\PolicyUpdateStruct;
-use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
@@ -50,6 +50,9 @@ class InstallService
     /** @var UserService $userService User Service */
     private $userService;
 
+    /** @var LanguageService $languageService */
+    private $languageService;
+
     /** @var ContentType $contentType EdgarEz ContentType Service */
     private $contentType;
 
@@ -78,6 +81,7 @@ class InstallService
         RoleService $roleService,
         LocationService $locationService,
         UserService $userService,
+        LanguageService $languageService,
         ContentTypeGroup $contentTypeGroup,
         ContentType $contentType,
         Content $content,
@@ -88,6 +92,7 @@ class InstallService
         $this->roleService = $roleService;
         $this->locationService = $locationService;
         $this->userService = $userService;
+        $this->languageService = $languageService;
 
         $this->contentTypeGroup = $contentTypeGroup;
         $this->contentType = $contentType;
@@ -115,7 +120,8 @@ class InstallService
      * @return array
      */
     public function createContentTypes(
-        \eZ\Publish\API\Repository\Values\ContentType\ContentTypeGroup $contentTypeGroup
+        \eZ\Publish\API\Repository\Values\ContentType\ContentTypeGroup $contentTypeGroup,
+        $languageCode
     ) {
         $contentTypes = array();
         $identifiers = array('customer', 'customersroot', 'model', 'modelsroot', 'user');
@@ -127,6 +133,7 @@ class InstallService
                 );
                 $contentTypeDefinition = Yaml::parse(file_get_contents($contentTypeDefinition));
                 $contentTypeDefinition['contentTypeGroup'] = $contentTypeGroup;
+                $contentTypeDefinition['contentTypeMainLanguage'] = $languageCode;
                 $this->contentType->add($contentTypeDefinition);
             }
 
@@ -147,7 +154,8 @@ class InstallService
      * @return array
      */
     public function createMediaContentTypes(
-        \eZ\Publish\API\Repository\Values\ContentType\ContentTypeGroup $contentTypeGroup
+        \eZ\Publish\API\Repository\Values\ContentType\ContentTypeGroup $contentTypeGroup,
+        $languageCode
     ) {
         $contentTypes = array();
         $identifiers = array('customer', 'customersroot', 'model', 'modelsroot');
@@ -159,6 +167,7 @@ class InstallService
                 );
                 $contentTypeDefinition = Yaml::parse(file_get_contents($contentTypeDefinition));
                 $contentTypeDefinition['contentTypeGroup'] = $contentTypeGroup;
+                $contentTypeDefinition['contentTypeMainLanguage'] = $languageCode;
                 $this->contentType->add($contentTypeDefinition);
             }
 
@@ -178,7 +187,7 @@ class InstallService
      * @param $parentLocationID
      * @return array
      */
-    public function createContents($parentLocationID)
+    public function createContents($parentLocationID, $languageCode)
     {
         $contents = array();
         $identifiers = array('customersroot', 'modelsroot');
@@ -190,6 +199,7 @@ class InstallService
                 );
                 $contentDefinition = Yaml::parse(file_get_contents($contentDefinition));
                 $contentDefinition['parentLocationID'] = $parentLocationID;
+                $contentDefinition['languageCode'] = $languageCode;
                 $contentAdded = $this->content->add($contentDefinition);
                 $contents[] = $contentAdded;
             }
@@ -231,7 +241,7 @@ class InstallService
      * @param $parentLocationID
      * @return array
      */
-    public function createMediaContents($parentLocationID)
+    public function createMediaContents($parentLocationID, $languageCode)
     {
         $contents = array();
         $identifiers = array('customersroot', 'modelsroot');
@@ -243,6 +253,7 @@ class InstallService
                 );
                 $contentDefinition = Yaml::parse(file_get_contents($contentDefinition));
                 $contentDefinition['parentLocationID'] = $parentLocationID;
+                $contentDefinition['languageCode'] = $languageCode;
                 $contentAdded = $this->content->add($contentDefinition);
                 $contents[] = $contentAdded;
             }
@@ -284,7 +295,7 @@ class InstallService
      * @param $parentLocationID
      * @return array
      */
-    public function createUserGroups($parentLocationID)
+    public function createUserGroups($parentLocationID, $languageCode)
     {
         try {
             $userGroupDefinition = Yaml::parse(
@@ -293,6 +304,7 @@ class InstallService
                 )
             );
             $userGroupDefinition['parentLocationID'] = $parentLocationID;
+            $userGroupDefinition['languageCode'] = $languageCode;
             /** @var \eZ\Publish\API\Repository\Values\Content\Content $userGroup */
             $userGroup = $this->content->add($userGroupDefinition);
 
@@ -306,6 +318,7 @@ class InstallService
                 );
                 $userGroupDefinition = Yaml::parse(file_get_contents($userGroupDefinition));
                 $userGroupDefinition['parentLocationID'] = $userGroupParenttLocationID;
+                $userGroupDefinition['languageCode'] = $languageCode;
                 /** @var \eZ\Publish\Core\REST\Client\Values\Content\Content $contentAdded */
                 $contentAdded = $this->content->add($userGroupDefinition);
                 $contents[] = $contentAdded;
@@ -419,11 +432,11 @@ class InstallService
      * @param int $parentLocationID content root location ID
      * @return array models and customers content root location IDs
      */
-    public function createContentStructure($parentLocationID)
+    public function createContentStructure($parentLocationID, $languageCode)
     {
         try {
-            $this->createContentTypes($this->ctg);
-            $contents = $this->createContents($parentLocationID);
+            $this->createContentTypes($this->ctg, $languageCode);
+            $contents = $this->createContents($parentLocationID, $languageCode);
 
             return array(
                 'modelsLocationID' => $contents['modelsLocationID'],
@@ -440,11 +453,11 @@ class InstallService
      * @param int $parentLocationID media root location ID
      * @return array models and customers media root location IDs
      */
-    public function createMediaContentStructure($parentLocationID)
+    public function createMediaContentStructure($parentLocationID, $languageCode)
     {
         try {
-            $this->createMediaContentTypes($this->ctg);
-            $contents = $this->createMediaContents($parentLocationID);
+            $this->createMediaContentTypes($this->ctg, $languageCode);
+            $contents = $this->createMediaContents($parentLocationID, $languageCode);
 
             return array(
                 'mediaModelsLocationID' => $contents['modelsLocationID'],
@@ -461,11 +474,11 @@ class InstallService
      * @param int $userGroupParenttLocationID user root location ID
      * @return array global user group, creator/Editor user group location IDs
      */
-    public function createUserStructure($userGroupParenttLocationID)
+    public function createUserStructure($userGroupParenttLocationID, $languageCode)
     {
         try {
             /** @var int[] $userGroups */
-            $userGroups = $this->createUserGroups($userGroupParenttLocationID);
+            $userGroups = $this->createUserGroups($userGroupParenttLocationID, $languageCode);
 
             return array(
                 'userGroupParenttLocationID' => $userGroups['userGroupParenttLocationID'],
@@ -475,5 +488,34 @@ class InstallService
         } catch (\RuntimeException $e) {
             throw $e;
         }
+    }
+
+    /**
+     * Return list of activated languages
+     *
+     * @return array List of activated languages
+     */
+    public function listLanguages()
+    {
+        $return = array();
+
+        $languages = $this->languageService->loadLanguages();
+        foreach ($languages as $language) {
+            if ($language->enabled) {
+                $return[$language->languageCode] = $language->name;
+            }
+        }
+
+        return $return;
+    }
+
+    /**
+     * Return default language code
+     *
+     * @return string default language code
+     */
+    public function getDefaultLanguageCode()
+    {
+        return $this->languageService->getDefaultLanguageCode();
     }
 }

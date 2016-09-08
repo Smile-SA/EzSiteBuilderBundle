@@ -12,6 +12,7 @@ use eZ\Publish\API\Repository\Values\ValueObject;
 class Install extends ValueObject
 {
     protected $vendorName;
+    protected $languageCode;
     protected $contentLocationID;
     protected $mediaLocationID;
     protected $userLocationID;

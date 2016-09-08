@@ -47,6 +47,7 @@ class ModelGenerator extends Generator
      * @param string $targetDir bundle target dir
      */
     public function generate(
+        $languageCode,
         $vendorName,
         $modelName,
         $modelLocationID,
@@ -94,6 +95,7 @@ class ModelGenerator extends Generator
             'format'    => 'yml',
             'bundle_basename' => $vendorName . $basename,
             'extension_alias' => $basenameUnderscore,
+            'languageCode' => $languageCode,
             'vendor_name' => $vendorName,
             'model_name' => $modelName,
             'modelLocationID' => $modelLocationID,

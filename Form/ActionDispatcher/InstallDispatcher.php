@@ -18,6 +18,7 @@ class InstallDispatcher extends AbstractActionDispatcher
     protected function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setRequired('vendorName');
+        $resolver->setRequired('languageCode');
         $resolver->setRequired('contentLocationID');
         $resolver->setRequired('mediaLocationID');
         $resolver->setRequired('userLocationID');

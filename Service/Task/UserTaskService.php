@@ -75,8 +75,13 @@ class UserTaskService extends BaseTaskService implements TaskInterface
                         '_' . $customerName . '_' . CustomerGenerator::SITES .
                         '.default.customer_user_' . $userType . '_group_location_id';
 
+                    $languageCode = $container->getParameter(
+                        'edgarez_sb.' . strtolower(ProjectGenerator::MAIN) . '.default.language_code'
+                    );
+
                     // Generate first user creator
                     $userPassword = $this->customerService->initializeUser(
+                        $languageCode,
                         $parameters['userFirstName'],
                         $parameters['userLastName'],
                         $parameters['userEmail'],

@@ -88,6 +88,9 @@ class InstallCommand extends BaseContainerAwareCommand
         $repository = $this->getContainer()->get('ezpublish.api.repository');
         $repository->setCurrentUser($repository->getUserService()->loadUser($adminID));
 
+        /** @var InstallService $installService */
+        $installService = $this->getContainer()->get('edgar_ez_site_builder.install.service');
+
         $questionHelper = $this->getQuestionHelper();
         $questionHelper->writeSection($output, 'Welcome to the SiteBuilder installation');
 
@@ -101,25 +104,24 @@ class InstallCommand extends BaseContainerAwareCommand
 
         $this->init($input, $output);
 
+        $languageCode = $this->askLanguageCode($input, $output, $installService);
+
         $contentParentLocationID = $this->askContentStructure($input, $output);
         $mediaParentLocationID = $this->askMediaContentStructure($input, $output);
         $userGroupLocationID = $this->askUserStructure($input, $output);
 
-        /** @var InstallService $installService */
-        $installService = $this->getContainer()->get('edgar_ez_site_builder.install.service');
-
         try {
             $installService->createContentTypeGroup();
 
-            $returnValue = $installService->createContentStructure($contentParentLocationID);
+            $returnValue = $installService->createContentStructure($contentParentLocationID, $languageCode);
             $this->modelsLocationID = $returnValue['modelsLocationID'];
             $this->customersLocationID = $returnValue['customersLocationID'];
 
-            $returnValue = $installService->createMediaContentStructure($mediaParentLocationID);
+            $returnValue = $installService->createMediaContentStructure($mediaParentLocationID, $languageCode);
             $this->mediaModelsLocationID = $returnValue['mediaModelsLocationID'];
             $this->mediaCustomersLocationID = $returnValue['mediaCustomersLocationID'];
 
-            $returnValue = $installService->createUserStructure($userGroupLocationID);
+            $returnValue = $installService->createUserStructure($userGroupLocationID, $languageCode);
             $this->userGroupParenttLocationID = $returnValue['userGroupParenttLocationID'];
             $this->userCreatorsLocationID = $returnValue['userCreatorsLocationID'];
             $this->userEditorsLocationID = $returnValue['userEditorsLocationID'];
@@ -142,6 +144,7 @@ class InstallCommand extends BaseContainerAwareCommand
             /** @var ProjectGenerator $generator */
             $generator = $this->getGenerator();
             $generator->generate(
+                $languageCode,
                 $this->modelsLocationID,
                 $this->customersLocationID,
                 $this->mediaModelsLocationID,
@@ -175,6 +178,46 @@ class InstallCommand extends BaseContainerAwareCommand
         } catch (\RuntimeException $e) {
             $output->write('<error>' . $e->getMessage() . '</error');
         }
+    }
+
+    /**
+     * @param InputInterface $input input console
+     * @param OutputInterface $output output console
+     * @param InstallService $installService
+     * @return string language code
+     */
+    protected function askLanguageCode(InputInterface $input, OutputInterface $output, InstallService $installService)
+    {
+        $questionHelper = $this->getQuestionHelper();
+
+        $languages = $installService->listLanguages();
+        $defaultLanguageCode = $installService->getDefaultLanguageCode();
+
+        $languageCode = false;
+        $question = new Question(
+            $questionHelper->getQuestion(
+                'Language code (' . implode(', ', array_keys($languages)). ')',
+                $defaultLanguageCode
+            ),
+            $defaultLanguageCode
+        );
+
+        while (!$languageCode) {
+            try {
+                $languageCode = $questionHelper->ask($input, $output, $question);
+                if (!$languageCode || empty($languageCode) || !isset($languages[$languageCode])) {
+                    $output->writeln("<error>This language code doesn\'t exists</error>");
+                    $languageCode = false;
+                }
+            } catch (InvalidArgumentException $e) {
+                $output->writeln('<error>' . $e->getMessage() . '</error>');
+                $languageCode = false;
+            }
+        }
+
+        $this->languageCode = $languageCode;
+
+        return $languageCode;
     }
 
     /**

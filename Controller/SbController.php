@@ -9,6 +9,7 @@ use EdgarEz\SiteBuilderBundle\Form\Type\SiteType;
 use EdgarEz\SiteBuilderBundle\Form\Type\UserType;
 use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
+use EdgarEz\SiteBuilderBundle\Service\InstallService;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\SearchService;
 use eZ\Publish\API\Repository\Values\Content\Query;
@@ -24,15 +25,20 @@ class SbController extends Controller
     /** @var SearchService $searchService */
     protected $searchService;
 
+    /** @var InstallService $installService */
+    protected $installService;
+
     protected $tabItems;
 
     public function __construct(
         LocationService $locationService,
         SearchService $searchService,
-        $tabItems)
-    {
+        InstallService $installService,
+        $tabItems
+    ) {
         $this->locationService = $locationService;
         $this->searchService = $searchService;
+        $this->installService = $installService;
         $this->tabItems = $tabItems;
     }
 
@@ -77,7 +83,7 @@ class SbController extends Controller
             $params['installForm'] = $paramsTwig['install'];
         } else {
             $params['installForm'] = $this->createForm(
-                new InstallType()
+                new InstallType($this->installService)
             )->createView();
         }
 

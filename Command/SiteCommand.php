@@ -2,6 +2,7 @@
 
 namespace EdgarEz\SiteBuilderBundle\Command;
 
+use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\SiteGenerator;
 use EdgarEz\SiteBuilderBundle\Service\SiteService;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
@@ -118,9 +119,14 @@ class SiteCommand extends BaseContainerAwareCommand
             );
             $this->mediaSiteLocationID = $returnValue['mediaSiteLocationID'];
 
+            $languageCode = $this->getContainer()->getParameter(
+                'edgarez_sb.' . strtolower(ProjectGenerator::MAIN) . '.default.language_code'
+            );
+
             /** @var SiteGenerator $generator */
             $generator = $this->getGenerator();
             $generator->generate(
+                $languageCode,
                 $this->siteLocationID,
                 $this->mediaSiteLocationID,
                 $this->vendorName,

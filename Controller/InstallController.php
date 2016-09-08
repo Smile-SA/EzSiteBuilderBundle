@@ -7,6 +7,7 @@ use EdgarEz\SiteBuilderBundle\Data\Mapper\InstallMapper;
 use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
 use EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\InstallDispatcher;
 use EdgarEz\SiteBuilderBundle\Form\Type\InstallType;
+use EdgarEz\SiteBuilderBundle\Service\InstallService;
 use EdgarEz\SiteBuilderBundle\Service\SecurityService;
 use EdgarEz\SiteBuilderBundle\Values\Content\Install;
 use Symfony\Component\Form\Form;
@@ -14,6 +15,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class InstallController extends BaseController
 {
+    /** @var InstallService $installService */
+    protected $installService;
+
     /** @var InstallDispatcher $actionDispatcher */
     protected $actionDispatcher;
 
@@ -26,10 +30,12 @@ class InstallController extends BaseController
     protected $securityService;
 
     public function __construct(
+        InstallService $installService,
         InstallDispatcher $actionDispatcher,
         $tabItems,
         SecurityService $securityService
     ) {
+        $this->installService = $installService;
         $this->actionDispatcher = $actionDispatcher;
         $this->tabItems = $tabItems;
         $this->securityService = $securityService;
@@ -48,6 +54,7 @@ class InstallController extends BaseController
         if ($form->isValid()) {
             $this->dispatchFormAction($this->actionDispatcher, $form, $this->data, array(
                 'vendorName' => $this->data->vendorName,
+                'languageCode' => $this->data->languageCode,
                 'contentLocationID' => $this->data->contentLocationID,
                 'mediaLocationID' => $this->data->mediaLocationID,
                 'userLocationID' => $this->data->userLocationID,
@@ -77,13 +84,14 @@ class InstallController extends BaseController
     {
         $install = new Install([
             'vendorName' => 'Foo',
+            'languageCode' => '',
             'contentLocationID' => 0,
             'mediaLocationID' => 0,
             'userLocationID' => 0
         ]);
         $this->data = (new InstallMapper())->mapToFormData($install);
 
-        return $this->createForm(new InstallType(), $this->data);
+        return $this->createForm(new InstallType($this->installService), $this->data);
     }
 
     protected function initTask(Form $form)
@@ -96,6 +104,7 @@ class InstallController extends BaseController
             'command'    => 'install',
             'parameters' => array(
                 'vendorName'        => $data->vendorName,
+                'languageCode'      => $data->languageCode,
                 'contentLocationID' => $data->contentLocationID,
                 'mediaLocationID'   => $data->mediaLocationID,
                 'userLocationID'    => $data->userLocationID,

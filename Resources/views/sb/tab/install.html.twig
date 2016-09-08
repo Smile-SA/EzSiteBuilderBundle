@@ -9,6 +9,11 @@
         {{ form_errors(params.installForm.vendorName) }}
     </div>
     <div class="pure-control-group">
+        <label for="{{ params.installForm.languageCode.vars.id }}">{{ form_label(params.installForm.languageCode) }}</label>
+        {{ form_widget(params.installForm.languageCode) }}
+        {{ form_errors(params.installForm.languageCode) }}
+    </div>
+    <div class="pure-control-group">
         <label for="{{ params.installForm.contentLocationID.vars.id }}">{{ form_label(params.installForm.contentLocationID) }}</label>
         {{ form_widget(params.installForm.contentLocationID) }}
         <button type="button" data-universaldiscovery-title="{{ "install.content.location.udw_title"|trans({}, "sitebuilder_install") }}"

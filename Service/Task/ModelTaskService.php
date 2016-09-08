@@ -94,12 +94,17 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
 
                     $basename = ProjectGenerator::MAIN ;
 
+                    $languageCode = $container->getParameter(
+                        'edgarez_sb.' . strtolower($basename) . '.default.language_code'
+                    );
+
                     $modelsLocationID = $container->getParameter(
                         'edgarez_sb.' . strtolower($basename) . '.default.models_location_id'
                     );
                     $returnValue = $this->modelService->createModelContent(
                         $modelsLocationID,
-                        $parameters['modelName']
+                        $parameters['modelName'],
+                        $languageCode
                     );
                     $excludeUriPrefixes = $returnValue['excludeUriPrefixes'];
                     $modelLocationID = $returnValue['modelLocationID'];
@@ -109,7 +114,8 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
                     );
                     $returnValue = $this->modelService->createMediaModelContent(
                         $mediaModelsLocationID,
-                        $parameters['modelName']
+                        $parameters['modelName'],
+                        $languageCode
                     );
                     $mediaModelLocationID = $returnValue['mediaModelLocationID'];
 
@@ -121,6 +127,7 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
                         $this->kernel
                     );
                     $generator->generate(
+                        $languageCode,
                         $vendorName,
                         $parameters['modelName'],
                         $modelLocationID,

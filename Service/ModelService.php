@@ -135,7 +135,7 @@ class ModelService
      * @param string $modelName model name
      * @return array
      */
-    public function createModelContent($modelsLocationID, $modelName)
+    public function createModelContent($modelsLocationID, $modelName, $languageCode)
     {
         $returnValue = array();
 
@@ -148,12 +148,13 @@ class ModelService
             $contentDefinition['parentLocationID'] = $modelsLocationID;
             $contentDefinition['fields']['title']['value'] = $modelName;
             $contentDefinition['fields']['activated']['value'] = new Value(false);
+            $contentDefinition['languageCode'] = $languageCode;
             $contentAdded = $this->content->add($contentDefinition);
 
             $contentLocation = $this->locationService->loadLocation($contentAdded->contentInfo->mainLocationId);
             $contentPath = $this->urlAliasService->reverseLookup(
                 $contentLocation,
-                $contentAdded->contentInfo->mainLanguageCode
+                $languageCode
             )->path;
             $returnValue['excludeUriPrefixes'] = trim($contentPath, '/') . '/';
             $returnValue['modelLocationID'] = $contentAdded->contentInfo->mainLocationId;
@@ -173,7 +174,7 @@ class ModelService
      * @param string $modelName model name
      * @return array
      */
-    public function createMediaModelContent($mediaModelsLocationID, $modelName)
+    public function createMediaModelContent($mediaModelsLocationID, $modelName, $languageCode)
     {
         try {
             $contentDefinition = Yaml::parse(
@@ -183,6 +184,7 @@ class ModelService
             );
             $contentDefinition['parentLocationID'] = $mediaModelsLocationID;
             $contentDefinition['fields']['title']['value'] = $modelName;
+            $contentDefinition['languageCode'] = $languageCode;
             $contentAdded = $this->content->add($contentDefinition);
 
             return array(

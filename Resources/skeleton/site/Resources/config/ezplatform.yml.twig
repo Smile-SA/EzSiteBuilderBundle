@@ -19,6 +19,7 @@ siteaccess:
 system:
 {% block system %}
     {{ siteaccess }}:
+        languages: [{{ languageCode }}]
         var_dir: var/{{ siteaccess }}
         content:
             tree_root:

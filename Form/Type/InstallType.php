@@ -4,7 +4,9 @@ namespace EdgarEz\SiteBuilderBundle\Form\Type;
 
 use EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\LocationIDConstraint;
 use EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\VendorNameConstraint;
+use EdgarEz\SiteBuilderBundle\Service\InstallService;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -18,6 +20,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class InstallType extends AbstractType
 {
+    /** @var InstallService $installService */
+    protected $installService;
+
+    public function __construct(InstallService $installService)
+    {
+        $this->installService = $installService;
+    }
+
     /**
      * @return string
      */
@@ -37,6 +47,11 @@ class InstallType extends AbstractType
                 'label' => 'form.install.vendorname.label',
                 'required' => true,
                 'constraints' => array(new VendorNameConstraint())
+            ))
+            ->add('languageCode', ChoiceType::class, array(
+                'label' => 'form.install.languagecode.label',
+                'required' => true,
+                'choices' => $this->installService->listLanguages()
             ))
             ->add('contentLocationID', HiddenType::class, array(
                 'label' => 'form.install.contentlocationid.label',

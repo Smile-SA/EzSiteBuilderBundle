@@ -91,12 +91,17 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
 
                     $basename = ProjectGenerator::MAIN;
 
+                    $languageCode = $container->getParameter(
+                        'edgarez_sb.' . strtolower($basename) . '.default.language_code'
+                    );
+
                     $parentLocationID = $container->getParameter(
                         'edgarez_sb.' . strtolower($basename) . '.default.customers_location_id'
                     );
                     $returnValue = $this->customerService->createContentStructure(
                         $parentLocationID,
-                        $parameters['customerName']
+                        $parameters['customerName'],
+                        $languageCode
                     );
                     $customerLocationID = $returnValue['customerLocationID'];
 
@@ -105,7 +110,8 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
                     );
                     $returnValue = $this->customerService->createMediaContentStructure(
                         $parentLocationID,
-                        $parameters['customerName']
+                        $parameters['customerName'],
+                        $languageCode
                     );
                     $mediaCustomerLocationID = $returnValue['mediaCustomerLocationID'];
 
@@ -118,7 +124,8 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
                     $returnValue = $this->customerService->createUserGroups(
                         $parentCreatorLocationID,
                         $parentEditorLocationID,
-                        $parameters['customerName']
+                        $parameters['customerName'],
+                        $languageCode
                     );
                     $customerUserCreatorsGroupLocationID = $returnValue['customerUserCreatorsGroupLocationID'];
                     $customerUserEditorsGroupLocationID = $returnValue['customerUserEditorsGroupLocationID'];
@@ -140,6 +147,7 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
 
                     // Generate first user creator
                     $userPassword = $this->customerService->initializeUser(
+                        $languageCode,
                         $parameters['userFirstName'],
                         $parameters['userLastName'],
                         $parameters['userEmail'],
