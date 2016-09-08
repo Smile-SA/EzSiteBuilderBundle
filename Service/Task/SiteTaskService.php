@@ -16,6 +16,9 @@ use eZ\Publish\API\Repository\RoleService;
 use eZ\Publish\API\Repository\UserService;
 use eZ\Publish\API\Repository\Values\User\Limitation;
 use eZ\Publish\Core\FieldType\Checkbox\Value;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
@@ -177,6 +180,16 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                         $parameters['suffix'],
                         $this->kernelRootDir . '/../src'
                     );
+
+                    $application = new Application($this->kernel);
+                    $application->setAutoExit(false);
+
+                    $input = new ArrayInput(array(
+                        'command' => 'cache:clear',
+                        '--env' => $this->kernel->getEnvironment(),
+                    ));
+                    $output = new BufferedOutput();
+                    $application->run($input, $output);
                 } catch (\RuntimeException $e) {
                     $this->message = $e->getMessage();
                     return false;
