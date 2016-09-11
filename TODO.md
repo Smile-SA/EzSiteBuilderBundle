@@ -4,18 +4,16 @@
 
 * fix cache after generating bundles in prod environment
 * translate user guide
+* update user guide
 
 ## eZPlatform  SiteBuilder interface
 
-* fix siteaccess match generation
+* fix map/uri matcher
 * validate vhost setenv for multiple sites with same ServerNAme (using RewriteCond)
 * fix assetic install for site bundle (they are activated only with environment variable, so never handled by assetic)
-* install interface
-  * manage form constraints
-    * manage location IDs constraint
-* model generation interface
-  * manage notifications
-    * fix form error notification
+* fix site/policy task for multiple siteaccess language for one site
+* fix site/activate task for multiple siteaccess language for one site
+
 
 
 

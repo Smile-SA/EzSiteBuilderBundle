@@ -28,6 +28,11 @@ English : coming soon
 >
 > we will not provide update script until stable release
 
+### 1.0.9 -> 1.0.10
+
+* it's no more possible to choose language when installing sitebuilder : we use main language
+* you should now parameter all site settings for all languages when generating new site
+
 ### 1.0.8 -> 1.0.9
 
 * you can now chosse your language when installing sitebuilder
