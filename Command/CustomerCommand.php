@@ -6,6 +6,7 @@ use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\SiteBuilderBundle\Mail\Sender;
 use EdgarEz\SiteBuilderBundle\Service\CustomerService;
+use eZ\Publish\API\Repository\LanguageService;
 use eZ\Publish\API\Repository\Repository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -89,13 +90,13 @@ class CustomerCommand extends BaseContainerAwareCommand
 
         /** @var CustomerService $customerService */
         $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
+        /** @var LanguageService $languageService */
+        $languageService = $repository->getContentLanguageService();
 
         try {
             $basename = ProjectGenerator::MAIN;
 
-            $languageCode = $this->getContainer()->getParameter(
-                'edgarez_sb.' . strtolower($basename) . '.default.language_code'
-            );
+            $languageCode = $languageService->getDefaultLanguageCode();
 
             $parentLocationID = $this->getContainer()->getParameter(
                 'edgarez_sb.' . strtolower($basename) . '.default.customers_location_id'

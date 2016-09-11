@@ -90,9 +90,9 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
             Validators::validateCustomerName($parameters['customerName']);
             Validators::validateLocationID($parameters['customerContentLocationID']);
             Validators::validateLocationID($parameters['customerMediaLocationID']);
-            Validators::validateSiteName($parameters['siteName']);
-            Validators::validateHost($parameters['host']);
-            Validators::validateSiteaccessSuffix($parameters['suffix']);
+            // Validators::validateSiteName($parameters['siteName']);
+            // Validators::validateHost($parameters['host']);
+            // Validators::validateSiteaccessSuffix($parameters['suffix']);
 
             $model = explode('-', $parameters['model']);
             if (!is_array($model) || count($model) != 2) {
@@ -134,24 +134,32 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                     $extensionAlias = 'edgarez_sb.' . strtolower($basename);
                     $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
-                    $exists = $this->siteService->exists(
-                        $parameters['siteName'],
-                        $parameters['customerName'],
-                        $vendorName,
-                        $this->kernelRootDir . '/../src'
-                    );
-                    if ($exists) {
-                        $this->message = 'Site already exists with this name for this customer';
-                        return false;
+                    foreach ($parameters['sites'] as $site) {
+                        $exists = $this->siteService->exists(
+                            $site['name'],
+                            $parameters['customerName'],
+                            $vendorName,
+                            $this->kernelRootDir . '/../src'
+                        );
+
+                        if ($exists) {
+                            $this->message = 'Site already exists with this name for this customer';
+                            return false;
+                        }
                     }
 
                     $model = explode('-', $parameters['model']);
                     $modelLocation = $this->locationService->loadLocation($model[0]);
 
+                    $siteNames = array();
+                    foreach ($parameters['sites'] as $languageCode => $site) {
+                        $siteNames[$languageCode] = $site['name'];
+                    }
+
                     $returnValue = $this->siteService->createSiteContent(
                         $parameters['customerContentLocationID'],
                         $model[0],
-                        $parameters['siteName']
+                        $siteNames
                     );
                     $siteLocationID = $returnValue['siteLocationID'];
                     $excludeUriPrefixes = $returnValue['excludeUriPrefixes'];
@@ -159,30 +167,22 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                     $returnValue = $this->siteService->createMediaSiteContent(
                         $parameters['customerMediaLocationID'],
                         $model[1],
-                        $parameters['siteName']
+                        $siteNames
                     );
                     $mediaSiteLocationID = $returnValue['mediaSiteLocationID'];
-
-                    $languageCode = $container->getParameter(
-                        'edgarez_sb.' . strtolower(ProjectGenerator::MAIN) . '.default.language_code'
-                    );
 
                     $generator = new SiteGenerator(
                         $this->filesystem,
                         $this->kernel
                     );
                     $generator->generate(
-                        $languageCode,
+                        $parameters['sites'],
                         $siteLocationID,
                         $mediaSiteLocationID,
                         $vendorName,
                         $parameters['customerName'],
                         $modelLocation->contentInfo->name,
-                        $parameters['siteName'],
                         $excludeUriPrefixes,
-                        $parameters['host'],
-                        $parameters['mapuri'],
-                        $parameters['suffix'],
                         $this->kernelRootDir . '/../src'
                     );
 
@@ -229,10 +229,12 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                     $extensionAlias = 'edgarez_sb.' . strtolower($basename);
                     $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
-                    $siteaccessName = strtolower(
-                        $vendorName . '_' . $parameters['customerName'] . '_' . $parameters['siteName']
-                    );
-                    $this->siteService->addSiteaccessLimitation($roleCreator, $roleEditor, $siteaccessName);
+                    foreach ($parameters['sites'] as $site) {
+                        $siteaccessName = strtolower(
+                            $vendorName . '_' . $parameters['customerName'] . '_' . $site['name']
+                        );
+                        $this->siteService->addSiteaccessLimitation($roleCreator, $roleEditor, $siteaccessName);
+                    }
                 } catch (\RuntimeException $e) {
                     $this->message = $e->getMessage();
                     return false;

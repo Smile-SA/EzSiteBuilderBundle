@@ -8,6 +8,7 @@ use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\SiteBuilderBundle\Mail\Sender;
 use EdgarEz\SiteBuilderBundle\Service\CustomerService;
 use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
+use eZ\Publish\API\Repository\LanguageService;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
@@ -16,6 +17,9 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
 {
     /** @var CustomerService $customerService */
     protected $customerService;
+
+    /** @var LanguageService $languageService */
+    protected $languageService;
 
     /** @var Sender $mailer */
     protected $mailer;
@@ -36,6 +40,7 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
         Filesystem $filesystem,
         Kernel $kernel,
         CustomerService $customerService,
+        LanguageService $languageService,
         Sender $mailer,
         $sysadminEmail,
         $kernelRootDir
@@ -43,6 +48,7 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
         $this->filesystem = $filesystem;
         $this->kernel = $kernel;
         $this->customerService = $customerService;
+        $this->languageService = $languageService;
         $this->mailer = $mailer;
         $this->sysadminEmail = $sysadminEmail;
         $this->kernelRootDir = $kernelRootDir;
@@ -91,9 +97,7 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
 
                     $basename = ProjectGenerator::MAIN;
 
-                    $languageCode = $container->getParameter(
-                        'edgarez_sb.' . strtolower($basename) . '.default.language_code'
-                    );
+                    $languageCode = $this->languageService->getDefaultLanguageCode();
 
                     $parentLocationID = $container->getParameter(
                         'edgarez_sb.' . strtolower($basename) . '.default.customers_location_id'

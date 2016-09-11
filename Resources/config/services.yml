@@ -85,6 +85,7 @@ services:
         arguments:
             - @ezpublish.api.service.location
             - @ezpublish.api.service.url_alias
+            - @ezpublish.api.service.content
             - @edgar_ez_tools.content.service
             - @edgar_ez_tools.role.service
 
@@ -95,6 +96,7 @@ services:
             - @filesystem
             - @kernel
             - @ezpublish.api.service.location
+            - @ezpublish.api.service.language
             - @edgar_ez_site_builder.install.service
             - %kernel.root_dir%
 
@@ -104,6 +106,7 @@ services:
             - @filesystem
             - @kernel
             - @edgar_ez_site_builder.customer.service
+            - @ezpublish.api.service.language
             - @edgar_ez_site_builder.mailer
             - %edgar_ez_site_builder.sysadminemail%
             - %kernel.root_dir%
@@ -116,6 +119,7 @@ services:
             - @edgar_ez_site_builder.model.service
             - @ezpublish.api.service.location
             - @ezpublish.api.service.content
+            - @ezpublish.api.service.language
             - %kernel.root_dir%
 
     edgar_ez_site_builder.site.task.service:
@@ -139,6 +143,7 @@ services:
             - @edgar_ez_site_builder.customer.service
             - @ezpublish.api.service.user
             - @ezpublish.api.service.location
+            - @ezpublish.api.service.language
             - @edgar_ez_site_builder.mailer
             - %edgar_ez_site_builder.sysadminemail%
 
@@ -228,6 +233,7 @@ services:
         arguments:
             - @ezpublish.api.service.location
             - @ezpublish.api.service.search
+            - @ezpublish.api.service.language
             - @edgar_ez_site_builder.install.service
             - %edgar_ez_site_builder.tabs%
         parent: ezsystems.platformui.controller.base

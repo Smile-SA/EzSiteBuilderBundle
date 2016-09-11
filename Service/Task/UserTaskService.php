@@ -7,6 +7,7 @@ use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\SiteBuilderBundle\Mail\Sender;
 use EdgarEz\SiteBuilderBundle\Service\CustomerService;
+use eZ\Publish\API\Repository\LanguageService;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\UserService;
 use Symfony\Component\DependencyInjection\Container;
@@ -23,6 +24,9 @@ class UserTaskService extends BaseTaskService implements TaskInterface
     /** @var LocationService $locationService */
     protected $locationService;
 
+    /** @var LanguageService $languageService */
+    protected $languageService;
+
     /** @var Sender $mailer */
     protected $mailer;
 
@@ -33,12 +37,14 @@ class UserTaskService extends BaseTaskService implements TaskInterface
         CustomerService $customerService,
         UserService $userService,
         LocationService $locationService,
+        LanguageService $languageService,
         Sender $mailer,
         $sysadminEmail
     ) {
         $this->customerService = $customerService;
         $this->userService = $userService;
         $this->locationService = $locationService;
+        $this->languageService = $languageService;
         $this->mailer = $mailer;
         $this->sysadminEmail = $sysadminEmail;
 
@@ -75,9 +81,7 @@ class UserTaskService extends BaseTaskService implements TaskInterface
                         '_' . $customerName . '_' . CustomerGenerator::SITES .
                         '.default.customer_user_' . $userType . '_group_location_id';
 
-                    $languageCode = $container->getParameter(
-                        'edgarez_sb.' . strtolower(ProjectGenerator::MAIN) . '.default.language_code'
-                    );
+                    $languageCode = $this->languageService->getDefaultLanguageCode();
 
                     // Generate first user creator
                     $userPassword = $this->customerService->initializeUser(

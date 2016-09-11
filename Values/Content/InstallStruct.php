@@ -12,7 +12,6 @@ use eZ\Publish\API\Repository\Values\ValueObject;
 class InstallStruct extends ValueObject
 {
     public $vendorName;
-    public $languageCode;
     public $contentLocationID;
     public $mediaLocationID;
     public $userLocationID;

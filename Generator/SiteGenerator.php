@@ -51,21 +51,18 @@ class SiteGenerator extends Generator
      * @param string $targetDir bundle target dir
      */
     public function generate(
-        $languageCode,
+        $sites,
         $siteLocationID,
         $mediaSiteLocationID,
         $vendorName,
         $customerName,
         $modelName,
-        $siteName,
         $excludeUriPrefixes,
-        $host,
-        $mapuri,
-        $siteaccessSuffix,
         $targetDir
     ) {
+        $site = current($sites);
         $namespace = $vendorName . '\\' . ProjectGenerator::CUSTOMERS . '\\' . $customerName . '\\' .
-            CustomerGenerator::SITES . '\\' . $siteName . 'Bundle';
+            CustomerGenerator::SITES . '\\' . $site['name'] . 'Bundle';
 
         $dir = $targetDir . '/' . strtr($namespace, '\\', '/');
         if (file_exists($dir)) {
@@ -96,29 +93,33 @@ class SiteGenerator extends Generator
             }
         }
 
-        $basename = ProjectGenerator::CUSTOMERS . $customerName . CustomerGenerator::SITES . $siteName;
-        $basenameUnderscore = ProjectGenerator::CUSTOMERS . '_' . $customerName . '_' . CustomerGenerator::SITES . '_' . $siteName;
+        $siteaccess = array();
+        foreach ($sites as $languageCode => $newSite) {
+            $sites[$languageCode]['siteaccess'] = strtolower($vendorName . '_' . $customerName . '_' . $newSite['name']);
+            $sites[$languageCode]['exclude_uri_prefixes'] = $excludeUriPrefixes[$languageCode];
+            $siteaccess[] = $sites[$languageCode]['siteaccess'];
+        }
+        $siteaccess = implode(', ', $siteaccess);
+
+        $basename = ProjectGenerator::CUSTOMERS . $customerName . CustomerGenerator::SITES . $site['name'];
+        $basenameUnderscore = ProjectGenerator::CUSTOMERS . '_' .
+            $customerName . '_' . CustomerGenerator::SITES . '_' . $site['name'];
         $parameters = array(
             'namespace' => $namespace,
-            'bundle'    => $siteName . 'Bundle',
+            'bundle'    => $site['name'] . 'Bundle',
             'format'    => 'yml',
             'bundle_basename' => $vendorName . $basename,
             'extension_alias' => strtolower($basenameUnderscore),
             'vendor_name' => $vendorName,
             'customer_name' => $customerName,
             'model_name' => $modelName,
-            'site_name' => $siteName,
-            'languageCode' => $languageCode,
             'siteLocationID' => $siteLocationID,
             'mediaSiteLocationID' => $mediaSiteLocationID,
             'parent_model_bundle' => $vendorName . ProjectGenerator::MODELS . $modelName,
             'siteaccess_model' => strtolower($vendorName . '_' . $modelName),
-            'siteaccess' => strtolower($vendorName . '_' . $customerName . '_' . $siteName),
             'customer' => strtolower($customerName),
-            'exclude_uri_prefixes' => $excludeUriPrefixes,
-            'host' => $host,
-            'mapuri' => $mapuri,
-            'siteaccess_suffix' => $siteaccessSuffix
+            'sites' => $sites,
+            'siteaccess' => $siteaccess
         );
 
         $this->setSkeletonDirs(array($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/skeleton')));
@@ -137,10 +138,16 @@ class SiteGenerator extends Generator
             $dir . '/DependencyInjection/Configuration.php',
             $parameters
         );
+
+        $firstSiteaccess = $siteaccess;
+        $arraySiteaccess = explode(',', $siteaccess);
+        if (is_array($arraySiteaccess)) {
+            $firstSiteaccess = trim($arraySiteaccess[0]);
+        }
         $this->renderFile(
             'site/Resources/config/ezplatform.yml.twig',
             $targetDir . '/' . $vendorName . '/ProjectBundle/Resources/config/sites/' .
-            $parameters['siteaccess'] . '/ezplatform.yml',
+            $firstSiteaccess . '/ezplatform.yml',
             $parameters
         );
 

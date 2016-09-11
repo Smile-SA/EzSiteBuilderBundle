@@ -48,11 +48,6 @@ class InstallType extends AbstractType
                 'required' => true,
                 'constraints' => array(new VendorNameConstraint())
             ))
-            ->add('languageCode', ChoiceType::class, array(
-                'label' => 'form.install.languagecode.label',
-                'required' => true,
-                'choices' => $this->installService->listLanguages()
-            ))
             ->add('contentLocationID', HiddenType::class, array(
                 'label' => 'form.install.contentlocationid.label',
                 'constraints' => array(new LocationIDConstraint())

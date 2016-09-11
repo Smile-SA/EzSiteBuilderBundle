@@ -13,7 +13,28 @@
             <td class="ez-block-cell">
                 <ul>
                     {% for key, parameter in data.action.parameters %}
-                        <li>{{ key }} : {{ parameter }}</li>
+                        <li>
+                            {{ key }} :
+                            {% if parameter is iterable %}
+                                <ul>
+                                    {% for key2, parameter2 in parameter %}
+                                        {% if parameter2 is iterable %}
+                                            <li>{{ key2 }} :
+                                                <ul>
+                                                    {% for key3, parameter3 in parameter2 %}
+                                                        <li>{{ key3 }} : {{ parameter3 }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </li>
+                                        {% else %}
+                                            <li>{{ key2 }} : {{ parameter2 }}</li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                {{ parameter }}
+                            {% endif %}
+                        </li>
                     {% endfor %}
                 </ul>
             </td>

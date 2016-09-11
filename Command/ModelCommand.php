@@ -5,6 +5,7 @@ namespace EdgarEz\SiteBuilderBundle\Command;
 use EdgarEz\SiteBuilderBundle\Generator\ModelGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\SiteBuilderBundle\Service\ModelService;
+use eZ\Publish\API\Repository\LanguageService;
 use eZ\Publish\API\Repository\Repository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -69,13 +70,13 @@ class ModelCommand extends BaseContainerAwareCommand
 
         /** @var ModelService $modelService */
         $modelService = $this->getContainer()->get('edgar_ez_site_builder.model.service');
+        /** @var LanguageService $languageService */
+        $languageService = $repository->getContentLanguageService();
 
         try {
             $basename = ProjectGenerator::MAIN ;
 
-            $languageCode = $this->getContainer()->getParameter(
-                'edgarez_sb.' . strtolower($basename) . '.default.language_code'
-            );
+            $languageCode = $languageService->getDefaultLanguageCode();
 
             $modelsLocationID = $this->getContainer()->getParameter(
                 'edgarez_sb.' . strtolower($basename) . '.default.models_location_id'

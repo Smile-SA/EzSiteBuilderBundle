@@ -5,25 +5,32 @@ siteaccess:
         edgarezsb_models_{{ siteaccess_model }}: [{{ siteaccess }}]
         edgarezsb_customer_{{ customer }}: [{{ siteaccess }}]
     match:
+        {% for site in sites %}
+
         Compound\LogicalAnd:
-            {{ siteaccess }}:
+            {{ site.siteaccess }}:
                 matchers:
                     Map\URI:
-                        {% if mapuri %}{{ siteaccess_suffix }}: true{% else %}{{ siteaccess }}: false{% endif %}
-
+                        {% if site.suffix != '' %}{{ site.suffix }}{% else %}{{ site.siteaccess }}{% endif %}: true
                     Map\Host:
-                        {{ host }}: true
-                match: {{ siteaccess }}
+                        {{ site.host }}: true
+                match: {{ site.siteaccess }}
+
+        {% endfor %}
 {% endblock %}
 
 system:
 {% block system %}
-    {{ siteaccess }}:
+    {% for languageCode, site in sites %}
+
+    {{ site.siteaccess }}:
         languages: [{{ languageCode }}]
-        var_dir: var/{{ siteaccess }}
+        var_dir: var/{{ site.siteaccess }}
         content:
             tree_root:
                 location_id: {{ siteLocationID }}
                 excluded_uri_prefixes:
-                    - {{ exclude_uri_prefixes }}
+                    - {{ site.exclude_uri_prefixes }}
+
+    {% endfor %}
 {% endblock %}

@@ -54,7 +54,6 @@ class InstallController extends BaseController
         if ($form->isValid()) {
             $this->dispatchFormAction($this->actionDispatcher, $form, $this->data, array(
                 'vendorName' => $this->data->vendorName,
-                'languageCode' => $this->data->languageCode,
                 'contentLocationID' => $this->data->contentLocationID,
                 'mediaLocationID' => $this->data->mediaLocationID,
                 'userLocationID' => $this->data->userLocationID,
@@ -84,7 +83,6 @@ class InstallController extends BaseController
     {
         $install = new Install([
             'vendorName' => 'Foo',
-            'languageCode' => '',
             'contentLocationID' => 0,
             'mediaLocationID' => 0,
             'userLocationID' => 0
@@ -104,7 +102,6 @@ class InstallController extends BaseController
             'command'    => 'install',
             'parameters' => array(
                 'vendorName'        => $data->vendorName,
-                'languageCode'      => $data->languageCode,
                 'contentLocationID' => $data->contentLocationID,
                 'mediaLocationID'   => $data->mediaLocationID,
                 'userLocationID'    => $data->userLocationID,

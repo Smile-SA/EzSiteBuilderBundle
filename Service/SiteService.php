@@ -6,6 +6,7 @@ use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\ToolsBundle\Service\Content;
 use EdgarEz\ToolsBundle\Service\Role;
+use eZ\Publish\API\Repository\ContentService;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\URLAliasService;
@@ -22,6 +23,9 @@ class SiteService
 
     /** @var URLAliasService $urlAliasService eZ URLAlias Service */
     private $urlAliasService;
+
+    /** @var ContentService $contentService */
+    private $contentService;
 
     /** @var Content $content EdgarEz Content Service */
     private $content;
@@ -40,11 +44,13 @@ class SiteService
     public function __construct(
         LocationService $locationService,
         URLAliasService $urlAliasService,
+        ContentService $contentService,
         Content $content,
         Role $role
     ) {
         $this->locationService = $locationService;
         $this->urlAliasService = $urlAliasService;
+        $this->contentService = $contentService;
         $this->content = $content;
         $this->role = $role;
     }
@@ -57,21 +63,44 @@ class SiteService
      * @param string $siteName site name
      * @return array site content location ID and siteaccess path prefix
      */
-    public function createSiteContent($customerLocationID, $modelLocationID, $siteName)
+    public function createSiteContent($customerLocationID, $modelLocationID, array $siteNames)
     {
         $returnValue = array();
 
         try {
+            $siteName = current($siteNames);
             $siteLocationID = $this->content->copySubtree($modelLocationID, $customerLocationID, $siteName);
 
             $returnValue['siteLocationID'] = $siteLocationID;
             $newLocation = $this->locationService->loadLocation($siteLocationID);
+            $content = $this->contentService->loadContent($newLocation->contentId);
 
-            $contentPath = $this->urlAliasService->reverseLookup(
-                $newLocation,
-                $newLocation->getContentInfo()->mainLanguageCode
-            )->path;
-            $returnValue['excludeUriPrefixes'] = trim($contentPath, '/') . '/';
+            foreach ($siteNames as $languageCode => $siteName) {
+                $newVersionInfo = $this->contentService->createContentDraft(
+                    $newLocation->contentInfo
+                )->getVersionInfo();
+
+                $contentUpdateStruct = $this->contentService->newContentUpdateStruct();
+                foreach ($content->getFields() as $key => $field) {
+                    $fieldValue = $field->value;
+                    if ($field->fieldDefIdentifier == 'title')
+                        $fieldValue = $siteName;
+                    $contentUpdateStruct->setField($field->fieldDefIdentifier, $fieldValue, $languageCode);
+                }
+                $contentUpdateStruct->initialLanguageCode = $languageCode;
+                $contentDraft = $this->contentService->updateContent($newVersionInfo, $contentUpdateStruct);
+                $this->contentService->publishVersion($contentDraft->versionInfo);
+            }
+
+            $languages = array_keys($siteNames);
+            $returnValue['excludeUriPrefixes'] = array();
+            foreach ($languages as $languageCode) {
+                $contentPath = $this->urlAliasService->reverseLookup(
+                    $newLocation,
+                    $languageCode
+                )->path;
+                $returnValue['excludeUriPrefixes'][$languageCode] = trim($contentPath, '/') . '/';
+            }
 
             return $returnValue;
         } catch (NotFoundException $e) {
@@ -89,14 +118,35 @@ class SiteService
      * @param string $siteName site name
      * @return array site media root location ID
      */
-    public function createMediaSiteContent($mediaCustomerLocationID, $mediaModelLocationID, $siteName)
+    public function createMediaSiteContent($mediaCustomerLocationID, $mediaModelLocationID, array $siteNames)
     {
         try {
+            $siteName = current($siteNames);
             $mediaSiteLocationID = $this->content->copySubtree(
                 $mediaModelLocationID,
                 $mediaCustomerLocationID,
                 $siteName
             );
+
+            $newLocation = $this->locationService->loadLocation($mediaSiteLocationID);
+            $content = $this->contentService->loadContent($newLocation->contentId);
+
+            foreach ($siteNames as $languageCode => $siteName) {
+                $newVersionInfo = $this->contentService->createContentDraft(
+                    $newLocation->contentInfo
+                )->getVersionInfo();
+
+                $contentUpdateStruct = $this->contentService->newContentUpdateStruct();
+                foreach ($content->getFields() as $key => $field) {
+                    $fieldValue = $field->value;
+                    if ($field->fieldDefIdentifier == 'title')
+                        $fieldValue = $siteName;
+                    $contentUpdateStruct->setField($field->fieldDefIdentifier, $fieldValue, $languageCode);
+                }
+                $contentUpdateStruct->initialLanguageCode = $languageCode;
+                $contentDraft = $this->contentService->updateContent($newVersionInfo, $contentUpdateStruct);
+                $this->contentService->publishVersion($contentDraft->versionInfo);
+            }
 
             return array(
                 'mediaSiteLocationID' => $mediaSiteLocationID

@@ -8,6 +8,7 @@ use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\SiteBuilderBundle\Service\ModelService;
 use eZ\Publish\API\Repository\ContentService;
 use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
+use eZ\Publish\API\Repository\LanguageService;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\Core\FieldType\Checkbox\Value;
 use Symfony\Component\DependencyInjection\Container;
@@ -31,6 +32,9 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
     /** @var ContentService $contentService */
     protected $contentService;
 
+    /** @var LanguageService $languageService */
+    protected $languageService;
+
     /** @var string $kernelRootDir */
     protected $kernelRootDir;
 
@@ -40,6 +44,7 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
         ModelService $modelService,
         LocationService $locationService,
         ContentService $contentService,
+        LanguageService $languageService,
         $kernelRootDir
     ) {
         $this->filesystem = $filesystem;
@@ -47,6 +52,7 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
         $this->modelService = $modelService;
         $this->locationService = $locationService;
         $this->contentService = $contentService;
+        $this->languageService = $languageService;
         $this->kernelRootDir = $kernelRootDir;
 
         $this->message = false;
@@ -94,9 +100,7 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
 
                     $basename = ProjectGenerator::MAIN ;
 
-                    $languageCode = $container->getParameter(
-                        'edgarez_sb.' . strtolower($basename) . '.default.language_code'
-                    );
+                    $languageCode = $this->languageService->getDefaultLanguageCode();
 
                     $modelsLocationID = $container->getParameter(
                         'edgarez_sb.' . strtolower($basename) . '.default.models_location_id'

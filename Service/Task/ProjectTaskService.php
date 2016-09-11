@@ -6,6 +6,7 @@ use EdgarEz\SiteBuilderBundle\Command\Validators;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use EdgarEz\SiteBuilderBundle\Service\InstallService;
 use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
+use eZ\Publish\API\Repository\LanguageService;
 use eZ\Publish\API\Repository\LocationService;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Filesystem\Filesystem;
@@ -60,6 +61,9 @@ class ProjectTaskService extends BaseTaskService implements TaskInterface
     /** @var LocationService $locationService */
     protected $locationService;
 
+    /** @var LanguageService $languageService */
+    protected $languageService;
+
     /** @var string $kernelRootDir */
     protected $kernelRootDir;
 
@@ -79,12 +83,14 @@ class ProjectTaskService extends BaseTaskService implements TaskInterface
         Filesystem $filesystem,
         Kernel $kernel,
         LocationService $locationService,
+        LanguageService $languageService,
         InstallService $installService,
         $kernelRootDir
     ) {
         $this->filesystem = $filesystem;
         $this->kernel = $kernel;
         $this->locationService = $locationService;
+        $this->languageService = $languageService;
         $this->installService = $installService;
         $this->kernelRootDir = $kernelRootDir;
 
@@ -141,25 +147,27 @@ class ProjectTaskService extends BaseTaskService implements TaskInterface
                 try {
                     $this->validateParameters($parameters);
 
+                    $languageCode = $this->languageService->getDefaultLanguageCode();
+
                     $this->installService->createContentTypeGroup();
 
                     $returnValue = $this->installService->createContentStructure(
                         $parameters['contentLocationID'],
-                        $parameters['languageCode']
+                        $languageCode
                     );
                     $this->modelsLocationID = $returnValue['modelsLocationID'];
                     $this->customersLocationID = $returnValue['customersLocationID'];
 
                     $returnValue = $this->installService->createMediaContentStructure(
                         $parameters['mediaLocationID'],
-                        $parameters['languageCode']
+                        $languageCode
                     );
                     $this->mediaModelsLocationID = $returnValue['mediaModelsLocationID'];
                     $this->mediaCustomersLocationID = $returnValue['mediaCustomersLocationID'];
 
                     $returnValue = $this->installService->createUserStructure(
                         $parameters['userLocationID'],
-                        $parameters['languageCode']
+                        $languageCode
                     );
                     $this->userGroupParenttLocationID = $returnValue['userGroupParenttLocationID'];
                     $this->userCreatorsLocationID = $returnValue['userCreatorsLocationID'];
@@ -184,7 +192,6 @@ class ProjectTaskService extends BaseTaskService implements TaskInterface
                         $this->kernel
                     );
                     $generator->generate(
-                        $parameters['languageCode'],
                         $this->modelsLocationID,
                         $this->customersLocationID,
                         $this->mediaModelsLocationID,

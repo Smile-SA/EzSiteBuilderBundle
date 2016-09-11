@@ -5,6 +5,7 @@ namespace EdgarEz\SiteBuilderBundle\Command;
 use EdgarEz\SiteBuilderBundle\Service\InstallService;
 use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
+use eZ\Publish\API\Repository\LanguageService;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
@@ -90,6 +91,8 @@ class InstallCommand extends BaseContainerAwareCommand
 
         /** @var InstallService $installService */
         $installService = $this->getContainer()->get('edgar_ez_site_builder.install.service');
+        /** @var LanguageService $languageService */
+        $languageService = $repository->getContentLanguageService();
 
         $questionHelper = $this->getQuestionHelper();
         $questionHelper->writeSection($output, 'Welcome to the SiteBuilder installation');
@@ -104,7 +107,7 @@ class InstallCommand extends BaseContainerAwareCommand
 
         $this->init($input, $output);
 
-        $languageCode = $this->askLanguageCode($input, $output, $installService);
+        $languageCode = $languageService->getDefaultLanguageCode();
 
         $contentParentLocationID = $this->askContentStructure($input, $output);
         $mediaParentLocationID = $this->askMediaContentStructure($input, $output);
@@ -144,7 +147,6 @@ class InstallCommand extends BaseContainerAwareCommand
             /** @var ProjectGenerator $generator */
             $generator = $this->getGenerator();
             $generator->generate(
-                $languageCode,
                 $this->modelsLocationID,
                 $this->customersLocationID,
                 $this->mediaModelsLocationID,
@@ -178,46 +180,6 @@ class InstallCommand extends BaseContainerAwareCommand
         } catch (\RuntimeException $e) {
             $output->write('<error>' . $e->getMessage() . '</error');
         }
-    }
-
-    /**
-     * @param InputInterface $input input console
-     * @param OutputInterface $output output console
-     * @param InstallService $installService
-     * @return string language code
-     */
-    protected function askLanguageCode(InputInterface $input, OutputInterface $output, InstallService $installService)
-    {
-        $questionHelper = $this->getQuestionHelper();
-
-        $languages = $installService->listLanguages();
-        $defaultLanguageCode = $installService->getDefaultLanguageCode();
-
-        $languageCode = false;
-        $question = new Question(
-            $questionHelper->getQuestion(
-                'Language code (' . implode(', ', array_keys($languages)). ')',
-                $defaultLanguageCode
-            ),
-            $defaultLanguageCode
-        );
-
-        while (!$languageCode) {
-            try {
-                $languageCode = $questionHelper->ask($input, $output, $question);
-                if (!$languageCode || empty($languageCode) || !isset($languages[$languageCode])) {
-                    $output->writeln("<error>This language code doesn\'t exists</error>");
-                    $languageCode = false;
-                }
-            } catch (InvalidArgumentException $e) {
-                $output->writeln('<error>' . $e->getMessage() . '</error>');
-                $languageCode = false;
-            }
-        }
-
-        $this->languageCode = $languageCode;
-
-        return $languageCode;
     }
 
     /**

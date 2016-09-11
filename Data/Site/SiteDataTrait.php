@@ -13,4 +13,9 @@ trait SiteDataTrait
     {
         $this->site = $site;
     }
+
+    public function getSite()
+    {
+        return $this->site;
+    }
 }

@@ -1,51 +1,67 @@
 {% trans_default_domain "sitebuilder_sitel" %}
 
-{% if not params.siteForm %}
-    {{ 'There is no model available now'|trans }}
-{% else %}
+{{ form_start(params.sites, {"action": path("edgarezsb_site_post", {}), "attr": {"class": "pure-form pure-form-aligned ez-confirm-action"}}) }}
 
-    {{ form_start(params.siteForm, {"action": path("edgarezsb_site_post", {}), "attr": {"class": "pure-form pure-form-aligned ez-confirm-action"}}) }}
-
-    <fieldset>
-        <div class="pure-control-group">
-            <label for="{{ params.siteForm.siteName.vars.id }}">{{ form_label(params.siteForm.siteName) }}</label>
-            {{ form_widget(params.siteForm.siteName) }}
-            {{ form_errors(params.siteForm.siteName) }}
-        </div>
-        <div class="pure-control-group">
-            <label for="{{ params.siteForm.model.vars.id }}">{{ form_label(params.siteForm.model) }}</label>
-            {{ form_widget(params.siteForm.model) }}
-            {{ form_errors(params.siteForm.model) }}
-        </div>
-        <div class="pure-control-group">
-            <label for="{{ params.siteForm.host.vars.id }}">{{ form_label(params.siteForm.host) }}</label>
-            {{ form_widget(params.siteForm.host) }}
-            {{ form_errors(params.siteForm.host) }}
-        </div>
-        <div class="pure-control-group">
-            <label for="{{ params.siteForm.mapuri.vars.id }}">{{ form_label(params.siteForm.mapuri) }}</label>
-            {{ form_widget(params.siteForm.mapuri) }}
-            {{ form_errors(params.siteForm.mapuri) }}
-        </div>
-        <div class="pure-control-group">
-            <label for="{{ params.siteForm.suffix.vars.id }}">{{ form_label(params.siteForm.suffix) }}</label>
-            {{ form_widget(params.siteForm.suffix) }}
-            {{ form_errors(params.siteForm.suffix) }}
-        </div>
-    </fieldset>
-
-    <div class="pure-controls">
-        {{ form_widget(params.siteForm.customerName) }}
-        {{ form_widget(params.siteForm.customerContentLocationID) }}
-        {{ form_widget(params.siteForm.customerMediaLocationID) }}
-        {{ form_widget(
-        params.siteForm.site,
-        {
-            "disabled": false,
-            "attr": {"class": "pure-button ez-button ez-site-button ez-font-icon ez-button-site"}
-        }
-        ) }}
+<fieldset>
+    <div class="pure-control-group">
+        <label for="{{ params.sites.model.vars.id }}">{{ form_label(params.sites.model) }}</label>
+        {{ form_widget(params.sites.model) }}
+        {{ form_errors(params.sites.model) }}
     </div>
 
-    {{ form_end(params.siteForm) }}
-{% endif %}
+    <div class="ez-view-edgarezsb-table">
+        <div class="ez-block-wrapper ez-font-icon">
+            <table class="ez-block-items-table">
+                <thead class="ez-block-header">
+                <tr>
+                    <th class="ez-block-head-service">{{ 'sb.sites.th.language'|trans }}</th>
+                    <th class="ez-block-head-service">{{ 'sb.sites.th.siteName'|trans }}</th>
+                    <th class="ez-block-head-service">{{ 'sb.sites.th.host'|trans }}</th>
+                    <th class="ez-block-head-service">{{ 'sb.sites.th.suffix'|trans }}</th>
+                </tr>
+                </thead>
+                <tbody class="ez-block-content">
+
+                {% for language, site in params.sites.vars.value.sites.listeSites %}
+                    {% set id = site.vars.id ~ '[' ~ site.languageCode.vars.value~ ']' %}
+                    <tr class="ez-block-row">
+
+                        <td class="ez-block-cell">
+                            {{ language }}
+                            {% set name = id ~ '[languageCode]' %}
+                            <input type="hidden" name="{{ name }}" value="{{ site.languageCode.vars.value }}"
+                        </td>
+                        <td class="ez-block-cell">
+                            {% set name = id ~ '[siteName]' %}
+                            <input type="text" name="{{ name }}" />
+                        </td>
+                        <td class="ez-block-cell">
+                            {% set name = id ~ '[host]' %}
+                            <input type="text" name="{{ name }}" />
+                        </td>
+                        <td class="ez-block-cell">
+                            {% set name = id ~ '[suffix]' %}
+                            <input type="text" name="{{ name }}" />
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {{ form_widget(params.sites.listSites) }}
+</fieldset>
+
+<div class="pure-controls">
+    {{ form_widget(
+    params.sites.submit,
+    {
+        "disabled": false,
+        "attr": {"class": "pure-button ez-button ez-model-button ez-font-icon ez-button-model"}
+    }
+    ) }}
+</div>
+
+{{ form_end(params.sites) }}
