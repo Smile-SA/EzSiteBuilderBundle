@@ -2,6 +2,7 @@
 
 namespace EdgarEz\SiteBuilderBundle\Form\Type;
 
+use EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\SiteNameConstraint;
 use eZ\Publish\API\Repository\SearchService;
 use eZ\Publish\API\Repository\Values\Content\Query;
 use eZ\Publish\API\Repository\Values\Content\Search\SearchResult;
@@ -10,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -72,6 +74,11 @@ class SitesType extends AbstractType
                 'label' => 'form.sites.model.label',
                 'required' => true,
                 'choices' => $models
+            ))
+            ->add('siteName', TextType::class, array(
+                'label' => 'form.site.sitename.label',
+                'required' => true,
+                'constraints' => array(new SiteNameConstraint())
             ))
             ->add('listSites', CollectionType::class, array(
                 'entry_type' => SiteType::class,

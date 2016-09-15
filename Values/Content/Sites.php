@@ -7,6 +7,7 @@ use eZ\Publish\API\Repository\Values\ValueObject;
 class Sites extends ValueObject
 {
     protected $model;
+    protected $siteName;
     /** @var Site[] $listSites */
     protected $listSites;
     protected $modelLocationID;

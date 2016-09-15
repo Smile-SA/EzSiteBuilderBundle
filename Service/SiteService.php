@@ -8,6 +8,7 @@ use EdgarEz\ToolsBundle\Service\Content;
 use EdgarEz\ToolsBundle\Service\Role;
 use eZ\Publish\API\Repository\ContentService;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
+use eZ\Publish\API\Repository\LanguageService;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\URLAliasService;
 use eZ\Publish\API\Repository\Values\User\Limitation;
@@ -27,6 +28,9 @@ class SiteService
     /** @var ContentService $contentService */
     private $contentService;
 
+    /** @var LanguageService $languageService */
+    private $languageService;
+
     /** @var Content $content EdgarEz Content Service */
     private $content;
 
@@ -45,12 +49,14 @@ class SiteService
         LocationService $locationService,
         URLAliasService $urlAliasService,
         ContentService $contentService,
+        LanguageService $languageService,
         Content $content,
         Role $role
     ) {
         $this->locationService = $locationService;
         $this->urlAliasService = $urlAliasService;
         $this->contentService = $contentService;
+        $this->languageService = $languageService;
         $this->content = $content;
         $this->role = $role;
     }
@@ -63,19 +69,22 @@ class SiteService
      * @param string $siteName site name
      * @return array site content location ID and siteaccess path prefix
      */
-    public function createSiteContent($customerLocationID, $modelLocationID, array $siteNames)
+    public function createSiteContent($customerLocationID, $modelLocationID, $siteName)
     {
         $returnValue = array();
 
         try {
-            $siteName = current($siteNames);
             $siteLocationID = $this->content->copySubtree($modelLocationID, $customerLocationID, $siteName);
 
             $returnValue['siteLocationID'] = $siteLocationID;
             $newLocation = $this->locationService->loadLocation($siteLocationID);
             $content = $this->contentService->loadContent($newLocation->contentId);
 
-            foreach ($siteNames as $languageCode => $siteName) {
+            $languages = $this->languageService->loadLanguages();
+
+            $returnValue['excludeUriPrefixes'] = array();
+            foreach ($languages as $language) {
+                $languageCode = $language->languageCode;
                 $newVersionInfo = $this->contentService->createContentDraft(
                     $newLocation->contentInfo
                 )->getVersionInfo();
@@ -90,11 +99,7 @@ class SiteService
                 $contentUpdateStruct->initialLanguageCode = $languageCode;
                 $contentDraft = $this->contentService->updateContent($newVersionInfo, $contentUpdateStruct);
                 $this->contentService->publishVersion($contentDraft->versionInfo);
-            }
 
-            $languages = array_keys($siteNames);
-            $returnValue['excludeUriPrefixes'] = array();
-            foreach ($languages as $languageCode) {
                 $contentPath = $this->urlAliasService->reverseLookup(
                     $newLocation,
                     $languageCode
@@ -118,10 +123,9 @@ class SiteService
      * @param string $siteName site name
      * @return array site media root location ID
      */
-    public function createMediaSiteContent($mediaCustomerLocationID, $mediaModelLocationID, array $siteNames)
+    public function createMediaSiteContent($mediaCustomerLocationID, $mediaModelLocationID, $siteName)
     {
         try {
-            $siteName = current($siteNames);
             $mediaSiteLocationID = $this->content->copySubtree(
                 $mediaModelLocationID,
                 $mediaCustomerLocationID,
@@ -131,7 +135,9 @@ class SiteService
             $newLocation = $this->locationService->loadLocation($mediaSiteLocationID);
             $content = $this->contentService->loadContent($newLocation->contentId);
 
-            foreach ($siteNames as $languageCode => $siteName) {
+            $languages = $this->languageService->loadLanguages();
+            foreach ($languages as $language) {
+                $languageCode = $language->languageCode;
                 $newVersionInfo = $this->contentService->createContentDraft(
                     $newLocation->contentInfo
                 )->getVersionInfo();

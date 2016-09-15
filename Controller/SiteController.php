@@ -190,6 +190,7 @@ class SiteController extends BaseController
             'command'    => $type,
             'parameters' => array(
                 'model' => $site['model'],
+                'siteName' => $site['siteName'],
                 'customerName' => $site['customerName'],
                 'customerContentLocationID' => $site['customerContentLocationID'],
                 'customerMediaLocationID' => $site['customerMediaLocationID'],
@@ -198,11 +199,10 @@ class SiteController extends BaseController
         );
 
         foreach ($sites as $languageCode => $site) {
-            if (empty($site['siteName']) || empty($site['host']))
+            if (empty($site['host']))
                 continue;
 
             $action['parameters']['sites'][$languageCode] = array(
-                'name' => $site['siteName'],
                 'host' => $site['host'],
                 'suffix' => $site['suffix']
             );

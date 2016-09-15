@@ -164,7 +164,6 @@ class SbController extends Controller
 
             $site = new Site([
                 'languageCode' => $language->languageCode,
-                'siteName' => '',
                 'host' => '',
                 'suffix' => '',
             ]);
@@ -194,6 +193,7 @@ class SbController extends Controller
         $sites = new Sites([
             'listSites' => $listSites,
             'model' => '',
+            'siteName' => '',
             'customerName' => $customerName,
             'customerContentLocationID' => $contentRootCustomerLocationID,
             'customerMediaLocationID' => $mediaRootCustomerLocationID,

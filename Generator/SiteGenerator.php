@@ -55,14 +55,14 @@ class SiteGenerator extends Generator
         $siteLocationID,
         $mediaSiteLocationID,
         $vendorName,
+        $siteName,
         $customerName,
         $modelName,
         $excludeUriPrefixes,
         $targetDir
     ) {
-        $site = current($sites);
         $namespace = $vendorName . '\\' . ProjectGenerator::CUSTOMERS . '\\' . $customerName . '\\' .
-            CustomerGenerator::SITES . '\\' . $site['name'] . 'Bundle';
+            CustomerGenerator::SITES . '\\' . $siteName . 'Bundle';
 
         $dir = $targetDir . '/' . strtr($namespace, '\\', '/');
         if (file_exists($dir)) {
@@ -95,18 +95,20 @@ class SiteGenerator extends Generator
 
         $siteaccess = array();
         foreach ($sites as $languageCode => $newSite) {
-            $sites[$languageCode]['siteaccess'] = strtolower($vendorName . '_' . $customerName . '_' . $newSite['name']);
+            $sites[$languageCode]['siteaccess'] = strtolower(
+                $vendorName . '_' . $customerName . '_' . $siteName . '_' .
+                implode(explode('-', $languageCode)));
             $sites[$languageCode]['exclude_uri_prefixes'] = $excludeUriPrefixes[$languageCode];
             $siteaccess[] = $sites[$languageCode]['siteaccess'];
         }
         $siteaccess = implode(', ', $siteaccess);
 
-        $basename = ProjectGenerator::CUSTOMERS . $customerName . CustomerGenerator::SITES . $site['name'];
+        $basename = ProjectGenerator::CUSTOMERS . $customerName . CustomerGenerator::SITES . $siteName;
         $basenameUnderscore = ProjectGenerator::CUSTOMERS . '_' .
-            $customerName . '_' . CustomerGenerator::SITES . '_' . $site['name'];
+            $customerName . '_' . CustomerGenerator::SITES . '_' . $siteName;
         $parameters = array(
             'namespace' => $namespace,
-            'bundle'    => $site['name'] . 'Bundle',
+            'bundle'    => $siteName . 'Bundle',
             'format'    => 'yml',
             'bundle_basename' => $vendorName . $basename,
             'extension_alias' => strtolower($basenameUnderscore),
@@ -139,15 +141,10 @@ class SiteGenerator extends Generator
             $parameters
         );
 
-        $firstSiteaccess = $siteaccess;
-        $arraySiteaccess = explode(',', $siteaccess);
-        if (is_array($arraySiteaccess)) {
-            $firstSiteaccess = trim($arraySiteaccess[0]);
-        }
         $this->renderFile(
             'site/Resources/config/ezplatform.yml.twig',
             $targetDir . '/' . $vendorName . '/ProjectBundle/Resources/config/sites/' .
-            $firstSiteaccess . '/ezplatform.yml',
+            strtolower($vendorName . '_' . $customerName . '_' . $siteName) . '/ezplatform.yml',
             $parameters
         );
 

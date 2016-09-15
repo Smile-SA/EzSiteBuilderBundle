@@ -67,11 +67,6 @@ class SiteType extends AbstractType
             ->add('languageCode', HiddenType::class, array(
                 'label' => 'form.site.languagecode.label'
             ))
-            ->add('siteName', TextType::class, array(
-                'label' => 'form.site.sitename.label',
-                'required' => false,
-                'constraints' => array(new SiteNameConstraint())
-            ))
             ->add('host', TextType::class, array(
                 'label' => 'form.site.host.label',
                 'required' => false,

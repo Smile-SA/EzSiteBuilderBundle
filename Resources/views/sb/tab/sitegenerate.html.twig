@@ -8,6 +8,11 @@
         {{ form_widget(params.sites.model) }}
         {{ form_errors(params.sites.model) }}
     </div>
+    <div class="pure-control-group">
+        <label for="{{ params.sites.siteName.vars.id }}">{{ form_label(params.sites.siteName) }}</label>
+        {{ form_widget(params.sites.siteName) }}
+        {{ form_errors(params.sites.siteName) }}
+    </div>
 
     <div class="ez-view-edgarezsb-table">
         <div class="ez-block-wrapper ez-font-icon">
@@ -15,7 +20,6 @@
                 <thead class="ez-block-header">
                 <tr>
                     <th class="ez-block-head-service">{{ 'sb.sites.th.language'|trans }}</th>
-                    <th class="ez-block-head-service">{{ 'sb.sites.th.siteName'|trans }}</th>
                     <th class="ez-block-head-service">{{ 'sb.sites.th.host'|trans }}</th>
                     <th class="ez-block-head-service">{{ 'sb.sites.th.suffix'|trans }}</th>
                 </tr>
@@ -30,10 +34,6 @@
                             {{ language }}
                             {% set name = id ~ '[languageCode]' %}
                             <input type="hidden" name="{{ name }}" value="{{ site.languageCode.vars.value }}"
-                        </td>
-                        <td class="ez-block-cell">
-                            {% set name = id ~ '[siteName]' %}
-                            <input type="text" name="{{ name }}" />
                         </td>
                         <td class="ez-block-cell">
                             {% set name = id ~ '[host]' %}

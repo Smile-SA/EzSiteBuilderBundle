@@ -86,6 +86,7 @@ services:
             - @ezpublish.api.service.location
             - @ezpublish.api.service.url_alias
             - @ezpublish.api.service.content
+            - @ezpublish.api.service.language
             - @edgar_ez_tools.content.service
             - @edgar_ez_tools.role.service
 

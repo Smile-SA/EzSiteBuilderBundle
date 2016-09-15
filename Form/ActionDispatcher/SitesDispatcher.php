@@ -13,6 +13,7 @@ class SitesDispatcher extends AbstractActionDispatcher
     protected function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setRequired('model');
+        $resolver->setRequired('siteName');
     }
 
     /**
