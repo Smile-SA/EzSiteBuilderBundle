@@ -31,7 +31,7 @@ class SitePolicyCommand extends BaseContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('smileez:sitebuilder:site:policy')
+            ->setName('smile:sitebuilder:site:policy')
             ->setDescription('Manage SiteBuilder Site limitation policies');
     }
 

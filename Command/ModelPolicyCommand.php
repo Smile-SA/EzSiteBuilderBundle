@@ -24,7 +24,7 @@ class ModelPolicyCommand extends BaseContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('smileez:sitebuilder:model:policy')
+            ->setName('smile:sitebuilder:model:policy')
             ->setDescription('Manage SiteBuilder Model limitation policies');
     }
 

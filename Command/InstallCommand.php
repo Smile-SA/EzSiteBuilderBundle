@@ -71,7 +71,7 @@ class InstallCommand extends BaseContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('smileez:sitebuilder:install')
+            ->setName('smile:sitebuilder:install')
             ->setDescription('Install SiteBuilder prerequisites');
     }
 

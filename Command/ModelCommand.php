@@ -43,7 +43,7 @@ class ModelCommand extends BaseContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('smileez:sitebuilder:model:generate')
+            ->setName('smile:sitebuilder:model:generate')
             ->setDescription('Generate SiteBuilder Model (Content Structure and Bundle)');
     }
 

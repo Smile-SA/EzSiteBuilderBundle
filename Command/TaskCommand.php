@@ -26,7 +26,7 @@ class TaskCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('smileez:sitebuilder:task')
+            ->setName('smile:sitebuilder:task')
             ->setDescription('Execute sitebuilder task');
     }
 

@@ -62,7 +62,7 @@ class CustomerCommand extends BaseContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('smileez:sitebuilder:customer:generate')
+            ->setName('smile:sitebuilder:customer:generate')
             ->setDescription('Generate SiteBuilder Customer (Content Structure and Bundle)');
     }
 
