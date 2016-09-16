@@ -1,11 +1,11 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Command;
+namespace Smile\EzSiteBuilderBundle\Command;
 
-use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
-use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
-use EdgarEz\SiteBuilderBundle\Mail\Sender;
-use EdgarEz\SiteBuilderBundle\Service\CustomerService;
+use Smile\EzSiteBuilderBundle\Generator\CustomerGenerator;
+use Smile\EzSiteBuilderBundle\Generator\ProjectGenerator;
+use Smile\EzSiteBuilderBundle\Mail\Sender;
+use Smile\EzSiteBuilderBundle\Service\CustomerService;
 use eZ\Publish\API\Repository\LanguageService;
 use eZ\Publish\API\Repository\Repository;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,7 +14,7 @@ use Symfony\Component\Console\Question\Question;
 
 /**
  * Class CustomerCommand
- * @package EdgarEz\SiteBuilderBundle\Command
+ * @package Smile\EzSiteBuilderBundle\Command
  */
 class CustomerCommand extends BaseContainerAwareCommand
 {
@@ -62,7 +62,7 @@ class CustomerCommand extends BaseContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('edgarez:sitebuilder:customer:generate')
+            ->setName('smileez:sitebuilder:customer:generate')
             ->setDescription('Generate SiteBuilder Customer (Content Structure and Bundle)');
     }
 
@@ -75,7 +75,7 @@ class CustomerCommand extends BaseContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $adminID = $this->getContainer()->getParameter('edgar_ez_tools.adminid');
+        $adminID = $this->getContainer()->getParameter('smile_ez_tools.adminid');
         /** @var Repository $repository */
         $repository = $this->getContainer()->get('ezpublish.api.repository');
         $repository->setCurrentUser($repository->getUserService()->loadUser($adminID));
@@ -89,7 +89,7 @@ class CustomerCommand extends BaseContainerAwareCommand
         $this->askUserCreator($input, $output);
 
         /** @var CustomerService $customerService */
-        $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
+        $customerService = $this->getContainer()->get('smile_ez_site_builder.customer.service');
         /** @var LanguageService $languageService */
         $languageService = $repository->getContentLanguageService();
 
@@ -99,7 +99,7 @@ class CustomerCommand extends BaseContainerAwareCommand
             $languageCode = $languageService->getDefaultLanguageCode();
 
             $parentLocationID = $this->getContainer()->getParameter(
-                'edgarez_sb.' . strtolower($basename) . '.default.customers_location_id'
+                'smileez_sb.' . strtolower($basename) . '.default.customers_location_id'
             );
             $returnValue = $customerService->createContentStructure(
                 $parentLocationID,
@@ -109,7 +109,7 @@ class CustomerCommand extends BaseContainerAwareCommand
             $this->customerLocationID = $returnValue['customerLocationID'];
 
             $parentLocationID = $this->getContainer()->getParameter(
-                'edgarez_sb.' . strtolower($basename) . '.default.media_customers_location_id'
+                'smileez_sb.' . strtolower($basename) . '.default.media_customers_location_id'
             );
             $returnValue = $customerService->createMediaContentStructure(
                 $parentLocationID,
@@ -119,10 +119,10 @@ class CustomerCommand extends BaseContainerAwareCommand
             $this->mediaCustomerLocationID = $returnValue['mediaCustomerLocationID'];
 
             $parentCreatorLocationID = $this->getContainer()->getParameter(
-                'edgarez_sb.' . strtolower($basename) . '.default.user_creators_location_id'
+                'smileez_sb.' . strtolower($basename) . '.default.user_creators_location_id'
             );
             $parentEditorLocationID = $this->getContainer()->getParameter(
-                'edgarez_sb.' . strtolower($basename) . '.default.user_editors_location_id'
+                'smileez_sb.' . strtolower($basename) . '.default.user_editors_location_id'
             );
             $returnValue = $customerService->createUserGroups(
                 $parentCreatorLocationID,
@@ -202,13 +202,13 @@ class CustomerCommand extends BaseContainerAwareCommand
         $questionHelper = $this->getQuestionHelper();
 
         /** @var CustomerService $customerService */
-        $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
+        $customerService = $this->getContainer()->get('smile_ez_site_builder.customer.service');
 
         $customerName = false;
         $question = new Question($questionHelper->getQuestion('Customer name used to construct namespace', null));
         $question->setValidator(
             array(
-                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'Smile\EzSiteBuilderBundle\Command\Validators',
                 'validateVendorName'
             )
         );
@@ -240,7 +240,7 @@ class CustomerCommand extends BaseContainerAwareCommand
         $question = new Question($questionHelper->getQuestion('First name', null));
         $question->setValidator(
             array(
-                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'Smile\EzSiteBuilderBundle\Command\Validators',
                 'validateFirstName'
             )
         );
@@ -255,7 +255,7 @@ class CustomerCommand extends BaseContainerAwareCommand
         $question = new Question($questionHelper->getQuestion('Last name', null));
         $question->setValidator(
             array(
-                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'Smile\EzSiteBuilderBundle\Command\Validators',
                 'validateLastName'
             )
         );
@@ -267,13 +267,13 @@ class CustomerCommand extends BaseContainerAwareCommand
         $this->userLastName = $userLastName;
 
         /** @var CustomerService $customerService */
-        $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
+        $customerService = $this->getContainer()->get('smile_ez_site_builder.customer.service');
 
         $userEmail = false;
         $question = new Question($questionHelper->getQuestion('User email', null));
         $question->setValidator(
             array(
-                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'Smile\EzSiteBuilderBundle\Command\Validators',
                 'validateEmail'
             )
         );
@@ -299,7 +299,7 @@ class CustomerCommand extends BaseContainerAwareCommand
         $questionHelper = $this->getQuestionHelper();
 
         /** @var CustomerService $customerService */
-        $customerService = $this->getContainer()->get('edgar_ez_site_builder.customer.service');
+        $customerService = $this->getContainer()->get('smile_ez_site_builder.customer.service');
         $output->writeln('User creator initialized');
 
         $userPassword = $customerService->initializeUser(
@@ -311,11 +311,11 @@ class CustomerCommand extends BaseContainerAwareCommand
         );
 
         /** @var Sender $mailer */
-        $mailer = $this->getContainer()->get('edgar_ez_site_builder.mailer');
+        $mailer = $this->getContainer()->get('smile_ez_site_builder.mailer');
         $mailer->send(
             'new user (' . $this->userEmail . '/' . $userPassword . ')',
             'new user',
-            $this->getContainer()->getParameter('edgar_ez_site_builder.sysadminemail'),
+            $this->getContainer()->getParameter('smile_ez_site_builder.sysadminemail'),
             $this->userEmail
         );
 

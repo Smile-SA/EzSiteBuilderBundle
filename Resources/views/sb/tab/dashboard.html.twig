@@ -1,6 +1,6 @@
 {% trans_default_domain "sitebuilder_dashboard" %}
 
-<div class="ez-view-edgarezsb-table">
+<div class="ez-view-smileezsb-table">
     <div class="ez-block-wrapper ez-font-icon">
         <table class="ez-block-items-table">
             <thead class="ez-block-header">
@@ -16,7 +16,7 @@
             </thead>
             <tbody class="ez-block-content">
 
-                {{ render( controller('edgar_ez_site_builder.controller.sb.dashboard:listAction', {
+                {{ render( controller('smile_ez_site_builder.controller.sb.dashboard:listAction', {
                     'userID': params.user_id
                 } ) ) }}
 

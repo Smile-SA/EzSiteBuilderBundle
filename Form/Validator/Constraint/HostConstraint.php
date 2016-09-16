@@ -1,6 +1,6 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Form\Validator\Constraint;
+namespace Smile\EzSiteBuilderBundle\Form\Validator\Constraint;
 
 use Symfony\Component\Validator\Constraint;
 
@@ -10,7 +10,7 @@ class HostConstraint extends Constraint
 
     public function validatedBy()
     {
-        return 'edgar_ez_site_builder.validator.host';
+        return 'smile_ez_site_builder.validator.host';
     }
 
     public function getTargets()

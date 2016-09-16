@@ -1,6 +1,6 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Generator;
+namespace Smile\EzSiteBuilderBundle\Generator;
 
 use Sensio\Bundle\GeneratorBundle\Generator\Generator;
 use Symfony\Component\Filesystem\Filesystem;
@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\Kernel;
 /**
  * Class SiteGenerator
  *
- * @package EdgarEz\SiteBuilderBundle\Generator
+ * @package Smile\EzSiteBuilderBundle\Generator
  */
 class SiteGenerator extends Generator
 {
@@ -124,7 +124,7 @@ class SiteGenerator extends Generator
             'siteaccess' => $siteaccess
         );
 
-        $this->setSkeletonDirs(array($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/skeleton')));
+        $this->setSkeletonDirs(array($this->kernel->locateResource('@SmileEzSiteBuilderBundle/Resources/skeleton')));
         $this->renderFile(
             'site/Bundle.php.twig',
             $dir . '/' . $vendorName . $basename . 'Bundle.php',

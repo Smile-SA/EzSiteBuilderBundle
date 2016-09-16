@@ -1,6 +1,6 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Form\ActionDispatcher;
+namespace Smile\EzSiteBuilderBundle\Form\ActionDispatcher;
 
 use EzSystems\RepositoryForms\Form\ActionDispatcher\AbstractActionDispatcher;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -8,7 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Class InstallDispatcher
  *
- * @package EdgarEz\SiteBuilderBundle\Form\ActionDispatcher
+ * @package Smile\EzSiteBuilderBundle\Form\ActionDispatcher
  */
 class InstallDispatcher extends AbstractActionDispatcher
 {

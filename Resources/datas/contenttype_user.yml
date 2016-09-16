@@ -1,5 +1,5 @@
 contentTypeGroup: SiteBuilder
-contentTypeIdentifier: edgar_ez_sb_user
+contentTypeIdentifier: smile_ez_sb_user
 contentTypeName: User
 contentTypeMainLanguage: eng-GB
 contentTypeNameSchema: <last_name> <first_name>

@@ -1,10 +1,10 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Form\Type;
+namespace Smile\EzSiteBuilderBundle\Form\Type;
 
-use EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\HostConstraint;
-use EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\HostSuffixConstraint;
-use EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\SiteNameConstraint;
+use Smile\EzSiteBuilderBundle\Form\Validator\Constraint\HostConstraint;
+use Smile\EzSiteBuilderBundle\Form\Validator\Constraint\HostSuffixConstraint;
+use Smile\EzSiteBuilderBundle\Form\Validator\Constraint\SiteNameConstraint;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\SearchService;
 use eZ\Publish\API\Repository\Values\Content\Query;
@@ -54,7 +54,7 @@ class SiteType extends AbstractType
      */
     public function getName()
     {
-        return 'edgarezsb_forms_site';
+        return 'smileezsb_forms_site';
     }
 
     /**

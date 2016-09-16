@@ -1,13 +1,13 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Values\Content;
+namespace Smile\EzSiteBuilderBundle\Values\Content;
 
 use eZ\Publish\API\Repository\Values\ValueObject;
 
 /**
  * Class Install
  *
- * @package EdgarEz\SiteBuilderBundle\Values\Content
+ * @package Smile\EzSiteBuilderBundle\Values\Content
  */
 class Install extends ValueObject
 {

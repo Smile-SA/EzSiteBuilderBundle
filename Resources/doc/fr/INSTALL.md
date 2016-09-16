@@ -10,7 +10,7 @@ Ce guide d'installation et de configuration vous permet de préparer votre envir
 ### Bundle et pré-requis
 
 ```console
-composer require edgarez/sitebuilderbundle
+composer require smileez/sitebuilderbundle
 ```
 
 ### Ajout dépendance bundles
@@ -25,8 +25,8 @@ class AppKernel extends Kernel
         $bundles = array(
             ...
             new JMS\TranslationBundle\JMSTranslationBundle(),
-            new EdgarEz\ToolsBundle\EdgarEzToolsBundle(),
-            new EdgarEz\SiteBuilderBundle\EdgarEzSiteBuilderBundle()
+            new Smile\EzToolsBundle\SmileEzToolsBundle(),
+            new Smile\EzSiteBuilderBundle\SmileEzSiteBuilderBundle()
 ```
 
 ### Ajout paramètres par défaut
@@ -36,9 +36,9 @@ Ajouter dans le fichier app/parameters.yml
 ```yml
 parameters:
     ...
-    edgar_ez_tools.adminid: 14
-    edgar_ez_site_builder.host: <your_host>
-    edgar_ez_site_builder.sysadminemail: <your_admin_email>
+    smile_ez_tools.adminid: 14
+    smile_ez_site_builder.host: <your_host>
+    smile_ez_site_builder.sysadminemail: <your_admin_email>
 ```
 
 ### Ajout support Doctrine ORM
@@ -62,8 +62,8 @@ php app/console doctrine:schema:update --force
 Ajouter dans la configuration globale app/config/routing.yml
 
 ```yaml
-edgarezsb_platform:
-    resource: '@EdgarEzSiteBuilderBundle/Resources/config/routing.yml'
+smileezsb_platform:
+    resource: '@SmileEzSiteBuilderBundle/Resources/config/routing.yml'
 ```
 
 ### Redéfinir les assets
@@ -78,7 +78,7 @@ php app/console assetic:dump web
 #### Mode console
 
 ```console
-php app/console edgarez:sitebuilder:install
+php app/console smileez:sitebuilder:install
 ```
 
 Le mode interactif de cette installation vous demande les informations suivantes :
@@ -142,33 +142,33 @@ class AppKernel extends Kernel
             ...
             new <VendorName>\ProjectBundle\<VendorName>ProjectBundle(),
         );
-        
+
 
         switch ($this->getEnvironment()) {
             ...
         }
-        
+
 
         // ### Ajouter l'appel à cette méthode ###
         $bundles = $this->siteBuilderBundles($bundles);
 
         return $bundles;
     }
-    
+
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load($this->getRootDir() . '/config/config_' . $this->getEnvironment() . '.yml');
     }
-    
+
 
     // ### Surcharge de la méthode de définition du dossier de cache
     public function getCacheDir()
     {
         return $this->rootDir.'/cache/'.$this->environment . ((getenv('SITEBUILDER_ENV')) ? '/' . getenv('SITEBUILDER_ENV') : '');
     }
-    
-    
+
+
     // ### Ajouter cette méthode ###
     public function siteBuilderBundles($bundles)
     {
@@ -200,5 +200,5 @@ ENV=dev
 # Chemin du client PHP
 PHP=/usr/bin/php
 
-*/2 * * * * su - $APACHEUSER -c "cd $EZPUBLISHROOT && $PHP app/console --env=$ENV edgarez:sitebuilder:task" > /tmp/edgarezsb_tasks.log
+*/2 * * * * su - $APACHEUSER -c "cd $EZPUBLISHROOT && $PHP app/console --env=$ENV smileez:sitebuilder:task" > /tmp/smileezsb_tasks.log
 ```

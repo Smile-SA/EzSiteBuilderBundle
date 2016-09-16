@@ -1,28 +1,28 @@
-YUI.add('edgarezsb-sbapplugin', function (Y) {
-    Y.namespace('edgarEzSb.Plugin');
+YUI.add('smileezsb-sbapplugin', function (Y) {
+    Y.namespace('smileEzSb.Plugin');
 
-    Y.edgarEzSb.Plugin.SbAppPlugin = Y.Base.create('edgarezsbSbAppPlugin', Y.Plugin.Base, [], {
+    Y.smileEzSb.Plugin.SbAppPlugin = Y.Base.create('smileezsbSbAppPlugin', Y.Plugin.Base, [], {
         initializer: function () {
             var app = this.get('host');
 
-            app.views.edgarezsbSbView = {
-                type: Y.edgarEzSb.SbView
+            app.views.smileezsbSbView = {
+                type: Y.smileEzSb.SbView
             };
 
             app.route({
-                name: "edgarEzSbSb",
-                path: "/edgarezsb/sb",
-                view: "edgarezsbSbView",
-                service: Y.edgarEzSb.SbViewService,
+                name: "smileEzSbSb",
+                path: "/smileezsb/sb",
+                view: "smileezsbSbView",
+                service: Y.smileEzSb.SbViewService,
                 sideViews: {'navigationHub': true, 'discoveryBar': false},
                 callbacks: ['open', 'checkUser', 'handleSideViews', 'handleMainView'],
             });
         }
     }, {
-        NS: 'edgarezsbTypeApp' // don't forget that
+        NS: 'smileezsbTypeApp' // don't forget that
     });
 
     Y.eZ.PluginRegistry.registerPlugin(
-        Y.edgarEzSb.Plugin.SbAppPlugin, ['platformuiApp']
+        Y.smileEzSb.Plugin.SbAppPlugin, ['platformuiApp']
     );
 });

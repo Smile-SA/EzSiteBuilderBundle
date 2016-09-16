@@ -1,6 +1,6 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Form\ActionDispatcher;
+namespace Smile\EzSiteBuilderBundle\Form\ActionDispatcher;
 
 use EzSystems\RepositoryForms\Form\ActionDispatcher\AbstractActionDispatcher;
 use Symfony\Component\OptionsResolver\OptionsResolver;

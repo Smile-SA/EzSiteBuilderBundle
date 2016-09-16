@@ -1,10 +1,10 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Form\Type;
+namespace Smile\EzSiteBuilderBundle\Form\Type;
 
-use EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\CustomerNameConstraint;
-use EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\UserEmailConstraint;
-use EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\UserNameConstraint;
+use Smile\EzSiteBuilderBundle\Form\Validator\Constraint\CustomerNameConstraint;
+use Smile\EzSiteBuilderBundle\Form\Validator\Constraint\UserEmailConstraint;
+use Smile\EzSiteBuilderBundle\Form\Validator\Constraint\UserNameConstraint;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -14,7 +14,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class CustomerType
- * @package EdgarEz\SiteBuilderBundle\Form\Type
+ * @package Smile\EzSiteBuilderBundle\Form\Type
  */
 class CustomerType extends AbstractType
 {
@@ -23,7 +23,7 @@ class CustomerType extends AbstractType
      */
     public function getName()
     {
-        return 'edgarezsb_forms_customer';
+        return 'smileezsb_forms_customer';
     }
 
     /**

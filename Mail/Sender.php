@@ -1,6 +1,6 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Mail;
+namespace Smile\EzSiteBuilderBundle\Mail;
 
 use Swift_Mailer;
 use Swift_Message;
@@ -8,7 +8,7 @@ use Swift_Message;
 /**
  * Class Sender
  *
- * @package EdgarEz\SiteBuilderBundle\Mail
+ * @package Smile\EzSiteBuilderBundle\Mail
  */
 class Sender
 {

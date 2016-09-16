@@ -1,10 +1,10 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Command;
+namespace Smile\EzSiteBuilderBundle\Command;
 
-use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
-use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
-use EdgarEz\SiteBuilderBundle\Service\SiteService;
+use Smile\EzSiteBuilderBundle\Generator\CustomerGenerator;
+use Smile\EzSiteBuilderBundle\Generator\ProjectGenerator;
+use Smile\EzSiteBuilderBundle\Service\SiteService;
 use eZ\Publish\API\Repository\Repository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -13,7 +13,7 @@ use Symfony\Component\Console\Question\Question;
 /**
  * Class SitePolicyCommand
  *
- * @package EdgarEz\SiteBuilderBundle\Command
+ * @package Smile\EzSiteBuilderBundle\Command
  */
 class SitePolicyCommand extends BaseContainerAwareCommand
 {
@@ -31,7 +31,7 @@ class SitePolicyCommand extends BaseContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('edgarez:sitebuilder:site:policy')
+            ->setName('smileez:sitebuilder:site:policy')
             ->setDescription('Manage SiteBuilder Site limitation policies');
     }
 
@@ -44,7 +44,7 @@ class SitePolicyCommand extends BaseContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $adminID = $this->getContainer()->getParameter('edgar_ez_tools.adminid');
+        $adminID = $this->getContainer()->getParameter('smile_ez_tools.adminid');
         /** @var Repository $repository */
         $repository = $this->getContainer()->get('ezpublish.api.repository');
         $repository->setCurrentUser($repository->getUserService()->loadUser($adminID));
@@ -96,7 +96,7 @@ class SitePolicyCommand extends BaseContainerAwareCommand
         $question = new Question($questionHelper->getQuestion('Customer name used to construct namespace', null));
         $question->setValidator(
             array(
-                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'Smile\EzSiteBuilderBundle\Command\Validators',
                 'validateVendorName'
             )
         );
@@ -122,7 +122,7 @@ class SitePolicyCommand extends BaseContainerAwareCommand
         $question = new Question($questionHelper->getQuestion('Site name used to construct namespace', null));
         $question->setValidator(
             array(
-                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'Smile\EzSiteBuilderBundle\Command\Validators',
                 'validateVendorName'
             )
         );
@@ -143,16 +143,16 @@ class SitePolicyCommand extends BaseContainerAwareCommand
     protected function addSiteaccessLimitation($customerName, $siteaccessName)
     {
         /** @var SiteService $siteSerice */
-        $siteService = $this->getContainer()->get('edgar_ez_site_builder.site.service');
+        $siteService = $this->getContainer()->get('smile_ez_site_builder.site.service');
 
         $extensionAlias = strtolower(
             ProjectGenerator::CUSTOMERS . '_' . $customerName . '_' . CustomerGenerator::SITES
         );
         $roleCreatorID = $this->getContainer()->getParameter(
-            'edgarez_sb.customer.' . $extensionAlias . '.default.customer_user_creator_role_id'
+            'smileez_sb.customer.' . $extensionAlias . '.default.customer_user_creator_role_id'
         );
         $roleEditorID = $this->getContainer()->getParameter(
-            'edgarez_sb.customer.' . $extensionAlias . '.default.customer_user_editor_role_id'
+            'smileez_sb.customer.' . $extensionAlias . '.default.customer_user_editor_role_id'
         );
 
         /** @var Repository $repository */

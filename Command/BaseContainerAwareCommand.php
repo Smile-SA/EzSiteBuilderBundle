@@ -1,8 +1,8 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Command;
+namespace Smile\EzSiteBuilderBundle\Command;
 
-use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
+use Smile\EzSiteBuilderBundle\Generator\ProjectGenerator;
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
 use Sensio\Bundle\GeneratorBundle\Command\GeneratorCommand;
 use Sensio\Bundle\GeneratorBundle\Command\Helper\QuestionHelper;
@@ -18,7 +18,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
  *
  * Abstract class embeded questionHelper and extended sensio GeneratorCommand
  *
- * @package EdgarEz\SiteBuilderBundle\Command
+ * @package Smile\EzSiteBuilderBundle\Command
  */
 abstract class BaseContainerAwareCommand extends GeneratorCommand
 {
@@ -122,7 +122,7 @@ abstract class BaseContainerAwareCommand extends GeneratorCommand
         $question = new Question($questionHelper->getQuestion('Vendor name used to construct namespace', null));
         $question->setValidator(
             array(
-                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'Smile\EzSiteBuilderBundle\Command\Validators',
                 'validateVendorName'
             )
         );
@@ -162,7 +162,7 @@ abstract class BaseContainerAwareCommand extends GeneratorCommand
         $question = new Question($questionHelper->getQuestion('Target directory', $dirSuggest), $dirSuggest);
         $question->setValidator(
             array(
-                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'Smile\EzSiteBuilderBundle\Command\Validators',
                 'validateTargetDir'
             )
         );
@@ -196,7 +196,7 @@ abstract class BaseContainerAwareCommand extends GeneratorCommand
     protected function getVendorNameDir()
     {
         $basename = substr(ProjectGenerator::BUNDLE, 0, -6);
-        $extensionAlias = 'edgarez_sb.' . strtolower($basename);
+        $extensionAlias = 'smileez_sb.' . strtolower($basename);
 
         $this->vendorName = $this->getContainer()->getParameter($extensionAlias . '.default.vendor_name');
         $this->dir = $this->getContainer()->getParameter($extensionAlias . '.default.dir');

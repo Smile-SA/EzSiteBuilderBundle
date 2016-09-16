@@ -1,8 +1,8 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Data\Customer;
+namespace Smile\EzSiteBuilderBundle\Data\Customer;
 
-use EdgarEz\SiteBuilderBundle\Values\Content\CustomerStruct;
+use Smile\EzSiteBuilderBundle\Values\Content\CustomerStruct;
 
 class CustomerData extends CustomerStruct
 {

@@ -1,4 +1,4 @@
-# EdgarEzSiteBuilderBundle
+# SmileEzSiteBuilderBundle
 
 [![Latest Stable Version](https://poser.pugx.org/edgarez/sitebuilderbundle/v/stable)](https://packagist.org/packages/edgarez/sitebuilderbundle) 
 [![Total Downloads](https://poser.pugx.org/edgarez/sitebuilderbundle/downloads)](https://packagist.org/packages/edgarez/sitebuilderbundle)

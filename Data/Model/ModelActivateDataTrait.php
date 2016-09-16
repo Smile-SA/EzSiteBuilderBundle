@@ -1,8 +1,8 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Data\Model;
+namespace Smile\EzSiteBuilderBundle\Data\Model;
 
-use EdgarEz\SiteBuilderBundle\Values\Content\ModelActivate;
+use Smile\EzSiteBuilderBundle\Values\Content\ModelActivate;
 
 trait ModelActivateDataTrait
 {

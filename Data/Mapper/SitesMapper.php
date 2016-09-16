@@ -1,8 +1,8 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Data\Mapper;
+namespace Smile\EzSiteBuilderBundle\Data\Mapper;
 
-use EdgarEz\SiteBuilderBundle\Data\Site\SitesData;
+use Smile\EzSiteBuilderBundle\Data\Site\SitesData;
 use eZ\Publish\API\Repository\Values\ValueObject;
 use EzSystems\RepositoryForms\Data\Mapper\FormDataMapperInterface;
 

@@ -1,21 +1,21 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Controller;
+namespace Smile\EzSiteBuilderBundle\Controller;
 
-use EdgarEz\SiteBuilderBundle\Data\Mapper\SiteActivateMapper;
-use EdgarEz\SiteBuilderBundle\Data\Mapper\SiteMapper;
-use EdgarEz\SiteBuilderBundle\Data\Site\SiteActivateData;
-use EdgarEz\SiteBuilderBundle\Data\Site\SiteData;
-use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
-use EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\SiteActivateDispatcher;
-use EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\SiteDispatcher;
-use EdgarEz\SiteBuilderBundle\Form\Type\SiteActivateType;
-use EdgarEz\SiteBuilderBundle\Form\Type\SiteType;
-use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
-use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
-use EdgarEz\SiteBuilderBundle\Service\SecurityService;
-use EdgarEz\SiteBuilderBundle\Values\Content\Site;
-use EdgarEz\SiteBuilderBundle\Values\Content\SiteActivate;
+use Smile\EzSiteBuilderBundle\Data\Mapper\SiteActivateMapper;
+use Smile\EzSiteBuilderBundle\Data\Mapper\SiteMapper;
+use Smile\EzSiteBuilderBundle\Data\Site\SiteActivateData;
+use Smile\EzSiteBuilderBundle\Data\Site\SiteData;
+use Smile\EzSiteBuilderBundle\Entity\SiteBuilderTask;
+use Smile\EzSiteBuilderBundle\Form\ActionDispatcher\SiteActivateDispatcher;
+use Smile\EzSiteBuilderBundle\Form\ActionDispatcher\SiteDispatcher;
+use Smile\EzSiteBuilderBundle\Form\Type\SiteActivateType;
+use Smile\EzSiteBuilderBundle\Form\Type\SiteType;
+use Smile\EzSiteBuilderBundle\Generator\CustomerGenerator;
+use Smile\EzSiteBuilderBundle\Generator\ProjectGenerator;
+use Smile\EzSiteBuilderBundle\Service\SecurityService;
+use Smile\EzSiteBuilderBundle\Values\Content\Site;
+use Smile\EzSiteBuilderBundle\Values\Content\SiteActivate;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\SearchService;
 use eZ\Publish\API\Repository\Values\Content\Query;
@@ -67,13 +67,13 @@ class SiteController extends BaseController
 
     public function generateAction(Request $request)
     {
-        $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
+        $actionUrl = $this->generateUrl('smileezsb_sb', ['tabItem' => 'dashboard']);
         if (!$this->securityService->checkAuthorization('sitegenerate')) {
             return $this->redirectAfterFormPost($actionUrl);
         }
 
-        $site = $request->request->get('edgarezsb_forms_sites');
-        $sites = $request->request->get('edgarezsb_forms_site');
+        $site = $request->request->get('smileezsb_forms_sites');
+        $sites = $request->request->get('smileezsb_forms_site');
 
         $this->initTask($site, $sites);
         $this->initTask($site, $sites, 'policy', true);
@@ -95,7 +95,7 @@ class SiteController extends BaseController
             }
         }
 
-        return $this->render('EdgarEzSiteBuilderBundle:sb:tab/site/list.html.twig', [
+        return $this->render('SmileEzSiteBuilderBundle:sb:tab/site/list.html.twig', [
             'totalCount' => $datas->totalCount,
             'datas' => $sites
         ]);
@@ -103,7 +103,7 @@ class SiteController extends BaseController
 
     public function activateAction(Request $request)
     {
-        $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
+        $actionUrl = $this->generateUrl('smileezsb_sb', ['tabItem' => 'dashboard']);
         if (!$this->securityService->checkAuthorization('siteactivate')) {
             return $this->redirectAfterFormPost($actionUrl);
         }
@@ -123,11 +123,11 @@ class SiteController extends BaseController
             return $this->redirectAfterFormPost($actionUrl);
         }
 
-        $this->getErrors($form, 'edgarezsb_form_siteactivate');
+        $this->getErrors($form, 'smileezsb_form_siteactivate');
 
         $tabItems = $this->tabItems;
         unset($tabItems[0]);
-        return $this->render('EdgarEzSiteBuilderBundle:sb:index.html.twig', [
+        return $this->render('SmileEzSiteBuilderBundle:sb:index.html.twig', [
             'tab_items' => $tabItems,
             'tab_item_selected' => 'siteactivate',
             'params' => array(),
@@ -161,9 +161,9 @@ class SiteController extends BaseController
         );
         $query = new Query();
         $locationCriterion = new Query\Criterion\ParentLocationId(
-            $this->container->getParameter('edgarez_sb.customer.' . $extensionAlias . '.default.customer_location_id')
+            $this->container->getParameter('smileez_sb.customer.' . $extensionAlias . '.default.customer_location_id')
         );
-        $contentTypeIdentifier = new Query\Criterion\ContentTypeIdentifier('edgar_ez_sb_model');
+        $contentTypeIdentifier = new Query\Criterion\ContentTypeIdentifier('smile_ez_sb_model');
         $activated = new Query\Criterion\Field('activated', Query\Criterion\Operator::EQ, false);
 
         $query->filter = new Query\Criterion\LogicalAnd(

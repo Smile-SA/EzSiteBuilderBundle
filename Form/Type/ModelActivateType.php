@@ -1,8 +1,8 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Form\Type;
+namespace Smile\EzSiteBuilderBundle\Form\Type;
 
-use EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\LocationIDConstraint;
+use Smile\EzSiteBuilderBundle\Form\Validator\Constraint\LocationIDConstraint;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -23,7 +23,7 @@ class ModelActivateType extends AbstractType
      */
     public function getName()
     {
-        return 'edgarezsb_form_modelactivate';
+        return 'smileezsb_form_modelactivate';
     }
 
     /**
@@ -47,8 +47,8 @@ class ModelActivateType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => '\EdgarEz\SiteBuilderBundle\Values\Content\ModelActivateStruct',
-            'translation_domain' => 'edgarezsb_form_model',
+            'data_class' => '\Smile\EzSiteBuilderBundle\Values\Content\ModelActivateStruct',
+            'translation_domain' => 'smileezsb_form_model',
         ]);
     }
 }

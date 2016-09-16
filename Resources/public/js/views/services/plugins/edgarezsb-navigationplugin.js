@@ -1,7 +1,7 @@
-YUI.add('edgarezsb-navigationplugin', function (Y) {
-    Y.namespace('edgarEzSb.Plugin');
+YUI.add('smileezsb-navigationplugin', function (Y) {
+    Y.namespace('smileEzSb.Plugin');
 
-    Y.edgarEzSb.Plugin.NavigationPlugin = Y.Base.create('edgarezsbNavigationPlugin', Y.eZ.Plugin.ViewServiceBase, [], {
+    Y.smileEzSb.Plugin.NavigationPlugin = Y.Base.create('smileezsbNavigationPlugin', Y.eZ.Plugin.ViewServiceBase, [], {
         initializer: function () {
             var service = this.get('host'); // the plugged object is called host
 
@@ -9,18 +9,18 @@ YUI.add('edgarezsb-navigationplugin', function (Y) {
                 Constructor: Y.eZ.NavigationItemView,
                 config: {
                     title: "Site Builder",
-                    identifier: "edgarezsb-list-contents",
+                    identifier: "smileezsb-list-contents",
                     route: {
-                        name: "edgarEzSbSb"
+                        name: "smileEzSbSb"
                     }
                 }
             }, 'platform');
         },
     }, {
-        NS: 'edgarezsbNavigation'
+        NS: 'smileezsbNavigation'
     });
 
     Y.eZ.PluginRegistry.registerPlugin(
-        Y.edgarEzSb.Plugin.NavigationPlugin, ['navigationHubViewService']
+        Y.smileEzSb.Plugin.NavigationPlugin, ['navigationHubViewService']
     );
 });

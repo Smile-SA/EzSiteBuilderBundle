@@ -1,10 +1,10 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Command;
+namespace Smile\EzSiteBuilderBundle\Command;
 
-use EdgarEz\SiteBuilderBundle\Generator\ModelGenerator;
-use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
-use EdgarEz\SiteBuilderBundle\Service\ModelService;
+use Smile\EzSiteBuilderBundle\Generator\ModelGenerator;
+use Smile\EzSiteBuilderBundle\Generator\ProjectGenerator;
+use Smile\EzSiteBuilderBundle\Service\ModelService;
 use eZ\Publish\API\Repository\LanguageService;
 use eZ\Publish\API\Repository\Repository;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,7 +13,7 @@ use Symfony\Component\Console\Question\Question;
 
 /**
  * Class ModelCommand
- * @package EdgarEz\SiteBuilderBundle\Command
+ * @package Smile\EzSiteBuilderBundle\Command
  */
 class ModelCommand extends BaseContainerAwareCommand
 {
@@ -43,7 +43,7 @@ class ModelCommand extends BaseContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('edgarez:sitebuilder:model:generate')
+            ->setName('smileez:sitebuilder:model:generate')
             ->setDescription('Generate SiteBuilder Model (Content Structure and Bundle)');
     }
 
@@ -56,7 +56,7 @@ class ModelCommand extends BaseContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $adminID = $this->getContainer()->getParameter('edgar_ez_tools.adminid');
+        $adminID = $this->getContainer()->getParameter('smile_ez_tools.adminid');
         /** @var Repository $repository */
         $repository = $this->getContainer()->get('ezpublish.api.repository');
         $repository->setCurrentUser($repository->getUserService()->loadUser($adminID));
@@ -69,7 +69,7 @@ class ModelCommand extends BaseContainerAwareCommand
         $this->askModelContent($input, $output);
 
         /** @var ModelService $modelService */
-        $modelService = $this->getContainer()->get('edgar_ez_site_builder.model.service');
+        $modelService = $this->getContainer()->get('smile_ez_site_builder.model.service');
         /** @var LanguageService $languageService */
         $languageService = $repository->getContentLanguageService();
 
@@ -79,14 +79,14 @@ class ModelCommand extends BaseContainerAwareCommand
             $languageCode = $languageService->getDefaultLanguageCode();
 
             $modelsLocationID = $this->getContainer()->getParameter(
-                'edgarez_sb.' . strtolower($basename) . '.default.models_location_id'
+                'smileez_sb.' . strtolower($basename) . '.default.models_location_id'
             );
             $returnValue = $modelService->createModelContent($modelsLocationID, $this->modelName, $languageCode);
             $this->excludeUriPrefixes = $returnValue['excludeUriPrefixes'];
             $this->modelLocationID = $returnValue['modelLocationID'];
 
             $mediaModelsLocationID = $this->getContainer()->getParameter(
-                'edgarez_sb.' . strtolower($basename) . '.default.media_models_location_id'
+                'smileez_sb.' . strtolower($basename) . '.default.media_models_location_id'
             );
             $returnValue = $modelService->createMediaModelContent(
                 $mediaModelsLocationID,
@@ -107,7 +107,7 @@ class ModelCommand extends BaseContainerAwareCommand
                 $this->modelLocationID,
                 $this->mediaModelLocationID,
                 $this->excludeUriPrefixes,
-                $this->getContainer()->getParameter('edgar_ez_site_builder.host'),
+                $this->getContainer()->getParameter('smile_ez_site_builder.host'),
                 $this->dir
             );
 
@@ -147,13 +147,13 @@ class ModelCommand extends BaseContainerAwareCommand
         $questionHelper = $this->getQuestionHelper();
 
         /** @var ModelService $modelService */
-        $modelService = $this->getContainer()->get('edgar_ez_site_builder.model.service');
+        $modelService = $this->getContainer()->get('smile_ez_site_builder.model.service');
 
         $modelName = false;
         $question = new Question($questionHelper->getQuestion('Model name used to construct namespace', null));
         $question->setValidator(
             array(
-                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'Smile\EzSiteBuilderBundle\Command\Validators',
                 'validateModelName'
             )
         );

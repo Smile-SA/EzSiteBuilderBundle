@@ -1,6 +1,6 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Form\Validator\Constraint;
+namespace Smile\EzSiteBuilderBundle\Form\Validator\Constraint;
 
 use Symfony\Component\Validator\Constraint;
 
@@ -11,7 +11,7 @@ class VendorNameConstraint extends Constraint
 
     public function validatedBy()
     {
-        return 'edgar_ez_site_builder.validator.vendorname';
+        return 'smile_ez_site_builder.validator.vendorname';
     }
 
     public function getTargets()

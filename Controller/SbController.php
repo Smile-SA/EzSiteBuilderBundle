@@ -1,21 +1,21 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Controller;
+namespace Smile\EzSiteBuilderBundle\Controller;
 
-use EdgarEz\SiteBuilderBundle\Data\Mapper\SiteMapper;
-use EdgarEz\SiteBuilderBundle\Data\Mapper\SitesMapper;
-use EdgarEz\SiteBuilderBundle\Data\Site\SitesData;
-use EdgarEz\SiteBuilderBundle\Form\Type\CustomerType;
-use EdgarEz\SiteBuilderBundle\Form\Type\InstallType;
-use EdgarEz\SiteBuilderBundle\Form\Type\ModelType;
-use EdgarEz\SiteBuilderBundle\Form\Type\SitesType;
-use EdgarEz\SiteBuilderBundle\Form\Type\SiteType;
-use EdgarEz\SiteBuilderBundle\Form\Type\UserType;
-use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
-use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
-use EdgarEz\SiteBuilderBundle\Service\InstallService;
-use EdgarEz\SiteBuilderBundle\Values\Content\Site;
-use EdgarEz\SiteBuilderBundle\Values\Content\Sites;
+use Smile\EzSiteBuilderBundle\Data\Mapper\SiteMapper;
+use Smile\EzSiteBuilderBundle\Data\Mapper\SitesMapper;
+use Smile\EzSiteBuilderBundle\Data\Site\SitesData;
+use Smile\EzSiteBuilderBundle\Form\Type\CustomerType;
+use Smile\EzSiteBuilderBundle\Form\Type\InstallType;
+use Smile\EzSiteBuilderBundle\Form\Type\ModelType;
+use Smile\EzSiteBuilderBundle\Form\Type\SitesType;
+use Smile\EzSiteBuilderBundle\Form\Type\SiteType;
+use Smile\EzSiteBuilderBundle\Form\Type\UserType;
+use Smile\EzSiteBuilderBundle\Generator\CustomerGenerator;
+use Smile\EzSiteBuilderBundle\Generator\ProjectGenerator;
+use Smile\EzSiteBuilderBundle\Service\InstallService;
+use Smile\EzSiteBuilderBundle\Values\Content\Site;
+use Smile\EzSiteBuilderBundle\Values\Content\Sites;
 use eZ\Publish\API\Repository\LanguageService;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\SearchService;
@@ -56,8 +56,8 @@ class SbController extends Controller
 
     public function sbAction($tabItem)
     {
-        $installed = $this->container->hasParameter('edgar_ez_site_builder.installed')
-            ? $this->container->getParameter('edgar_ez_site_builder.installed')
+        $installed = $this->container->hasParameter('smile_ez_site_builder.installed')
+            ? $this->container->getParameter('smile_ez_site_builder.installed')
             : false;
         $tabItems = $this->tabItems;
 
@@ -67,7 +67,7 @@ class SbController extends Controller
             unset($tabItems[0]);
         }
 
-        return $this->render('EdgarEzSiteBuilderBundle:sb:index.html.twig', [
+        return $this->render('SmileEzSiteBuilderBundle:sb:index.html.twig', [
             'installed' => $installed,
             'tab_items' => $tabItems,
             'tab_item_selected' => $tabItem,
@@ -82,7 +82,7 @@ class SbController extends Controller
         $tabItemMethod = 'tabItem' . ucfirst($tabItem);
         $params = $this->{$tabItemMethod}($paramsTwig);
 
-        return $this->render('EdgarEzSiteBuilderBundle:sb:tab/' . $tabItem . '.html.twig', [
+        return $this->render('SmileEzSiteBuilderBundle:sb:tab/' . $tabItem . '.html.twig', [
             'tab_items' => $this->tabItems,
             'tab_item' => $tabItem,
             'params' => $params
@@ -178,16 +178,16 @@ class SbController extends Controller
         }
 
         $contentRootModelLocationID = $this->container->getParameter(
-            'edgarez_sb.' . ProjectGenerator::MAIN . '.default.models_location_id'
+            'smileez_sb.' . ProjectGenerator::MAIN . '.default.models_location_id'
         );
         $mediaRootModelLocationID = $this->container->getParameter(
-            'edgarez_sb.' . ProjectGenerator::MAIN . '.default.media_models_location_id'
+            'smileez_sb.' . ProjectGenerator::MAIN . '.default.media_models_location_id'
         );
         $contentRootCustomerLocationID = $this->container->getParameter(
-            'edgarez_sb.customer.' . $customerAlias . '.default.customer_location_id'
+            'smileez_sb.customer.' . $customerAlias . '.default.customer_location_id'
         );
         $mediaRootCustomerLocationID = $this->container->getParameter(
-            'edgarez_sb.customer.' . $customerAlias . '.default.media_customer_location_id'
+            'smileez_sb.customer.' . $customerAlias . '.default.media_customer_location_id'
         );
 
         $sites = new Sites([
@@ -249,9 +249,9 @@ class SbController extends Controller
     {
         $query = new Query();
         $locationCriterion = new Query\Criterion\ParentLocationId(
-            $this->container->getParameter('edgarez_sb.project.default.models_location_id')
+            $this->container->getParameter('smileez_sb.project.default.models_location_id')
         );
-        $contentTypeIdentifier = new Query\Criterion\ContentTypeIdentifier('edgar_ez_sb_model');
+        $contentTypeIdentifier = new Query\Criterion\ContentTypeIdentifier('smile_ez_sb_model');
         $activated = new Query\Criterion\Field('activated', Query\Criterion\Operator::EQ, true);
 
         $query->filter = new Query\Criterion\LogicalAnd(

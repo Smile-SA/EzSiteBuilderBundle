@@ -1,13 +1,13 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle;
+namespace Smile\EzSiteBuilderBundle;
 
-use EdgarEz\SiteBuilderBundle\DependencyInjection\Security\PolicyProvider\SiteBuilderPolicyProvider;
+use Smile\EzSiteBuilderBundle\DependencyInjection\Security\PolicyProvider\SiteBuilderPolicyProvider;
 use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\EzPublishCoreExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class EdgarEzSiteBuilderBundle extends Bundle
+class SmileEzSiteBuilderBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {

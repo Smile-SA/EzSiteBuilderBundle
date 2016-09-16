@@ -1,19 +1,19 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Controller;
+namespace Smile\EzSiteBuilderBundle\Controller;
 
-use EdgarEz\SiteBuilderBundle\Data\Mapper\ModelActivateMapper;
-use EdgarEz\SiteBuilderBundle\Data\Mapper\ModelMapper;
-use EdgarEz\SiteBuilderBundle\Data\Model\ModelActivateData;
-use EdgarEz\SiteBuilderBundle\Data\Model\ModelData;
-use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
-use EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\ModelActivateDispatcher;
-use EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\ModelDispatcher;
-use EdgarEz\SiteBuilderBundle\Form\Type\ModelActivateType;
-use EdgarEz\SiteBuilderBundle\Form\Type\ModelType;
-use EdgarEz\SiteBuilderBundle\Service\SecurityService;
-use EdgarEz\SiteBuilderBundle\Values\Content\Model;
-use EdgarEz\SiteBuilderBundle\Values\Content\ModelActivate;
+use Smile\EzSiteBuilderBundle\Data\Mapper\ModelActivateMapper;
+use Smile\EzSiteBuilderBundle\Data\Mapper\ModelMapper;
+use Smile\EzSiteBuilderBundle\Data\Model\ModelActivateData;
+use Smile\EzSiteBuilderBundle\Data\Model\ModelData;
+use Smile\EzSiteBuilderBundle\Entity\SiteBuilderTask;
+use Smile\EzSiteBuilderBundle\Form\ActionDispatcher\ModelActivateDispatcher;
+use Smile\EzSiteBuilderBundle\Form\ActionDispatcher\ModelDispatcher;
+use Smile\EzSiteBuilderBundle\Form\Type\ModelActivateType;
+use Smile\EzSiteBuilderBundle\Form\Type\ModelType;
+use Smile\EzSiteBuilderBundle\Service\SecurityService;
+use Smile\EzSiteBuilderBundle\Values\Content\Model;
+use Smile\EzSiteBuilderBundle\Values\Content\ModelActivate;
 use eZ\Publish\API\Repository\SearchService;
 use eZ\Publish\API\Repository\Values\Content\Query;
 use eZ\Publish\API\Repository\Values\Content\Search\SearchResult;
@@ -58,7 +58,7 @@ class ModelController extends BaseController
 
     public function generateAction(Request $request)
     {
-        $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
+        $actionUrl = $this->generateUrl('smileezsb_sb', ['tabItem' => 'dashboard']);
         if (!$this->securityService->checkAuthorization('modelgenerate')) {
             return $this->redirectAfterFormPost($actionUrl);
         }
@@ -79,11 +79,11 @@ class ModelController extends BaseController
             return $this->redirectAfterFormPost($actionUrl);
         }
 
-        $this->getErrors($form, 'edgarezsb_form_model');
+        $this->getErrors($form, 'smileezsb_form_model');
 
         $tabItems = $this->tabItems;
         unset($tabItems[0]);
-        return $this->render('EdgarEzSiteBuilderBundle:sb:index.html.twig', [
+        return $this->render('SmileEzSiteBuilderBundle:sb:index.html.twig', [
             'tab_items' => $tabItems,
             'tab_item_selected' => 'modelgenerate',
             'params' => array('modelgenerate' => $form->createView()),
@@ -93,7 +93,7 @@ class ModelController extends BaseController
 
     public function activateAction(Request $request)
     {
-        $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
+        $actionUrl = $this->generateUrl('smileezsb_sb', ['tabItem' => 'dashboard']);
         if (!$this->securityService->checkAuthorization('modelactivate')) {
             return $this->redirectAfterFormPost($actionUrl);
         }
@@ -113,11 +113,11 @@ class ModelController extends BaseController
             return $this->redirectAfterFormPost($actionUrl);
         }
 
-        $this->getErrors($form, 'edgarezsb_form_modelactivate');
+        $this->getErrors($form, 'smileezsb_form_modelactivate');
 
         $tabItems = $this->tabItems;
         unset($tabItems[0]);
-        return $this->render('EdgarEzSiteBuilderBundle:sb:index.html.twig', [
+        return $this->render('SmileEzSiteBuilderBundle:sb:index.html.twig', [
             'tab_items' => $tabItems,
             'tab_item_selected' => 'modelactivate',
             'params' => array(),
@@ -210,7 +210,7 @@ class ModelController extends BaseController
             }
         }
 
-        return $this->render('EdgarEzSiteBuilderBundle:sb:tab/model/list.html.twig', [
+        return $this->render('SmileEzSiteBuilderBundle:sb:tab/model/list.html.twig', [
             'totalCount' => $datas->totalCount,
             'datas' => $models
         ]);
@@ -220,9 +220,9 @@ class ModelController extends BaseController
     {
         $query = new Query();
         $locationCriterion = new Query\Criterion\ParentLocationId(
-            $this->container->getParameter('edgarez_sb.project.default.models_location_id')
+            $this->container->getParameter('smileez_sb.project.default.models_location_id')
         );
-        $contentTypeIdentifier = new Query\Criterion\ContentTypeIdentifier('edgar_ez_sb_model');
+        $contentTypeIdentifier = new Query\Criterion\ContentTypeIdentifier('smile_ez_sb_model');
         $activated = new Query\Criterion\Field('activated', Query\Criterion\Operator::EQ, false);
 
         $query->filter = new Query\Criterion\LogicalAnd(

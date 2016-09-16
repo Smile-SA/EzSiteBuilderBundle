@@ -1,15 +1,15 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Controller;
+namespace Smile\EzSiteBuilderBundle\Controller;
 
-use EdgarEz\SiteBuilderBundle\Data\Install\InstallData;
-use EdgarEz\SiteBuilderBundle\Data\Mapper\InstallMapper;
-use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
-use EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\InstallDispatcher;
-use EdgarEz\SiteBuilderBundle\Form\Type\InstallType;
-use EdgarEz\SiteBuilderBundle\Service\InstallService;
-use EdgarEz\SiteBuilderBundle\Service\SecurityService;
-use EdgarEz\SiteBuilderBundle\Values\Content\Install;
+use Smile\EzSiteBuilderBundle\Data\Install\InstallData;
+use Smile\EzSiteBuilderBundle\Data\Mapper\InstallMapper;
+use Smile\EzSiteBuilderBundle\Entity\SiteBuilderTask;
+use Smile\EzSiteBuilderBundle\Form\ActionDispatcher\InstallDispatcher;
+use Smile\EzSiteBuilderBundle\Form\Type\InstallType;
+use Smile\EzSiteBuilderBundle\Service\InstallService;
+use Smile\EzSiteBuilderBundle\Service\SecurityService;
+use Smile\EzSiteBuilderBundle\Values\Content\Install;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -43,12 +43,12 @@ class InstallController extends BaseController
 
     public function installAction(Request $request)
     {
-        $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
+        $actionUrl = $this->generateUrl('smileezsb_sb', ['tabItem' => 'dashboard']);
         if (!$this->securityService->checkAuthorization('install')) {
             return $this->redirectAfterFormPost($actionUrl);
         }
 
-        $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
+        $actionUrl = $this->generateUrl('smileezsb_sb', ['tabItem' => 'dashboard']);
         $form = $this->getForm($request);
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -68,10 +68,10 @@ class InstallController extends BaseController
             return $this->redirectAfterFormPost($actionUrl);
         }
 
-        $this->getErrors($form, 'edgarezsb_form_install');
+        $this->getErrors($form, 'smileezsb_form_install');
 
         $tabItems = array($this->tabItems[0], $this->tabItems[1]);
-        return $this->render('EdgarEzSiteBuilderBundle:sb:index.html.twig', [
+        return $this->render('SmileEzSiteBuilderBundle:sb:index.html.twig', [
             'tab_items' => $tabItems,
             'tab_item_selected' => 'install',
             'params' => array('install' => $form->createView()),

@@ -1,8 +1,8 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Form\Type;
+namespace Smile\EzSiteBuilderBundle\Form\Type;
 
-use EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\SiteNameConstraint;
+use Smile\EzSiteBuilderBundle\Form\Validator\Constraint\SiteNameConstraint;
 use eZ\Publish\API\Repository\SearchService;
 use eZ\Publish\API\Repository\Values\Content\Query;
 use eZ\Publish\API\Repository\Values\Content\Search\SearchResult;
@@ -47,7 +47,7 @@ class SitesType extends AbstractType
      */
     public function getName()
     {
-        return 'edgarezsb_forms_sites';
+        return 'smileezsb_forms_sites';
     }
 
     /**
@@ -96,7 +96,7 @@ class SitesType extends AbstractType
 
         $query = new Query();
         $locationCriterion = new Query\Criterion\ParentLocationId($this->contentRootModelsLocationID);
-        $contentTypeIdentifier = new Query\Criterion\ContentTypeIdentifier('edgar_ez_sb_model');
+        $contentTypeIdentifier = new Query\Criterion\ContentTypeIdentifier('smile_ez_sb_model');
         $activated = new Query\Criterion\Field('activated', Query\Criterion\Operator::EQ, true);
 
         $query->filter = new Query\Criterion\LogicalAnd(
@@ -121,7 +121,7 @@ class SitesType extends AbstractType
 
         $query = new Query();
         $locationCriterion = new Query\Criterion\ParentLocationId($this->mediaRootModelsLocationID);
-        $contentTypeIdentifier = new Query\Criterion\ContentTypeIdentifier('edgar_ez_sb_mediamodel');
+        $contentTypeIdentifier = new Query\Criterion\ContentTypeIdentifier('smile_ez_sb_mediamodel');
 
         $query->filter = new Query\Criterion\LogicalAnd(
             array($locationCriterion, $contentTypeIdentifier)

@@ -1,18 +1,18 @@
-YUI.add('edgarezsb-sbview', function (Y) {
-    Y.namespace('edgarEzSb');
+YUI.add('smileezsb-sbview', function (Y) {
+    Y.namespace('smileEzSb');
 
-    Y.edgarEzSb.SbView = Y.Base.create('edgarezsbSbView', Y.eZ.ServerSideView, [], {
+    Y.smileEzSb.SbView = Y.Base.create('smileezsbSbView', Y.eZ.ServerSideView, [], {
         events: {
-            '.edgarezsb-sb-location': {
+            '.smileezsb-sb-location': {
                 'tap': '_navigateToLocation'
             },
-            '.edgarezsb-install-pick-location-content-button': {
+            '.smileezsb-install-pick-location-content-button': {
                 'tap': '_pickLocationLimitation'
             },
-            '.edgarezsb-install-pick-location-media-button': {
+            '.smileezsb-install-pick-location-media-button': {
                 'tap': '_pickLocationLimitation'
             },
-            '.edgarezsb-install-pick-location-user-button': {
+            '.smileezsb-install-pick-location-user-button': {
                 'tap': '_pickLocationLimitation'
             },
             'form': {
@@ -21,7 +21,7 @@ YUI.add('edgarezsb-sbview', function (Y) {
         },
 
         initializer: function () {
-            this.containerTemplate = '<div class="ez-view-edgarezsbsbview"/>';
+            this.containerTemplate = '<div class="ez-view-smileezsbsbview"/>';
         },
 
         _navigateToLocation: function (e) {

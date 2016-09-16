@@ -2,7 +2,7 @@ siteaccess:
 {% block siteaccess %}
     list: [{{ siteaccess }}]
     groups:
-        edgarezsb_models_{{ siteaccess }}: [{{ siteaccess }}]
+        smileezsb_models_{{ siteaccess }}: [{{ siteaccess }}]
     match:
         Compound\LogicalAnd:
             {{ siteaccess }}:
@@ -24,11 +24,11 @@ system:
                 location_id: {{ modelLocationID }}
                 excluded_uri_prefixes:
                     - {{ exclude_uri_prefixes }}
-    edgarezsb_models_{{ siteaccess }}:
+    smileezsb_models_{{ siteaccess }}:
         location_view:
             full:
-                edgar_ez_sb_model:
+                smile_ez_sb_model:
                     template: {{ bundle_basename }}Bundle:full:model.html.twig
                     match:
-                        Identifier\ContentType: [edgar_ez_sb_model]
+                        Identifier\ContentType: [smile_ez_sb_model]
 {% endblock %}

@@ -1,9 +1,9 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Command;
+namespace Smile\EzSiteBuilderBundle\Command;
 
-use EdgarEz\SiteBuilderBundle\Service\InstallService;
-use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
+use Smile\EzSiteBuilderBundle\Service\InstallService;
+use Smile\EzSiteBuilderBundle\Generator\ProjectGenerator;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\LanguageService;
 use eZ\Publish\API\Repository\LocationService;
@@ -19,7 +19,7 @@ use Symfony\Component\Console\Question\Question;
  *
  * Command used to install Spbuilder prerquisites
  *
- * @package EdgarEz\SiteBuilderBundle\Command
+ * @package Smile\EzSiteBuilderBundle\Command
  */
 class InstallCommand extends BaseContainerAwareCommand
 {
@@ -71,7 +71,7 @@ class InstallCommand extends BaseContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('edgarez:sitebuilder:install')
+            ->setName('smileez:sitebuilder:install')
             ->setDescription('Install SiteBuilder prerequisites');
     }
 
@@ -84,21 +84,21 @@ class InstallCommand extends BaseContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $adminID = $this->getContainer()->getParameter('edgar_ez_tools.adminid');
+        $adminID = $this->getContainer()->getParameter('smile_ez_tools.adminid');
         /** @var Repository $repository */
         $repository = $this->getContainer()->get('ezpublish.api.repository');
         $repository->setCurrentUser($repository->getUserService()->loadUser($adminID));
 
         /** @var InstallService $installService */
-        $installService = $this->getContainer()->get('edgar_ez_site_builder.install.service');
+        $installService = $this->getContainer()->get('smile_ez_site_builder.install.service');
         /** @var LanguageService $languageService */
         $languageService = $repository->getContentLanguageService();
 
         $questionHelper = $this->getQuestionHelper();
         $questionHelper->writeSection($output, 'Welcome to the SiteBuilder installation');
 
-        $installed = $this->getContainer()->hasParameter('edgar_ez_site_builder.installed')
-            ? $this->getContainer()->getParameter('edgar_ez_site_builder.installed')
+        $installed = $this->getContainer()->hasParameter('smile_ez_site_builder.installed')
+            ? $this->getContainer()->getParameter('smile_ez_site_builder.installed')
             : false;
         if ($installed) {
             $output->writeln('<error>SiteBuilder is already installed</error>');
@@ -209,7 +209,7 @@ class InstallCommand extends BaseContainerAwareCommand
         );
         $question->setValidator(
             array(
-                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'Smile\EzSiteBuilderBundle\Command\Validators',
                 'validateLocationID'
             )
         );
@@ -262,7 +262,7 @@ class InstallCommand extends BaseContainerAwareCommand
         );
         $question->setValidator(
             array(
-                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'Smile\EzSiteBuilderBundle\Command\Validators',
                 'validateLocationID'
             )
         );
@@ -315,7 +315,7 @@ class InstallCommand extends BaseContainerAwareCommand
         );
         $question->setValidator(
             array(
-                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'Smile\EzSiteBuilderBundle\Command\Validators',
                 'validateLocationID'
             )
         );

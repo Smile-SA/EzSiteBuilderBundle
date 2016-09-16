@@ -1,9 +1,9 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Form\Type;
+namespace Smile\EzSiteBuilderBundle\Form\Type;
 
-use EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\UserEmailConstraint;
-use EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\UserNameConstraint;
+use Smile\EzSiteBuilderBundle\Form\Validator\Constraint\UserEmailConstraint;
+use Smile\EzSiteBuilderBundle\Form\Validator\Constraint\UserNameConstraint;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -19,7 +19,7 @@ class UserType extends AbstractType
      */
     public function getName()
     {
-        return 'edgarezsb_forms_user';
+        return 'smileezsb_forms_user';
     }
 
     /**

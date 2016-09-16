@@ -1,6 +1,6 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Service\Task;
+namespace Smile\EzSiteBuilderBundle\Service\Task;
 
 use Sensio\Bundle\GeneratorBundle\Manipulator\KernelManipulator;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 /**
  * Class BaseTaskService
  *
- * @package EdgarEz\SiteBuilderBundle\Service\Task
+ * @package Smile\EzSiteBuilderBundle\Service\Task
  */
 abstract class BaseTaskService
 {

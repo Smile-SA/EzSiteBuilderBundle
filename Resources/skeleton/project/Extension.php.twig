@@ -34,7 +34,7 @@ class {{ bundle_basename }}Extension extends Extension implements PrependExtensi
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('default_settings.yml');
-        $loader->load('edgarezsb.yml');
+        $loader->load('smileezsb.yml');
     }
 
     public function prepend(ContainerBuilder $container)

@@ -1,12 +1,12 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\DependencyInjection\Security\PolicyProvider;
+namespace Smile\EzSiteBuilderBundle\DependencyInjection\Security\PolicyProvider;
 
 use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Security\PolicyProvider\YamlPolicyProvider;
 
 /**
  * Class SiteBuilderPolicyProvider
- * @package EdgarEz\SiteBuilderBundle\DependencyInjection\Security\PolicyProvider
+ * @package Smile\EzSiteBuilderBundle\DependencyInjection\Security\PolicyProvider
  */
 class SiteBuilderPolicyProvider extends YamlPolicyProvider
 {

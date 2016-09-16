@@ -1,6 +1,6 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\DependencyInjection;
+namespace Smile\EzSiteBuilderBundle\DependencyInjection;
 
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -15,7 +15,7 @@ use Symfony\Component\Yaml\Yaml;
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
-class EdgarEzSiteBuilderExtension extends Extension implements PrependExtensionInterface
+class SmileEzSiteBuilderExtension extends Extension implements PrependExtensionInterface
 {
     /**
      * {@inheritdoc}
@@ -33,7 +33,7 @@ class EdgarEzSiteBuilderExtension extends Extension implements PrependExtensionI
      */
     public function prepend(ContainerBuilder $container)
     {
-        $container->prependExtensionConfig('assetic', array('bundles' => array('EdgarEzSiteBuilderBundle')));
+        $container->prependExtensionConfig('assetic', array('bundles' => array('SmileEzSiteBuilderBundle')));
 
         $this->prependYui($container);
         $this->prependCss($container);
@@ -47,8 +47,8 @@ class EdgarEzSiteBuilderExtension extends Extension implements PrependExtensionI
     private function prependYui(ContainerBuilder $container)
     {
         $container->setParameter(
-            'edgar_ez_site_builder.public_dir',
-            'bundles/edgarezsitebuilder'
+            'smile_ez_site_builder.public_dir',
+            'bundles/smileezsitebuilder'
         );
         $yuiConfigFile = __DIR__ . '/../Resources/config/yui.yml';
         $config = Yaml::parse(file_get_contents($yuiConfigFile));
@@ -64,8 +64,8 @@ class EdgarEzSiteBuilderExtension extends Extension implements PrependExtensionI
     private function prependCss(ContainerBuilder $container)
     {
         $container->setParameter(
-            'edgar_ez_site_builder.css_dir',
-            'bundles/edgarezsitebuilder/css'
+            'smile_ez_site_builder.css_dir',
+            'bundles/smileezsitebuilder/css'
         );
         $cssConfigFile = __DIR__ . '/../Resources/config/css.yml';
         $config = Yaml::parse(file_get_contents($cssConfigFile));

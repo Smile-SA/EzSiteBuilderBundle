@@ -1,9 +1,9 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Service;
+namespace Smile\EzSiteBuilderBundle\Service;
 
-use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
-use EdgarEz\ToolsBundle\Service\Content;
+use Smile\EzSiteBuilderBundle\Generator\ProjectGenerator;
+use Smile\EzToolsBundle\Service\Content;
 use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
 use eZ\Publish\API\Repository\Exceptions\LimitationValidationException;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
@@ -24,7 +24,7 @@ use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class ModelService
- * @package EdgarEz\SiteBuilderBundle\Service
+ * @package Smile\EzSiteBuilderBundle\Service
  */
 class ModelService
 {
@@ -40,10 +40,10 @@ class ModelService
     /** @var RoleService $roleService eZ Role Service */
     private $roleService;
 
-    /** @var Content $content EdgarEz Content Service */
+    /** @var Content $content SmileEz Content Service */
     private $content;
 
-    /** @var \EdgarEz\ToolsBundle\Service\Role EdgarEz Role Service */
+    /** @var \Smile\EzToolsBundle\Service\Role SmileEz Role Service */
     private $role;
 
     /** @var ContainerInterface $container */
@@ -55,8 +55,8 @@ class ModelService
      * @param URLAliasService $urlAliasService eZ URLAlias Service
      * @param LocationService $locationService eZ Location Service
      * @param RoleService $roleService eZ Role Service
-     * @param Content $content EdgarEz Content Service
-     * @param \EdgarEz\ToolsBundle\Service\Role $role EdgarEz Role Service
+     * @param Content $content SmileEz Content Service
+     * @param \Smile\EzToolsBundle\Service\Role $role SmileEz Role Service
      * @param array $siteaccessGroups ezpublish siteaccess groups
      * @param ContainerInterface $container
      */
@@ -66,7 +66,7 @@ class ModelService
         LocationService $locationService,
         RoleService $roleService,
         Content $content,
-        \EdgarEz\ToolsBundle\Service\Role $role,
+        \Smile\EzToolsBundle\Service\Role $role,
         ContainerInterface $container
     ) {
         $this->kernel = $kernel;
@@ -89,7 +89,7 @@ class ModelService
         try {
             $rolesCreator = array();
             foreach ($customers as $customer) {
-                $parameter = 'edgarez_sb.customer.customers_' .
+                $parameter = 'smileez_sb.customer.customers_' .
                     $customer .
                     '_sites.default.customer_user_creator_role_id';
                 $roleCreatorID = $this->container->getParameter($parameter);
@@ -142,7 +142,7 @@ class ModelService
         try {
             $contentDefinition = Yaml::parse(
                 file_get_contents(
-                    $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/modelcontent.yml')
+                    $this->kernel->locateResource('@SmileEzSiteBuilderBundle/Resources/datas/modelcontent.yml')
                 )
             );
             $contentDefinition['parentLocationID'] = $modelsLocationID;
@@ -179,7 +179,7 @@ class ModelService
         try {
             $contentDefinition = Yaml::parse(
                 file_get_contents(
-                    $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediamodelcontent.yml')
+                    $this->kernel->locateResource('@SmileEzSiteBuilderBundle/Resources/datas/mediamodelcontent.yml')
                 )
             );
             $contentDefinition['parentLocationID'] = $mediaModelsLocationID;

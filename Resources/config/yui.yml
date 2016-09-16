@@ -2,19 +2,19 @@ system:
     default:
         yui:
             modules:
-                edgarezsb-sbapplugin: # should match the first parameter of YUI.add
-                    requires: ['ez-pluginregistry', 'plugin', 'base', 'edgarezsb-sbview', 'edgarezsb-sbviewservice'] # depends on the plugin code
+                smileezsb-sbapplugin: # should match the first parameter of YUI.add
+                    requires: ['ez-pluginregistry', 'plugin', 'base', 'smileezsb-sbview', 'smileezsb-sbviewservice'] # depends on the plugin code
                     dependencyOf: ['ez-platformuiapp']
-                    path: %edgar_ez_site_builder.public_dir%/js/apps/plugins/edgarezsb-sbappplugin.js
-                edgarezsb-navigationplugin:
+                    path: %smile_ez_site_builder.public_dir%/js/apps/plugins/smileezsb-sbappplugin.js
+                smileezsb-navigationplugin:
                     requires: ['ez-pluginregistry', 'ez-viewservicebaseplugin', 'ez-navigationitemview']
                     dependencyOf: ['ez-navigationhubviewservice']
-                    path: %edgar_ez_site_builder.public_dir%/js/views/services/plugins/edgarezsb-navigationplugin.js
-                edgarezsb-sbviewservice:
+                    path: %smile_ez_site_builder.public_dir%/js/views/services/plugins/smileezsb-navigationplugin.js
+                smileezsb-sbviewservice:
                     requires: ['ez-serversideviewservice']
-                    path: %edgar_ez_site_builder.public_dir%/js/views/services/edgarezsb-sbviewservice.js
-                edgarezsb-sbview:
+                    path: %smile_ez_site_builder.public_dir%/js/views/services/smileezsb-sbviewservice.js
+                smileezsb-sbview:
                     requires: ['ez-serversideview']
-                    path: %edgar_ez_site_builder.public_dir%/js/views/edgarezsb-sbview.js
+                    path: %smile_ez_site_builder.public_dir%/js/views/smileezsb-sbview.js
 
 

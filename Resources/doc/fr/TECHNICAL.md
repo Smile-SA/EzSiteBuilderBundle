@@ -11,10 +11,10 @@ LEs chapitres suivant vous indique les manipulations automatiquement mises en oe
 
 ### Bundle
 
-Après initialisation de l'outil, en ligne de commande 
-(edgarez:sitebuilder:install) ou par l'interface Back-Office, votre architecture
+Après initialisation de l'outil, en ligne de commande
+(smileez:sitebuilder:install) ou par l'interface Back-Office, votre architecture
 code projet mise en place dans le dossier source :
- 
+
 * initialisation d'un dossier vendeur au nom du vendeur que vous avez renseigné
 * dans le dossier vendeur
   * initialisation d'un dossier Customers destiné à recevoir l'espace applicatif des clients
@@ -33,15 +33,15 @@ des données projet.
 
 ### Contenu, Media, Utilisateur
 
-L'initialisation de l'outil crée les espaces de contenu/média/utilisateur 
-spécifique au projet afin de proposer les racines de contenu pour les 
+L'initialisation de l'outil crée les espaces de contenu/média/utilisateur
+spécifique au projet afin de proposer les racines de contenu pour les
 phases d'initialisation client/modèle/site suivantes.
 
 ![Initialize content](/Resources/doc/images/technical/initialize_content.png)
 
 ### Rôle
 
-L'outil met à disposition un rôle "SiteBuilder" global pour gestion initial 
+L'outil met à disposition un rôle "SiteBuilder" global pour gestion initial
 d'accès aux contenus des futurs utilisateurs.
 
 ![Initialize role](/Resources/doc/images/technical/initialize_role.png)
@@ -50,8 +50,8 @@ d'accès aux contenus des futurs utilisateurs.
 
 ### Bundle
 
-Après initialisation d'un modèle par la commande edgarez:sitebuilder:model:generate ou en Back-Office, 
-l'outil met en place, dans les sources applicatives, au niveau du dossier Models, un 
+Après initialisation d'un modèle par la commande smileez:sitebuilder:model:generate ou en Back-Office,
+l'outil met en place, dans les sources applicatives, au niveau du dossier Models, un
 bundle de modèle de site par modèle généré.
 
 Chaque bundle renferme :
@@ -71,20 +71,20 @@ La génération d'un modèle de site initialise les espaces de contenu et média
 pour le modèle.
 
 ![Models content](/Resources/doc/images/models/models_content.png)
- 
+
 Les concepteurs peuvent maintenant définir l'arborescence de contenu de ce modèle en
 disposant une arborescence de contenu, des contenus de type Lorem ipsum ... un maximum
 de contenu permettant aux futurs clients de disposer d'un modèle de base
 le plus complet possible.
- 
+
 ### Politique de sécurité
 
 ## Clients
 
 ### Bundle
 
-Après initialisation d'un client par la commande edgarez:sitebuilder:customer:generate ou en Back-Office, 
-l'outil met en place, dans les sources applicatives, au niveau du dossier Customers, un  
+Après initialisation d'un client par la commande smileez:sitebuilder:customer:generate ou en Back-Office,
+l'outil met en place, dans les sources applicatives, au niveau du dossier Customers, un
 dossier au nom du client contenant :
 
 * un dossier Sites destiné à recevoir les futurs bundle de site
@@ -94,7 +94,7 @@ dossier au nom du client contenant :
 
 ### Contenu, Media
 
-La génération d'un client initialise les espaces de contenu et média pour les futurs 
+La génération d'un client initialise les espaces de contenu et média pour les futurs
 sites de ce client
 
 ![Customers content](/Resources/doc/images/customers/customers_content.png)
@@ -102,7 +102,7 @@ sites de ce client
 ### Groupe utilsiateur
 
 Chaque client aura un accès au Back-Office soit en tant que créateur, soit en tant qu'éditeur.
-A la génération du client, un premier utilisateur type créateur est mis en place afin 
+A la génération du client, un premier utilisateur type créateur est mis en place afin
 de permettre un accès au client à l'interface de l'outil dès l'initialisa de son espace.
 
 ![Customers users](/Resources/doc/images/customers/customers_users.png)
@@ -124,9 +124,9 @@ différents types de contenu, niveau d'arborescence ...
 
 ### Bundle
 
-Après initialisation d'un site par la commande edgarez:sitebuilder:site:generate ou en Back-Office, 
-l'outil met en place, dans les sources applicatives, au niveau du dossier Customers, sous-dossier 
-correspondant au client pour lequel le site est généré, sous-dossier sites, un bundle de site 
+Après initialisation d'un site par la commande smileez:sitebuilder:site:generate ou en Back-Office,
+l'outil met en place, dans les sources applicatives, au niveau du dossier Customers, sous-dossier
+correspondant au client pour lequel le site est généré, sous-dossier sites, un bundle de site
 par défaut sans controlleur, sans vue ...
 
 Au sein du bundle ProjectBundle, est initialisé la configuration ezplatform de définition
@@ -144,18 +144,18 @@ au sein du bundle de site : controlleur, vues ...
 
 ### Contenu, Media
 
-Après génération du nouveau site, dans les arborescences de contenu et média, sous 
-le niveau d'arborescence du client pour lequel le site a été initialisé, est 
+Après génération du nouveau site, dans les arborescences de contenu et média, sous
+le niveau d'arborescence du client pour lequel le site a été initialisé, est
 dupliqué l'arborescence du modèle de site sélectionné pour ce nouveau site
 
 ![Sites content](/Resources/doc/images/sites/sites_content.png)
 
-Les clients, créateur et/ou éditeur peuvent désormais modifier, ajouter et compléter 
+Les clients, créateur et/ou éditeur peuvent désormais modifier, ajouter et compléter
 le contenu de leur nouveau site.
 
 ### Politique de sécurité
 
-Après initialisation du nouveau site, la politique de sécurité user/login des 
+Après initialisation du nouveau site, la politique de sécurité user/login des
 rôles créateur/éditeur du client de ce site évolue pour autoriser l'accès
 en front-office à leur nouveau site.
 

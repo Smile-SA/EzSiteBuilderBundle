@@ -1,9 +1,9 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Controller;
+namespace Smile\EzSiteBuilderBundle\Controller;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
+use Smile\EzSiteBuilderBundle\Entity\SiteBuilderTask;
 use EzSystems\PlatformUIBundle\Controller\Controller;
 
 class DashboardController extends Controller
@@ -21,14 +21,14 @@ class DashboardController extends Controller
     {
         $datas = $this->getTasks($userID);
 
-        return $this->render('EdgarEzSiteBuilderBundle:sb:tab/dashboard/list.html.twig', [
+        return $this->render('SmileEzSiteBuilderBundle:sb:tab/dashboard/list.html.twig', [
             'datas' => $datas
         ]);
     }
 
     protected function getTasks($userID)
     {
-        $repository = $this->doctrineRegistry->getRepository('EdgarEzSiteBuilderBundle:SiteBuilderTask');
+        $repository = $this->doctrineRegistry->getRepository('SmileEzSiteBuilderBundle:SiteBuilderTask');
 
         $query = $repository->createQueryBuilder('t')
             ->where('t.userID = :userID')

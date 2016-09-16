@@ -1,6 +1,6 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Service\Task;
+namespace Smile\EzSiteBuilderBundle\Service\Task;
 
 use Symfony\Component\DependencyInjection\Container;
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Service\Task;
+namespace Smile\EzSiteBuilderBundle\Service\Task;
 
-use EdgarEz\SiteBuilderBundle\Command\Validators;
-use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
-use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
-use EdgarEz\SiteBuilderBundle\Mail\Sender;
-use EdgarEz\SiteBuilderBundle\Service\CustomerService;
+use Smile\EzSiteBuilderBundle\Command\Validators;
+use Smile\EzSiteBuilderBundle\Generator\CustomerGenerator;
+use Smile\EzSiteBuilderBundle\Generator\ProjectGenerator;
+use Smile\EzSiteBuilderBundle\Mail\Sender;
+use Smile\EzSiteBuilderBundle\Service\CustomerService;
 use eZ\Publish\API\Repository\LanguageService;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\UserService;
@@ -77,7 +77,7 @@ class UserTaskService extends BaseTaskService implements TaskInterface
 
                     $userType = ($parameters['userType'] == 0) ? 'editors' : 'creators';
                     $customerName = strtolower($this->getCustomerName($userID));
-                    $settings = 'edgarez_sb.customer.' . ProjectGenerator::CUSTOMERS .
+                    $settings = 'smileez_sb.customer.' . ProjectGenerator::CUSTOMERS .
                         '_' . $customerName . '_' . CustomerGenerator::SITES .
                         '.default.customer_user_' . $userType . '_group_location_id';
 

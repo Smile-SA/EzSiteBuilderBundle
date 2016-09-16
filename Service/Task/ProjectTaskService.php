@@ -1,10 +1,10 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Service\Task;
+namespace Smile\EzSiteBuilderBundle\Service\Task;
 
-use EdgarEz\SiteBuilderBundle\Command\Validators;
-use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
-use EdgarEz\SiteBuilderBundle\Service\InstallService;
+use Smile\EzSiteBuilderBundle\Command\Validators;
+use Smile\EzSiteBuilderBundle\Generator\ProjectGenerator;
+use Smile\EzSiteBuilderBundle\Service\InstallService;
 use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
 use eZ\Publish\API\Repository\LanguageService;
 use eZ\Publish\API\Repository\LocationService;
@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\Kernel;
 /**
  * Class ProjectTaskService
  *
- * @package EdgarEz\SiteBuilderBundle\Service\Task
+ * @package Smile\EzSiteBuilderBundle\Service\Task
  */
 class ProjectTaskService extends BaseTaskService implements TaskInterface
 {

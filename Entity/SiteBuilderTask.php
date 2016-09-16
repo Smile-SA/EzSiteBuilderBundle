@@ -1,12 +1,12 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Entity;
+namespace Smile\EzSiteBuilderBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="edgarez_sitebuilder_task")
+ * @ORM\Table(name="smileez_sitebuilder_task")
  */
 class SiteBuilderTask
 {

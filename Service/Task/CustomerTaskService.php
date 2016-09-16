@@ -1,12 +1,12 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Service\Task;
+namespace Smile\EzSiteBuilderBundle\Service\Task;
 
-use EdgarEz\SiteBuilderBundle\Command\Validators;
-use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
-use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
-use EdgarEz\SiteBuilderBundle\Mail\Sender;
-use EdgarEz\SiteBuilderBundle\Service\CustomerService;
+use Smile\EzSiteBuilderBundle\Command\Validators;
+use Smile\EzSiteBuilderBundle\Generator\CustomerGenerator;
+use Smile\EzSiteBuilderBundle\Generator\ProjectGenerator;
+use Smile\EzSiteBuilderBundle\Mail\Sender;
+use Smile\EzSiteBuilderBundle\Service\CustomerService;
 use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
 use eZ\Publish\API\Repository\LanguageService;
 use Symfony\Component\DependencyInjection\Container;
@@ -82,7 +82,7 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
                     $this->validateParameters($parameters);
 
                     $basename = ProjectGenerator::MAIN;
-                    $extensionAlias = 'edgarez_sb.' . strtolower($basename);
+                    $extensionAlias = 'smileez_sb.' . strtolower($basename);
                     $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
                     $exists = $this->customerService->exists(
@@ -100,7 +100,7 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
                     $languageCode = $this->languageService->getDefaultLanguageCode();
 
                     $parentLocationID = $container->getParameter(
-                        'edgarez_sb.' . strtolower($basename) . '.default.customers_location_id'
+                        'smileez_sb.' . strtolower($basename) . '.default.customers_location_id'
                     );
                     $returnValue = $this->customerService->createContentStructure(
                         $parentLocationID,
@@ -110,7 +110,7 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
                     $customerLocationID = $returnValue['customerLocationID'];
 
                     $parentLocationID = $container->getParameter(
-                        'edgarez_sb.' . strtolower($basename) . '.default.media_customers_location_id'
+                        'smileez_sb.' . strtolower($basename) . '.default.media_customers_location_id'
                     );
                     $returnValue = $this->customerService->createMediaContentStructure(
                         $parentLocationID,
@@ -120,10 +120,10 @@ class CustomerTaskService extends BaseTaskService implements TaskInterface
                     $mediaCustomerLocationID = $returnValue['mediaCustomerLocationID'];
 
                     $parentCreatorLocationID = $container->getParameter(
-                        'edgarez_sb.' . strtolower($basename) . '.default.user_creators_location_id'
+                        'smileez_sb.' . strtolower($basename) . '.default.user_creators_location_id'
                     );
                     $parentEditorLocationID = $container->getParameter(
-                        'edgarez_sb.' . strtolower($basename) . '.default.user_editors_location_id'
+                        'smileez_sb.' . strtolower($basename) . '.default.user_editors_location_id'
                     );
                     $returnValue = $this->customerService->createUserGroups(
                         $parentCreatorLocationID,

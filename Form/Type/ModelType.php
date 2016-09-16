@@ -1,8 +1,8 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Form\Type;
+namespace Smile\EzSiteBuilderBundle\Form\Type;
 
-use EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\ModelNameConstraint;
+use Smile\EzSiteBuilderBundle\Form\Validator\Constraint\ModelNameConstraint;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -16,7 +16,7 @@ class ModelType extends AbstractType
      */
     public function getName()
     {
-        return 'edgarezsb_form_model';
+        return 'smileezsb_form_model';
     }
 
     /**
@@ -40,8 +40,8 @@ class ModelType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => '\EdgarEz\SiteBuilderBundle\Values\Content\ModelStruct',
-            'translation_domain' => 'edgarezsb_form_model',
+            'data_class' => '\Smile\EzSiteBuilderBundle\Values\Content\ModelStruct',
+            'translation_domain' => 'smileezsb_form_model',
         ]);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Form\Validator\Constraint;
+namespace Smile\EzSiteBuilderBundle\Form\Validator\Constraint;
 
 use Symfony\Component\Validator\Constraint;
 
@@ -10,7 +10,7 @@ class UserNameConstraint extends Constraint
 
     public function validatedBy()
     {
-        return 'edgar_ez_site_builder.validator.username';
+        return 'smile_ez_site_builder.validator.username';
     }
 
     public function getTargets()

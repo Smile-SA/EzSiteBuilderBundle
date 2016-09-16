@@ -1,14 +1,14 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Controller;
+namespace Smile\EzSiteBuilderBundle\Controller;
 
-use EdgarEz\SiteBuilderBundle\Data\Customer\CustomerData;
-use EdgarEz\SiteBuilderBundle\Data\Mapper\CustomerMapper;
-use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
-use EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\CustomerDispatcher;
-use EdgarEz\SiteBuilderBundle\Form\Type\CustomerType;
-use EdgarEz\SiteBuilderBundle\Service\SecurityService;
-use EdgarEz\SiteBuilderBundle\Values\Content\Customer;
+use Smile\EzSiteBuilderBundle\Data\Customer\CustomerData;
+use Smile\EzSiteBuilderBundle\Data\Mapper\CustomerMapper;
+use Smile\EzSiteBuilderBundle\Entity\SiteBuilderTask;
+use Smile\EzSiteBuilderBundle\Form\ActionDispatcher\CustomerDispatcher;
+use Smile\EzSiteBuilderBundle\Form\Type\CustomerType;
+use Smile\EzSiteBuilderBundle\Service\SecurityService;
+use Smile\EzSiteBuilderBundle\Values\Content\Customer;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -37,7 +37,7 @@ class CustomerController extends BaseController
 
     public function generateAction(Request $request)
     {
-        $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
+        $actionUrl = $this->generateUrl('smileezsb_sb', ['tabItem' => 'dashboard']);
         if (!$this->securityService->checkAuthorization('customergenerate')) {
             return $this->redirectAfterFormPost($actionUrl);
         }
@@ -61,11 +61,11 @@ class CustomerController extends BaseController
             return $this->redirectAfterFormPost($actionUrl);
         }
 
-        $this->getErrors($form, 'edgarezsb_form_customer');
+        $this->getErrors($form, 'smileezsb_form_customer');
 
         $tabItems = $this->tabItems;
         unset($tabItems[0]);
-        return $this->render('EdgarEzSiteBuilderBundle:sb:index.html.twig', [
+        return $this->render('SmileEzSiteBuilderBundle:sb:index.html.twig', [
             'tab_items' => $tabItems,
             'tab_item_selected' => 'customergenerate',
             'params' => array('customergenerate' => $form->createView()),

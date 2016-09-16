@@ -1,8 +1,8 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Data\Model;
+namespace Smile\EzSiteBuilderBundle\Data\Model;
 
-use EdgarEz\SiteBuilderBundle\Values\Content\ModelStruct;
+use Smile\EzSiteBuilderBundle\Values\Content\ModelStruct;
 
 class ModelData extends ModelStruct
 {

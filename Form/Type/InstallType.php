@@ -1,10 +1,10 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Form\Type;
+namespace Smile\EzSiteBuilderBundle\Form\Type;
 
-use EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\LocationIDConstraint;
-use EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\VendorNameConstraint;
-use EdgarEz\SiteBuilderBundle\Service\InstallService;
+use Smile\EzSiteBuilderBundle\Form\Validator\Constraint\LocationIDConstraint;
+use Smile\EzSiteBuilderBundle\Form\Validator\Constraint\VendorNameConstraint;
+use Smile\EzSiteBuilderBundle\Service\InstallService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -16,7 +16,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Class InstallType
  *
- * @package EdgarEz\SiteBuilderBundle\Form\Type
+ * @package Smile\EzSiteBuilderBundle\Form\Type
  */
 class InstallType extends AbstractType
 {
@@ -33,7 +33,7 @@ class InstallType extends AbstractType
      */
     public function getName()
     {
-        return 'edgarezsb_forms_install';
+        return 'smileezsb_forms_install';
     }
 
     /**

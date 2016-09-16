@@ -1,6 +1,6 @@
 {% trans_default_domain "sitebuilder_install" %}
 
-{{ form_start(params.installForm, {"action": path("edgarezsb_install_post", {}), "attr": {"class": "pure-form pure-form-aligned ez-confirm-action"}}) }}
+{{ form_start(params.installForm, {"action": path("smileezsb_install_post", {}), "attr": {"class": "pure-form pure-form-aligned ez-confirm-action"}}) }}
 
 <fieldset>
     <div class="pure-control-group">
@@ -12,7 +12,7 @@
         <label for="{{ params.installForm.contentLocationID.vars.id }}">{{ form_label(params.installForm.contentLocationID) }}</label>
         {{ form_widget(params.installForm.contentLocationID) }}
         <button type="button" data-universaldiscovery-title="{{ "install.content.location.udw_title"|trans({}, "sitebuilder_install") }}"
-                class="ez-button-tree pure-button ez-font-icon ez-button edgarezsb-install-pick-location-content-button"
+                class="ez-button-tree pure-button ez-font-icon ez-button smileezsb-install-pick-location-content-button"
                 data-location-input-selector="#{{params.installForm.contentLocationID.vars.id}}"
                 data-selected-location-list-selector="#{{params.installForm.contentLocationID.vars.id}}-selected-location"
         >{{ "install.content.location.udw_button"|trans({}, "sitebuilder_install") }}</button>
@@ -31,7 +31,7 @@
         <label for="{{ params.installForm.mediaLocationID.vars.id }}">{{ form_label(params.installForm.mediaLocationID) }}</label>
         {{ form_widget(params.installForm.mediaLocationID) }}
         <button type="button" data-universaldiscovery-title="{{ "install.media.location.udw_title"|trans({}, "sitebuilder_install") }}"
-                class="ez-button-tree pure-button ez-font-icon ez-button edgarezsb-install-pick-location-media-button"
+                class="ez-button-tree pure-button ez-font-icon ez-button smileezsb-install-pick-location-media-button"
                 data-location-input-selector="#{{params.installForm.mediaLocationID.vars.id}}"
                 data-selected-location-list-selector="#{{params.installForm.mediaLocationID.vars.id}}-selected-location"
         >{{ "install.media.location.udw_button"|trans({}, "sitebuilder_install") }}</button>
@@ -50,7 +50,7 @@
         <label for="{{ params.installForm.userLocationID.vars.id }}">{{ form_label(params.installForm.userLocationID) }}</label>
         {{ form_widget(params.installForm.userLocationID) }}
         <button type="button" data-universaldiscovery-title="{{ "install.user.location.udw_title"|trans({}, "sitebuilder_install") }}"
-                class="ez-button-tree pure-button ez-font-icon ez-button edgarezsb-install-pick-location-user-button"
+                class="ez-button-tree pure-button ez-font-icon ez-button smileezsb-install-pick-location-user-button"
                 data-location-input-selector="#{{params.installForm.userLocationID.vars.id}}"
                 data-selected-location-list-selector="#{{params.installForm.userLocationID.vars.id}}-selected-location"
         >{{ "install.user.location.udw_button"|trans({}, "sitebuilder_install") }}</button>

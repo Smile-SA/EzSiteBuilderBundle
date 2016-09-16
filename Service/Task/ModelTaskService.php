@@ -1,11 +1,11 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Service\Task;
+namespace Smile\EzSiteBuilderBundle\Service\Task;
 
-use EdgarEz\SiteBuilderBundle\Command\Validators;
-use EdgarEz\SiteBuilderBundle\Generator\ModelGenerator;
-use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
-use EdgarEz\SiteBuilderBundle\Service\ModelService;
+use Smile\EzSiteBuilderBundle\Command\Validators;
+use Smile\EzSiteBuilderBundle\Generator\ModelGenerator;
+use Smile\EzSiteBuilderBundle\Generator\ProjectGenerator;
+use Smile\EzSiteBuilderBundle\Service\ModelService;
 use eZ\Publish\API\Repository\ContentService;
 use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
 use eZ\Publish\API\Repository\LanguageService;
@@ -85,7 +85,7 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
                     $this->validateParameters($parameters);
 
                     $basename = ProjectGenerator::MAIN;
-                    $extensionAlias = 'edgarez_sb.' . strtolower($basename);
+                    $extensionAlias = 'smileez_sb.' . strtolower($basename);
                     $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
                     $exists = $this->modelService->exists(
@@ -103,7 +103,7 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
                     $languageCode = $this->languageService->getDefaultLanguageCode();
 
                     $modelsLocationID = $container->getParameter(
-                        'edgarez_sb.' . strtolower($basename) . '.default.models_location_id'
+                        'smileez_sb.' . strtolower($basename) . '.default.models_location_id'
                     );
                     $returnValue = $this->modelService->createModelContent(
                         $modelsLocationID,
@@ -114,7 +114,7 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
                     $modelLocationID = $returnValue['modelLocationID'];
 
                     $mediaModelsLocationID = $container->getParameter(
-                        'edgarez_sb.' . strtolower($basename) . '.default.media_models_location_id'
+                        'smileez_sb.' . strtolower($basename) . '.default.media_models_location_id'
                     );
                     $returnValue = $this->modelService->createMediaModelContent(
                         $mediaModelsLocationID,
@@ -137,7 +137,7 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
                         $modelLocationID,
                         $mediaModelLocationID,
                         $excludeUriPrefixes,
-                        $container->getParameter('edgar_ez_site_builder.host'),
+                        $container->getParameter('smile_ez_site_builder.host'),
                         $this->kernelRootDir . '/../src'
                     );
 
@@ -158,10 +158,10 @@ class ModelTaskService extends BaseTaskService implements TaskInterface
                     $this->validateParameters($parameters);
 
                     $basename = ProjectGenerator::MAIN;
-                    $extensionAlias = 'edgarez_sb.' . strtolower($basename);
+                    $extensionAlias = 'smileez_sb.' . strtolower($basename);
                     $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
-                    $customers = $container->getParameter('edgar_ez_site_builder.customer');
+                    $customers = $container->getParameter('smile_ez_site_builder.customer');
                     $this->modelService->addSiteaccessLimitation(
                         strtolower($vendorName . '_' . $parameters['modelName']),
                         $customers

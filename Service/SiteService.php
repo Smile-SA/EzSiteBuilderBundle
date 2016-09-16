@@ -1,11 +1,11 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Service;
+namespace Smile\EzSiteBuilderBundle\Service;
 
-use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
-use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
-use EdgarEz\ToolsBundle\Service\Content;
-use EdgarEz\ToolsBundle\Service\Role;
+use Smile\EzSiteBuilderBundle\Generator\CustomerGenerator;
+use Smile\EzSiteBuilderBundle\Generator\ProjectGenerator;
+use Smile\EzToolsBundle\Service\Content;
+use Smile\EzToolsBundle\Service\Role;
 use eZ\Publish\API\Repository\ContentService;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\LanguageService;
@@ -15,7 +15,7 @@ use eZ\Publish\API\Repository\Values\User\Limitation;
 
 /**
  * Class SiteService
- * @package EdgarEz\SiteBuilderBundle\Service
+ * @package Smile\EzSiteBuilderBundle\Service
  */
 class SiteService
 {
@@ -31,10 +31,10 @@ class SiteService
     /** @var LanguageService $languageService */
     private $languageService;
 
-    /** @var Content $content EdgarEz Content Service */
+    /** @var Content $content SmileEz Content Service */
     private $content;
 
-    /** @var Role $role EdgarEz Role Service */
+    /** @var Role $role SmileEz Role Service */
     private $role;
 
     /**
@@ -42,8 +42,8 @@ class SiteService
      *
      * @param LocationService $locationService eZ Location Service
      * @param URLAliasService $urlAliasService eZ URLAlias Service
-     * @param Content $content EdgarEz Content Service
-     * @param Role $role EdgarEz Role Service
+     * @param Content $content SmileEz Content Service
+     * @param Role $role SmileEz Role Service
      */
     public function __construct(
         LocationService $locationService,

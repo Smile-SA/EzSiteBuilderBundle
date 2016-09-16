@@ -1,7 +1,7 @@
-YUI.add('edgarezsb-sbviewservice', function (Y) {
-    Y.namespace('edgarEzSb');
+YUI.add('smileezsb-sbviewservice', function (Y) {
+    Y.namespace('smileEzSb');
 
-    Y.edgarEzSb.SbViewService = Y.Base.create('edgarezsbSbViewService', Y.eZ.ServerSideViewService, [], {
+    Y.smileEzSb.SbViewService = Y.Base.create('smileezsbSbViewService', Y.eZ.ServerSideViewService, [], {
         initializer: function () {
             this.on('*:navigateTo', function (e) {
                 this.get('app').navigateTo(

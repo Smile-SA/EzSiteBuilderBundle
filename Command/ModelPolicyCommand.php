@@ -1,8 +1,8 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Command;
+namespace Smile\EzSiteBuilderBundle\Command;
 
-use EdgarEz\SiteBuilderBundle\Service\ModelService;
+use Smile\EzSiteBuilderBundle\Service\ModelService;
 use eZ\Publish\API\Repository\Repository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -11,7 +11,7 @@ use Symfony\Component\Console\Question\Question;
 /**
  * Class ModelPolicyCommand
  *
- * @package EdgarEz\SiteBuilderBundle\Command
+ * @package Smile\EzSiteBuilderBundle\Command
  */
 class ModelPolicyCommand extends BaseContainerAwareCommand
 {
@@ -24,7 +24,7 @@ class ModelPolicyCommand extends BaseContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('edgarez:sitebuilder:model:policy')
+            ->setName('smileez:sitebuilder:model:policy')
             ->setDescription('Manage SiteBuilder Model limitation policies');
     }
 
@@ -37,7 +37,7 @@ class ModelPolicyCommand extends BaseContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $adminID = $this->getContainer()->getParameter('edgar_ez_tools.adminid');
+        $adminID = $this->getContainer()->getParameter('smile_ez_tools.adminid');
         /** @var Repository $repository */
         $repository = $this->getContainer()->get('ezpublish.api.repository');
         $repository->setCurrentUser($repository->getUserService()->loadUser($adminID));
@@ -50,10 +50,10 @@ class ModelPolicyCommand extends BaseContainerAwareCommand
         $this->askModelName($input, $output);
 
         /** @var ModelService $modelService */
-        $modelService = $this->getContainer()->get('edgar_ez_site_builder.model.service');
+        $modelService = $this->getContainer()->get('smile_ez_site_builder.model.service');
 
         try {
-            $customers = $this->getContainer()->getParameter('edgar_ez_site_builder.customer');
+            $customers = $this->getContainer()->getParameter('smile_ez_site_builder.customer');
             $modelService->addSiteaccessLimitation(
                 strtolower($this->vendorName . '_' . $this->modelName),
                 $customers
@@ -89,7 +89,7 @@ class ModelPolicyCommand extends BaseContainerAwareCommand
         $question = new Question($questionHelper->getQuestion('Model name used to construct namespace', null));
         $question->setValidator(
             array(
-                'EdgarEz\SiteBuilderBundle\Command\Validators',
+                'Smile\EzSiteBuilderBundle\Command\Validators',
                 'validateVendorName'
             )
         );

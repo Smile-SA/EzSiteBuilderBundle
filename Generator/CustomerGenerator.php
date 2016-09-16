@@ -1,6 +1,6 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Generator;
+namespace Smile\EzSiteBuilderBundle\Generator;
 
 use Sensio\Bundle\GeneratorBundle\Generator\Generator;
 use Symfony\Component\Filesystem\Filesystem;
@@ -10,7 +10,7 @@ use Symfony\Component\Yaml\Yaml;
 /**
  * Class CustomerGenerator
  *
- * @package EdgarEz\SiteBuilderBundle\Generator
+ * @package Smile\EzSiteBuilderBundle\Generator
  */
 class CustomerGenerator extends Generator
 {
@@ -112,7 +112,7 @@ class CustomerGenerator extends Generator
             )
         );
 
-        $this->setSkeletonDirs(array($this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/skeleton')));
+        $this->setSkeletonDirs(array($this->kernel->locateResource('@SmileEzSiteBuilderBundle/Resources/skeleton')));
         $this->renderFile(
             'customer/Bundle.php.twig',
             $dir . '/' . $vendorName . $basename . 'Bundle.php',
@@ -134,12 +134,12 @@ class CustomerGenerator extends Generator
             $parameters
         );
 
-        $configFile = $targetDir . '/' . $vendorName . '/ProjectBundle/Resources/config/edgarezsb.yml';
-        $edgarezYaml = Yaml::parse(file_get_contents($configFile));
-        $customers = $edgarezYaml['parameters']['edgar_ez_site_builder.customer'];
+        $configFile = $targetDir . '/' . $vendorName . '/ProjectBundle/Resources/config/smileezsb.yml';
+        $smileezYaml = Yaml::parse(file_get_contents($configFile));
+        $customers = $smileezYaml['parameters']['smile_ez_site_builder.customer'];
         $customers[] = strtolower($customerName);
-        $edgarezYaml['parameters']['edgar_ez_site_builder.customer'] = $customers;
-        file_put_contents($configFile, Yaml::dump($edgarezYaml));
+        $smileezYaml['parameters']['smile_ez_site_builder.customer'] = $customers;
+        file_put_contents($configFile, Yaml::dump($smileezYaml));
 
         $this->filesystem->mkdir(
             $targetDir . '/' . $vendorName . '/' . ProjectGenerator::CUSTOMERS . '/' . $customerName . '/' . self::SITES

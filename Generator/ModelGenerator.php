@@ -1,6 +1,6 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Generator;
+namespace Smile\EzSiteBuilderBundle\Generator;
 
 use Sensio\Bundle\GeneratorBundle\Generator\Generator;
 use Symfony\Component\Filesystem\Filesystem;
@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\Kernel;
 /**
  * Class ModelGenerator
  *
- * @package EdgarEz\SiteBuilderBundle\Generator
+ * @package Smile\EzSiteBuilderBundle\Generator
  */
 class ModelGenerator extends Generator
 {
@@ -107,7 +107,7 @@ class ModelGenerator extends Generator
 
         $this->setSkeletonDirs(
             array(
-                $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/skeleton')
+                $this->kernel->locateResource('@SmileEzSiteBuilderBundle/Resources/skeleton')
             )
         );
         $this->renderFile(

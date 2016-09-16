@@ -1,10 +1,10 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Service;
+namespace Smile\EzSiteBuilderBundle\Service;
 
-use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
-use EdgarEz\ToolsBundle\Service\Content;
-use EdgarEz\ToolsBundle\Service\Role;
+use Smile\EzSiteBuilderBundle\Generator\ProjectGenerator;
+use Smile\EzToolsBundle\Service\Content;
+use Smile\EzToolsBundle\Service\Role;
 use eZ\Publish\API\Repository\ContentTypeService;
 use eZ\Publish\API\Repository\Exceptions\ContentFieldValidationException;
 use eZ\Publish\API\Repository\Exceptions\ContentValidationException;
@@ -26,7 +26,7 @@ use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class CustomerService
- * @package EdgarEz\SiteBuilderBundle\Service
+ * @package Smile\EzSiteBuilderBundle\Service
  */
 class CustomerService
 {
@@ -45,10 +45,10 @@ class CustomerService
     /** @var ContentTypeService $contentTypeService eZ ContentType Service */
     private $contentTypeService;
 
-    /** @var Content $content EdgarEz Content Service */
+    /** @var Content $content SmileEz Content Service */
     private $content;
 
-    /** @var Role $role EdgarEz Role Service */
+    /** @var Role $role SmileEz Role Service */
     private $role;
 
     /** @var array $siteaccessGroups ezpublish siteaccess groups */
@@ -61,8 +61,8 @@ class CustomerService
      * @param LocationService $locationService eZ Location Service
      * @param UserService $userService eZ User Service
      * @param ContentTypeService $contentTypeService eZ ContentType Service
-     * @param Content $content EdgarEz Content Service
-     * @param Role $role EdgarEz Role Service
+     * @param Content $content SmileEz Content Service
+     * @param Role $role SmileEz Role Service
      * @param array $siteaccessGroups ezpublish siteaccess groups
      */
     public function __construct(
@@ -105,7 +105,7 @@ class CustomerService
         $userPassword = substr(str_shuffle(strtolower(sha1(rand() . time() . $userLogin))), 0, 8);
 
         try {
-            $contentType = $this->contentTypeService->loadContentTypeByIdentifier('edgar_ez_sb_user');
+            $contentType = $this->contentTypeService->loadContentTypeByIdentifier('smile_ez_sb_user');
             $userCreateStruct = $this->userService->newUserCreateStruct(
                 $userLogin,
                 $userEmail,
@@ -147,7 +147,7 @@ class CustomerService
         try {
             $contentDefinition = Yaml::parse(
                 file_get_contents(
-                    $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/customercontent.yml')
+                    $this->kernel->locateResource('@SmileEzSiteBuilderBundle/Resources/datas/customercontent.yml')
                 )
             );
             $contentDefinition['parentLocationID'] = $parentLocationID;
@@ -177,7 +177,7 @@ class CustomerService
         try {
             $contentDefinition = Yaml::parse(
                 file_get_contents(
-                    $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/mediacustomercontent.yml')
+                    $this->kernel->locateResource('@SmileEzSiteBuilderBundle/Resources/datas/mediacustomercontent.yml')
                 )
             );
             $contentDefinition['parentLocationID'] = $parentLocationID;
@@ -211,7 +211,7 @@ class CustomerService
             $userGroupDefinition = Yaml::parse(
                 file_get_contents(
                     $this->kernel->locateResource(
-                        '@EdgarEzSiteBuilderBundle/Resources/datas/customerusergroup_creators.yml'
+                        '@SmileEzSiteBuilderBundle/Resources/datas/customerusergroup_creators.yml'
                     )
                 )
             );
@@ -223,7 +223,7 @@ class CustomerService
             $userGroupDefinition = Yaml::parse(
                 file_get_contents(
                     $this->kernel->locateResource(
-                        '@EdgarEzSiteBuilderBundle/Resources/datas/customerusergroup_editors.yml'
+                        '@SmileEzSiteBuilderBundle/Resources/datas/customerusergroup_editors.yml'
                     )
                 )
             );
@@ -320,8 +320,8 @@ class CustomerService
             $siteaccess = array();
             $siteaccessGroups = array_keys($this->siteaccessGroups);
             foreach ($siteaccessGroups as $sg) {
-                if (strpos($sg, 'edgarezsb_models_') === 0) {
-                    $sg = substr($sg, strlen('edgarezsb_models_'));
+                if (strpos($sg, 'smileezsb_models_') === 0) {
+                    $sg = substr($sg, strlen('smileezsb_models_'));
                     $siteaccess[] = sprintf('%u', crc32($sg));
                 }
             }

@@ -1,15 +1,15 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Data\Mapper;
+namespace Smile\EzSiteBuilderBundle\Data\Mapper;
 
-use EdgarEz\SiteBuilderBundle\Data\Install\InstallData;
+use Smile\EzSiteBuilderBundle\Data\Install\InstallData;
 use eZ\Publish\API\Repository\Values\ValueObject;
 use EzSystems\RepositoryForms\Data\Mapper\FormDataMapperInterface;
 
 /**
  * Class InstallMapper
  *
- * @package EdgarEz\SiteBuilderBundle\Data\Mapper
+ * @package Smile\EzSiteBuilderBundle\Data\Mapper
  */
 class InstallMapper implements FormDataMapperInterface
 {

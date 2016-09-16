@@ -1,9 +1,9 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Command;
+namespace Smile\EzSiteBuilderBundle\Command;
 
-use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
-use EdgarEz\SiteBuilderBundle\Service\Task\TaskInterface;
+use Smile\EzSiteBuilderBundle\Entity\SiteBuilderTask;
+use Smile\EzSiteBuilderBundle\Service\Task\TaskInterface;
 use eZ\Publish\API\Repository\Repository;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,7 +12,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 
 /**
  * Class TaskCommand
- * @package EdgarEz\SiteBuilderBundle\Command
+ * @package Smile\EzSiteBuilderBundle\Command
  */
 class TaskCommand extends ContainerAwareCommand
 {
@@ -26,7 +26,7 @@ class TaskCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('edgarez:sitebuilder:task')
+            ->setName('smileez:sitebuilder:task')
             ->setDescription('Execute sitebuilder task');
     }
 
@@ -38,7 +38,7 @@ class TaskCommand extends ContainerAwareCommand
         /** @var Registry $dcotrineRegistry */
         $doctrineRegistry = $this->getContainer()->get('doctrine');
         $doctrineManager = $doctrineRegistry->getManager();
-        $repository = $doctrineRegistry->getRepository('EdgarEzSiteBuilderBundle:SiteBuilderTask');
+        $repository = $doctrineRegistry->getRepository('SmileEzSiteBuilderBundle:SiteBuilderTask');
 
         $query = $repository->createQueryBuilder('t')
             ->where('t.status = :status')
@@ -64,7 +64,7 @@ class TaskCommand extends ContainerAwareCommand
 
                 /** @var TaskInterface $taskService */
                 $taskService = $this->getContainer()->get(
-                    'edgar_ez_site_builder.' . $action['service'] . '.task.service'
+                    'smile_ez_site_builder.' . $action['service'] . '.task.service'
                 );
 
                 if (!isset($action['command'])) {

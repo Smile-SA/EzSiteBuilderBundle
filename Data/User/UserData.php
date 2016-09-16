@@ -1,8 +1,8 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Data\User;
+namespace Smile\EzSiteBuilderBundle\Data\User;
 
-use EdgarEz\SiteBuilderBundle\Values\Content\UserStruct;
+use Smile\EzSiteBuilderBundle\Values\Content\UserStruct;
 
 class UserData extends UserStruct
 {

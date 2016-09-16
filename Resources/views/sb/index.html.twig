@@ -5,11 +5,11 @@
 {% trans_default_domain "sitebuilder" %}
 
 {% block header_title %}
-    <h1 class="edgarezsb-dashboard-title">{{ 'SiteBuilder'|trans }}</h1>
+    <h1 class="smileezsb-dashboard-title">{{ 'SiteBuilder'|trans }}</h1>
 {% endblock %}
 
 {% block content %}
-    <section class="ez-tabs ez-edgarezsbdashboard-content">
+    <section class="ez-tabs ez-smileezsbdashboard-content">
 
         <ul class="ez-tabs-list">
             {% for tab_item in tab_items %}
@@ -27,7 +27,7 @@
                             <div class="ez-view-serversideview">
                                 <section class="ez-serverside-content">
                                     {{ render( controller(
-                                    'edgar_ez_site_builder.controller.sb:tabAction', {
+                                    'smile_ez_site_builder.controller.sb:tabAction', {
                                         'tabItem': tab_item,
                                         'paramsTwig': params,
                                         'hasErrors': hasErrors

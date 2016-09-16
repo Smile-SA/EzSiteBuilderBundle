@@ -1,8 +1,8 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Data\Customer;
+namespace Smile\EzSiteBuilderBundle\Data\Customer;
 
-use EdgarEz\SiteBuilderBundle\Values\Content\Customer;
+use Smile\EzSiteBuilderBundle\Values\Content\Customer;
 
 trait CustomerDataTrait
 {

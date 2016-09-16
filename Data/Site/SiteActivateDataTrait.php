@@ -1,8 +1,8 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Data\Site;
+namespace Smile\EzSiteBuilderBundle\Data\Site;
 
-use EdgarEz\SiteBuilderBundle\Values\Content\SiteActivate;
+use Smile\EzSiteBuilderBundle\Values\Content\SiteActivate;
 
 trait SiteActivateDataTrait
 {

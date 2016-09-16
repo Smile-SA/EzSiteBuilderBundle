@@ -1,11 +1,11 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Service;
+namespace Smile\EzSiteBuilderBundle\Service;
 
-use EdgarEz\ToolsBundle\Service\Content;
-use EdgarEz\ToolsBundle\Service\ContentType;
-use EdgarEz\ToolsBundle\Service\ContentTypeGroup;
-use EdgarEz\ToolsBundle\Service\Role;
+use Smile\EzToolsBundle\Service\Content;
+use Smile\EzToolsBundle\Service\ContentType;
+use Smile\EzToolsBundle\Service\ContentTypeGroup;
+use Smile\EzToolsBundle\Service\Role;
 use eZ\Publish\API\Repository\ContentTypeService;
 use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
 use eZ\Publish\API\Repository\Exceptions\LimitationValidationException;
@@ -25,7 +25,7 @@ use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class InstallService
- * @package EdgarEz\SiteBuilderBundle\Service
+ * @package Smile\EzSiteBuilderBundle\Service
  */
 class InstallService
 {
@@ -38,7 +38,7 @@ class InstallService
     /** @var ContentTypeService $contentTypeService eZ ContentType Service */
     private $contentTypeService;
 
-    /** @var ContentTypeGroup $contentTypeGroup EdgarEz content type group service */
+    /** @var ContentTypeGroup $contentTypeGroup SmileEz content type group service */
     private $contentTypeGroup;
 
     /** @var RoleService eZ Role Service */
@@ -53,13 +53,13 @@ class InstallService
     /** @var LanguageService $languageService */
     private $languageService;
 
-    /** @var ContentType $contentType EdgarEz ContentType Service */
+    /** @var ContentType $contentType SmileEz ContentType Service */
     private $contentType;
 
-    /** @var Content $content EdgarEz Content Service */
+    /** @var Content $content SmileEz Content Service */
     private $content;
 
-    /** @var Role $role EdgarEz Role Service */
+    /** @var Role $role SmileEz Role Service */
     private $role;
 
     /**
@@ -70,10 +70,10 @@ class InstallService
      * @param RoleService $roleService eZ Role Service
      * @param LocationService $locationService eZ Location Service
      * @param UserService $userService eZ User Service
-     * @param ContentTypeGroup $contentTypeGroup EdgarEz ContentTypeGroup service
-     * @param ContentType $contentType EdgarEz ContentType Service
-     * @param Content $content EdgarEz Content Service
-     * @param Role $role EdgarEz Role Service
+     * @param ContentTypeGroup $contentTypeGroup SmileEz ContentTypeGroup service
+     * @param ContentType $contentType SmileEz ContentType Service
+     * @param Content $content SmileEz Content Service
+     * @param Role $role SmileEz Role Service
      */
     public function __construct(
         Kernel $kernel,
@@ -129,7 +129,7 @@ class InstallService
         try {
             foreach ($identifiers as $identifier) {
                 $contentTypeDefinition = $this->kernel->locateResource(
-                    '@EdgarEzSiteBuilderBundle/Resources/datas/contenttype_' . $identifier . '.yml'
+                    '@SmileEzSiteBuilderBundle/Resources/datas/contenttype_' . $identifier . '.yml'
                 );
                 $contentTypeDefinition = Yaml::parse(file_get_contents($contentTypeDefinition));
                 $contentTypeDefinition['contentTypeGroup'] = $contentTypeGroup;
@@ -163,7 +163,7 @@ class InstallService
         try {
             foreach ($identifiers as $identifier) {
                 $contentTypeDefinition = $this->kernel->locateResource(
-                    '@EdgarEzSiteBuilderBundle/Resources/datas/mediacontenttype_' . $identifier . '.yml'
+                    '@SmileEzSiteBuilderBundle/Resources/datas/mediacontenttype_' . $identifier . '.yml'
                 );
                 $contentTypeDefinition = Yaml::parse(file_get_contents($contentTypeDefinition));
                 $contentTypeDefinition['contentTypeGroup'] = $contentTypeGroup;
@@ -195,7 +195,7 @@ class InstallService
         try {
             foreach ($identifiers as $identifier) {
                 $contentDefinition = $this->kernel->locateResource(
-                    '@EdgarEzSiteBuilderBundle/Resources/datas/content_' . $identifier . '.yml'
+                    '@SmileEzSiteBuilderBundle/Resources/datas/content_' . $identifier . '.yml'
                 );
                 $contentDefinition = Yaml::parse(file_get_contents($contentDefinition));
                 $contentDefinition['parentLocationID'] = $parentLocationID;
@@ -210,10 +210,10 @@ class InstallService
                 /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentType $contentType */
                 $contentType = $this->contentTypeService->loadContentType($content->contentInfo->contentTypeId);
                 switch ($contentType->identifier) {
-                    case 'edgar_ez_sb_modelsroot':
+                    case 'smile_ez_sb_modelsroot':
                         $modelsLocationID = $content->contentInfo->mainLocationId;
                         break;
-                    case 'edgar_ez_sb_customersroot':
+                    case 'smile_ez_sb_customersroot':
                         $customersLocationID = $content->contentInfo->mainLocationId;
                         break;
                     default:
@@ -249,7 +249,7 @@ class InstallService
         try {
             foreach ($identifiers as $identifier) {
                 $contentDefinition = $this->kernel->locateResource(
-                    '@EdgarEzSiteBuilderBundle/Resources/datas/mediacontent_' . $identifier . '.yml'
+                    '@SmileEzSiteBuilderBundle/Resources/datas/mediacontent_' . $identifier . '.yml'
                 );
                 $contentDefinition = Yaml::parse(file_get_contents($contentDefinition));
                 $contentDefinition['parentLocationID'] = $parentLocationID;
@@ -264,10 +264,10 @@ class InstallService
                 /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentType $contentType */
                 $contentType = $this->contentTypeService->loadContentType($content->contentInfo->contentTypeId);
                 switch ($contentType->identifier) {
-                    case 'edgar_ez_sb_mediamodelsroot':
+                    case 'smile_ez_sb_mediamodelsroot':
                         $mediaModelsLocationID = $content->contentInfo->mainLocationId;
                         break;
-                    case 'edgar_ez_sb_mediacustomersroot':
+                    case 'smile_ez_sb_mediacustomersroot':
                         $mediaCustomersLocationID = $content->contentInfo->mainLocationId;
                         break;
                     default:
@@ -300,7 +300,7 @@ class InstallService
         try {
             $userGroupDefinition = Yaml::parse(
                 file_get_contents(
-                    $this->kernel->locateResource('@EdgarEzSiteBuilderBundle/Resources/datas/usergrouproot.yml')
+                    $this->kernel->locateResource('@SmileEzSiteBuilderBundle/Resources/datas/usergrouproot.yml')
                 )
             );
             $userGroupDefinition['parentLocationID'] = $parentLocationID;
@@ -314,7 +314,7 @@ class InstallService
 
             foreach ($identifiers as $identifier) {
                 $userGroupDefinition = $this->kernel->locateResource(
-                    '@EdgarEzSiteBuilderBundle/Resources/datas/usergroup_' . $identifier . '.yml'
+                    '@SmileEzSiteBuilderBundle/Resources/datas/usergroup_' . $identifier . '.yml'
                 );
                 $userGroupDefinition = Yaml::parse(file_get_contents($userGroupDefinition));
                 $userGroupDefinition['parentLocationID'] = $userGroupParenttLocationID;

@@ -1,48 +1,48 @@
-edgarezsb_sb:
+smileezsb_sb:
     path:     /sb/{tabItem}
-    defaults: { _controller: edgar_ez_site_builder.controller.sb:sbAction, tabItem: "dashboard" }
+    defaults: { _controller: smile_ez_site_builder.controller.sb:sbAction, tabItem: "dashboard" }
     requirements:
             tabItem: "[a-z]+"
 
-edgarezsb_install_post:
+smileezsb_install_post:
     path: /sb/tab/install
     methods: [POST]
     defaults:
-        _controller: edgar_ez_site_builder.controller.sb.install:installAction
+        _controller: smile_ez_site_builder.controller.sb.install:installAction
 
-edgarezsb_customer_post:
+smileezsb_customer_post:
     path: /sb/tab/customer
     methods: [POST]
     defaults:
-        _controller: edgar_ez_site_builder.controller.sb.customer:generateAction
+        _controller: smile_ez_site_builder.controller.sb.customer:generateAction
 
-edgarezsb_model_post:
+smileezsb_model_post:
     path: /sb/tab/model
     methods: [POST]
     defaults:
-        _controller: edgar_ez_site_builder.controller.sb.model:generateAction
+        _controller: smile_ez_site_builder.controller.sb.model:generateAction
 
-edgarezsb_modelactivate_post:
+smileezsb_modelactivate_post:
     path: /sb/tab/model/activate
     methods: [POST]
     defaults:
-        _controller: edgar_ez_site_builder.controller.sb.model:activateAction
+        _controller: smile_ez_site_builder.controller.sb.model:activateAction
 
-edgarezsb_site_post:
+smileezsb_site_post:
     path: /sb/tab/site
     methods: [POST]
     defaults:
-        _controller: edgar_ez_site_builder.controller.sb.site:generateAction
+        _controller: smile_ez_site_builder.controller.sb.site:generateAction
 
-edgarezsb_siteactivate_post:
+smileezsb_siteactivate_post:
     path: /sb/tab/site/activate
     methods: [POST]
     defaults:
-        _controller: edgar_ez_site_builder.controller.sb.site:activateAction
+        _controller: smile_ez_site_builder.controller.sb.site:activateAction
 
-edgarezsb_user_post:
+smileezsb_user_post:
     path: /sb/tab/user
     methods: [POST]
     defaults:
-        _controller: edgar_ez_site_builder.controller.sb.user:generateAction
+        _controller: smile_ez_site_builder.controller.sb.user:generateAction
 

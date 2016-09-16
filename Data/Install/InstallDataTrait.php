@@ -1,13 +1,13 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Data\Install;
+namespace Smile\EzSiteBuilderBundle\Data\Install;
 
-use EdgarEz\SiteBuilderBundle\Values\Content\Install;
+use Smile\EzSiteBuilderBundle\Values\Content\Install;
 
 /**
  * Class InstallDataTrait
  *
- * @package EdgarEz\SiteBuilderBundle\Data\Install
+ * @package Smile\EzSiteBuilderBundle\Data\Install
  */
 trait InstallDataTrait
 {

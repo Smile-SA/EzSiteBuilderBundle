@@ -1,6 +1,6 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Values\Content;
+namespace Smile\EzSiteBuilderBundle\Values\Content;
 
 use eZ\Publish\API\Repository\Values\ValueObject;
 

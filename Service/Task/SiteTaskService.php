@@ -1,13 +1,13 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Service\Task;
+namespace Smile\EzSiteBuilderBundle\Service\Task;
 
-use EdgarEz\SiteBuilderBundle\Command\Validators;
-use EdgarEz\SiteBuilderBundle\Generator\CustomerGenerator;
-use EdgarEz\SiteBuilderBundle\Generator\ProjectGenerator;
-use EdgarEz\SiteBuilderBundle\Generator\SiteGenerator;
-use EdgarEz\SiteBuilderBundle\Service\SiteService;
-use EdgarEz\ToolsBundle\Service\Role;
+use Smile\EzSiteBuilderBundle\Command\Validators;
+use Smile\EzSiteBuilderBundle\Generator\CustomerGenerator;
+use Smile\EzSiteBuilderBundle\Generator\ProjectGenerator;
+use Smile\EzSiteBuilderBundle\Generator\SiteGenerator;
+use Smile\EzSiteBuilderBundle\Service\SiteService;
+use Smile\EzToolsBundle\Service\Role;
 use eZ\Publish\API\Repository\ContentService;
 use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
 use eZ\Publish\API\Repository\LocationService;
@@ -131,7 +131,7 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                     $this->validateParameters($parameters);
 
                     $basename = ProjectGenerator::MAIN;
-                    $extensionAlias = 'edgarez_sb.' . strtolower($basename);
+                    $extensionAlias = 'smileez_sb.' . strtolower($basename);
                     $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
                     $exists = $this->siteService->exists(
@@ -199,7 +199,7 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                 break;
             case 'policy':
                 try {
-                    $adminID = $container->getParameter('edgar_ez_tools.adminid');
+                    $adminID = $container->getParameter('smile_ez_tools.adminid');
                     /** @var Repository $repository */
                     $repository = $container->get('ezpublish.api.repository');
                     $repository->setCurrentUser($repository->getUserService()->loadUser($adminID));
@@ -210,17 +210,17 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                         ProjectGenerator::CUSTOMERS . '_' . $parameters['customerName'] . '_' . CustomerGenerator::SITES
                     );
                     $roleCreatorID = $container->getParameter(
-                        'edgarez_sb.customer.' . $extensionAlias . '.default.customer_user_creator_role_id'
+                        'smileez_sb.customer.' . $extensionAlias . '.default.customer_user_creator_role_id'
                     );
                     $roleEditorID = $container->getParameter(
-                        'edgarez_sb.customer.' . $extensionAlias . '.default.customer_user_editor_role_id'
+                        'smileez_sb.customer.' . $extensionAlias . '.default.customer_user_editor_role_id'
                     );
 
                     $roleCreator = $this->roleService->loadRole($roleCreatorID);
                     $roleEditor = $this->roleService->loadRole($roleEditorID);
 
                     $basename = ProjectGenerator::MAIN;
-                    $extensionAlias = 'edgarez_sb.' . strtolower($basename);
+                    $extensionAlias = 'smileez_sb.' . strtolower($basename);
                     $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
                     foreach ($parameters['sites'] as $languageCode => $site) {
@@ -240,7 +240,7 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                 break;
             case 'activate':
                 try {
-                    $adminID = $container->getParameter('edgar_ez_tools.adminid');
+                    $adminID = $container->getParameter('smile_ez_tools.adminid');
                     /** @var Repository $repository */
                     $repository = $container->get('ezpublish.api.repository');
                     $repository->setCurrentUser($repository->getUserService()->loadUser($adminID));
@@ -251,7 +251,7 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                     $parent = $this->locationService->loadLocation($site->parentLocationId);
 
                     $basename = ProjectGenerator::MAIN;
-                    $extensionAlias = 'edgarez_sb.' . strtolower($basename);
+                    $extensionAlias = 'smileez_sb.' . strtolower($basename);
                     $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
                     $siteaccessName = strtolower(

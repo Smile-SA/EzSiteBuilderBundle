@@ -1,14 +1,14 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Controller;
+namespace Smile\EzSiteBuilderBundle\Controller;
 
-use EdgarEz\SiteBuilderBundle\Data\Mapper\UserMapper;
-use EdgarEz\SiteBuilderBundle\Data\User\UserData;
-use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
-use EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\UserDispatcher;
-use EdgarEz\SiteBuilderBundle\Form\Type\UserType;
-use EdgarEz\SiteBuilderBundle\Service\SecurityService;
-use EdgarEz\SiteBuilderBundle\Values\Content\User;
+use Smile\EzSiteBuilderBundle\Data\Mapper\UserMapper;
+use Smile\EzSiteBuilderBundle\Data\User\UserData;
+use Smile\EzSiteBuilderBundle\Entity\SiteBuilderTask;
+use Smile\EzSiteBuilderBundle\Form\ActionDispatcher\UserDispatcher;
+use Smile\EzSiteBuilderBundle\Form\Type\UserType;
+use Smile\EzSiteBuilderBundle\Service\SecurityService;
+use Smile\EzSiteBuilderBundle\Values\Content\User;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -37,7 +37,7 @@ class UserController extends BaseController
 
     public function generateAction(Request $request)
     {
-        $actionUrl = $this->generateUrl('edgarezsb_sb', ['tabItem' => 'dashboard']);
+        $actionUrl = $this->generateUrl('smileezsb_sb', ['tabItem' => 'dashboard']);
         if (!$this->securityService->checkAuthorization('sitegenerate')) {
             return $this->redirectAfterFormPost($actionUrl);
         }
@@ -61,11 +61,11 @@ class UserController extends BaseController
             return $this->redirectAfterFormPost($actionUrl);
         }
 
-        $this->getErrors($form, 'edgarezsb_form_user');
+        $this->getErrors($form, 'smileezsb_form_user');
 
         $tabItems = $this->tabItems;
         unset($tabItems[0]);
-        return $this->render('EdgarEzSiteBuilderBundle:sb:index.html.twig', [
+        return $this->render('SmileEzSiteBuilderBundle:sb:index.html.twig', [
             'tab_items' => $tabItems,
             'tab_item_selected' => 'usergenerate',
             'params' => array('usergenerate' => $form->createView()),

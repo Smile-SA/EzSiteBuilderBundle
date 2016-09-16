@@ -1,8 +1,8 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Twig\Extension;
+namespace Smile\EzSiteBuilderBundle\Twig\Extension;
 
-use EdgarEz\SiteBuilderBundle\Service\SecurityService;
+use Smile\EzSiteBuilderBundle\Service\SecurityService;
 
 class SecurityExtension extends \Twig_Extension
 {
@@ -19,7 +19,7 @@ class SecurityExtension extends \Twig_Extension
      */
     public function getName()
     {
-        return 'edgarezsb_security_twig_extension';
+        return 'smileezsb_security_twig_extension';
     }
 
     /**

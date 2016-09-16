@@ -1,13 +1,13 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Command;
+namespace Smile\EzSiteBuilderBundle\Command;
 
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
 
 /**
  * Class Validators
  *
- * @package EdgarEz\SiteBuilderBundle\Command
+ * @package Smile\EzSiteBuilderBundle\Command
  */
 class Validators
 {

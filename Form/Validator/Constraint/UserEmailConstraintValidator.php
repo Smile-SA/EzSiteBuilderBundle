@@ -1,5 +1,5 @@
 <?php
-namespace EdgarEz\SiteBuilderBundle\Form\Validator\Constraint;
+namespace Smile\EzSiteBuilderBundle\Form\Validator\Constraint;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;

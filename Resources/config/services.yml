@@ -1,50 +1,50 @@
 parameters:
-    edgar_ez_site_builder.install.service.class: EdgarEz\SiteBuilderBundle\Service\InstallService
-    edgar_ez_site_builder.customer.service.class: EdgarEz\SiteBuilderBundle\Service\CustomerService
-    edgar_ez_site_builder.model.service.class: EdgarEz\SiteBuilderBundle\Service\ModelService
-    edgar_ez_site_builder.site.service.class: EdgarEz\SiteBuilderBundle\Service\SiteService
+    smile_ez_site_builder.install.service.class: Smile\EzSiteBuilderBundle\Service\InstallService
+    smile_ez_site_builder.customer.service.class: Smile\EzSiteBuilderBundle\Service\CustomerService
+    smile_ez_site_builder.model.service.class: Smile\EzSiteBuilderBundle\Service\ModelService
+    smile_ez_site_builder.site.service.class: Smile\EzSiteBuilderBundle\Service\SiteService
 
-    edgar_ez_site_builder.project.task.service.class: EdgarEz\SiteBuilderBundle\Service\Task\ProjectTaskService
-    edgar_ez_site_builder.customer.task.service.class: EdgarEz\SiteBuilderBundle\Service\Task\CustomerTaskService
-    edgar_ez_site_builder.model.task.service.class: EdgarEz\SiteBuilderBundle\Service\Task\ModelTaskService
-    edgar_ez_site_builder.site.task.service.class: EdgarEz\SiteBuilderBundle\Service\Task\SiteTaskService
-    edgar_ez_site_builder.user.task.service.class: EdgarEz\SiteBuilderBundle\Service\Task\UserTaskService
+    smile_ez_site_builder.project.task.service.class: Smile\EzSiteBuilderBundle\Service\Task\ProjectTaskService
+    smile_ez_site_builder.customer.task.service.class: Smile\EzSiteBuilderBundle\Service\Task\CustomerTaskService
+    smile_ez_site_builder.model.task.service.class: Smile\EzSiteBuilderBundle\Service\Task\ModelTaskService
+    smile_ez_site_builder.site.task.service.class: Smile\EzSiteBuilderBundle\Service\Task\SiteTaskService
+    smile_ez_site_builder.user.task.service.class: Smile\EzSiteBuilderBundle\Service\Task\UserTaskService
 
-    edgar_ez_site_builder.mailer.class: EdgarEz\SiteBuilderBundle\Mail\Sender
+    smile_ez_site_builder.mailer.class: Smile\EzSiteBuilderBundle\Mail\Sender
 
-    edgar_ez_site_builder.validator.modelname.class: EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\ModelNameConstraintValidator
-    edgar_ez_site_builder.validator.customername.class: EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\CustomerNameConstraintValidator
-    edgar_ez_site_builder.validator.host.class: EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\HostConstraintValidator
-    edgar_ez_site_builder.validator.hostsuffix.class: EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\HostSuffixConstraintValidator
-    edgar_ez_site_builder.validator.locationid.class: EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\LocationIDConstraintValidator
-    edgar_ez_site_builder.validator.sitename.class: EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\SiteNameConstraintValidator
-    edgar_ez_site_builder.validator.useremail.class: EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\UserEmailConstraintValidator
-    edgar_ez_site_builder.validator.username.class: EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\UserNameConstraintValidator
-    edgar_ez_site_builder.validator.vendorname.class: EdgarEz\SiteBuilderBundle\Form\Validator\Constraint\VendorNameConstraintValidator
+    smile_ez_site_builder.validator.modelname.class: Smile\EzSiteBuilderBundle\Form\Validator\Constraint\ModelNameConstraintValidator
+    smile_ez_site_builder.validator.customername.class: Smile\EzSiteBuilderBundle\Form\Validator\Constraint\CustomerNameConstraintValidator
+    smile_ez_site_builder.validator.host.class: Smile\EzSiteBuilderBundle\Form\Validator\Constraint\HostConstraintValidator
+    smile_ez_site_builder.validator.hostsuffix.class: Smile\EzSiteBuilderBundle\Form\Validator\Constraint\HostSuffixConstraintValidator
+    smile_ez_site_builder.validator.locationid.class: Smile\EzSiteBuilderBundle\Form\Validator\Constraint\LocationIDConstraintValidator
+    smile_ez_site_builder.validator.sitename.class: Smile\EzSiteBuilderBundle\Form\Validator\Constraint\SiteNameConstraintValidator
+    smile_ez_site_builder.validator.useremail.class: Smile\EzSiteBuilderBundle\Form\Validator\Constraint\UserEmailConstraintValidator
+    smile_ez_site_builder.validator.username.class: Smile\EzSiteBuilderBundle\Form\Validator\Constraint\UserNameConstraintValidator
+    smile_ez_site_builder.validator.vendorname.class: Smile\EzSiteBuilderBundle\Form\Validator\Constraint\VendorNameConstraintValidator
 
-    edgar_ez_site_builder.action_dispatcher.install.class: EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\InstallDispatcher
-    edgar_ez_site_builder.action_dispatcher.customer.class: EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\CustomerDispatcher
-    edgar_ez_site_builder.action_dispatcher.model.class: EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\ModelDispatcher
-    edgar_ez_site_builder.action_dispatcher.modelactivate.class: EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\ModelActivateDispatcher
-    edgar_ez_site_builder.action_dispatcher.site.class: EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\SiteDispatcher
-    edgar_ez_site_builder.action_dispatcher.siteactivate.class: EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\SiteActivateDispatcher
-    edgar_ez_site_builder.action_dispatcher.user.class: EdgarEz\SiteBuilderBundle\Form\ActionDispatcher\UserDispatcher
+    smile_ez_site_builder.action_dispatcher.install.class: Smile\EzSiteBuilderBundle\Form\ActionDispatcher\InstallDispatcher
+    smile_ez_site_builder.action_dispatcher.customer.class: Smile\EzSiteBuilderBundle\Form\ActionDispatcher\CustomerDispatcher
+    smile_ez_site_builder.action_dispatcher.model.class: Smile\EzSiteBuilderBundle\Form\ActionDispatcher\ModelDispatcher
+    smile_ez_site_builder.action_dispatcher.modelactivate.class: Smile\EzSiteBuilderBundle\Form\ActionDispatcher\ModelActivateDispatcher
+    smile_ez_site_builder.action_dispatcher.site.class: Smile\EzSiteBuilderBundle\Form\ActionDispatcher\SiteDispatcher
+    smile_ez_site_builder.action_dispatcher.siteactivate.class: Smile\EzSiteBuilderBundle\Form\ActionDispatcher\SiteActivateDispatcher
+    smile_ez_site_builder.action_dispatcher.user.class: Smile\EzSiteBuilderBundle\Form\ActionDispatcher\UserDispatcher
 
-    edgar_ez_site_builder.controller.sb.class: EdgarEz\SiteBuilderBundle\Controller\SbController
-    edgar_ez_site_builder.controller.sb.install.class: EdgarEz\SiteBuilderBundle\Controller\InstallController
-    edgar_ez_site_builder.controller.sb.dashboard.class: EdgarEz\SiteBuilderBundle\Controller\DashboardController
-    edgar_ez_site_builder.controller.sb.customer.class: EdgarEz\SiteBuilderBundle\Controller\CustomerController
-    edgar_ez_site_builder.controller.sb.model.class: EdgarEz\SiteBuilderBundle\Controller\ModelController
-    edgar_ez_site_builder.controller.sb.site.class: EdgarEz\SiteBuilderBundle\Controller\SiteController
-    edgar_ez_site_builder.controller.sb.user.class: EdgarEz\SiteBuilderBundle\Controller\UserController
-    edgar_ez_site_builder.tabs: [install, dashboard, customergenerate, modelgenerate, modelactivate, sitegenerate, siteactivate, usergenerate]
+    smile_ez_site_builder.controller.sb.class: Smile\EzSiteBuilderBundle\Controller\SbController
+    smile_ez_site_builder.controller.sb.install.class: Smile\EzSiteBuilderBundle\Controller\InstallController
+    smile_ez_site_builder.controller.sb.dashboard.class: Smile\EzSiteBuilderBundle\Controller\DashboardController
+    smile_ez_site_builder.controller.sb.customer.class: Smile\EzSiteBuilderBundle\Controller\CustomerController
+    smile_ez_site_builder.controller.sb.model.class: Smile\EzSiteBuilderBundle\Controller\ModelController
+    smile_ez_site_builder.controller.sb.site.class: Smile\EzSiteBuilderBundle\Controller\SiteController
+    smile_ez_site_builder.controller.sb.user.class: Smile\EzSiteBuilderBundle\Controller\UserController
+    smile_ez_site_builder.tabs: [install, dashboard, customergenerate, modelgenerate, modelactivate, sitegenerate, siteactivate, usergenerate]
 
-    edgarezsb.security.service.class: EdgarEz\SiteBuilderBundle\Service\SecurityService
-    edgarezsb.security.twig.extension.class: EdgarEz\SiteBuilderBundle\Twig\Extension\SecurityExtension
+    smileezsb.security.service.class: Smile\EzSiteBuilderBundle\Service\SecurityService
+    smileezsb.security.twig.extension.class: Smile\EzSiteBuilderBundle\Twig\Extension\SecurityExtension
 
 services:
-    edgar_ez_site_builder.install.service:
-        class: %edgar_ez_site_builder.install.service.class%
+    smile_ez_site_builder.install.service:
+        class: %smile_ez_site_builder.install.service.class%
         arguments:
             - @kernel
             - @ezpublish.api.service.content_type
@@ -52,257 +52,257 @@ services:
             - @ezpublish.api.service.location
             - @ezpublish.api.service.user
             - @ezpublish.api.service.language
-            - @edgar_ez_tools.contenttypegroup.service
-            - @edgar_ez_tools.contenttype.service
-            - @edgar_ez_tools.content.service
-            - @edgar_ez_tools.role.service
+            - @smile_ez_tools.contenttypegroup.service
+            - @smile_ez_tools.contenttype.service
+            - @smile_ez_tools.content.service
+            - @smile_ez_tools.role.service
 
-    edgar_ez_site_builder.customer.service:
-        class: %edgar_ez_site_builder.customer.service.class%
+    smile_ez_site_builder.customer.service:
+        class: %smile_ez_site_builder.customer.service.class%
         arguments:
             - @kernel
             - @ezpublish.api.service.role
             - @ezpublish.api.service.location
             - @ezpublish.api.service.user
             - @ezpublish.api.service.content_type
-            - @edgar_ez_tools.content.service
-            - @edgar_ez_tools.role.service
+            - @smile_ez_tools.content.service
+            - @smile_ez_tools.role.service
             - %ezpublish.siteaccess.groups%
 
-    edgar_ez_site_builder.model.service:
-        class: %edgar_ez_site_builder.model.service.class%
+    smile_ez_site_builder.model.service:
+        class: %smile_ez_site_builder.model.service.class%
         arguments:
             - @kernel
             - @ezpublish.api.service.url_alias
             - @ezpublish.api.service.location
             - @ezpublish.api.service.role
-            - @edgar_ez_tools.content.service
-            - @edgar_ez_tools.role.service
+            - @smile_ez_tools.content.service
+            - @smile_ez_tools.role.service
             - @service_container
 
-    edgar_ez_site_builder.site.service:
-        class: %edgar_ez_site_builder.site.service.class%
+    smile_ez_site_builder.site.service:
+        class: %smile_ez_site_builder.site.service.class%
         arguments:
             - @ezpublish.api.service.location
             - @ezpublish.api.service.url_alias
             - @ezpublish.api.service.content
             - @ezpublish.api.service.language
-            - @edgar_ez_tools.content.service
-            - @edgar_ez_tools.role.service
+            - @smile_ez_tools.content.service
+            - @smile_ez_tools.role.service
 
     # Task services
-    edgar_ez_site_builder.project.task.service:
-        class: %edgar_ez_site_builder.project.task.service.class%
+    smile_ez_site_builder.project.task.service:
+        class: %smile_ez_site_builder.project.task.service.class%
         arguments:
             - @filesystem
             - @kernel
             - @ezpublish.api.service.location
             - @ezpublish.api.service.language
-            - @edgar_ez_site_builder.install.service
+            - @smile_ez_site_builder.install.service
             - %kernel.root_dir%
 
-    edgar_ez_site_builder.customer.task.service:
-        class: %edgar_ez_site_builder.customer.task.service.class%
+    smile_ez_site_builder.customer.task.service:
+        class: %smile_ez_site_builder.customer.task.service.class%
         arguments:
             - @filesystem
             - @kernel
-            - @edgar_ez_site_builder.customer.service
+            - @smile_ez_site_builder.customer.service
             - @ezpublish.api.service.language
-            - @edgar_ez_site_builder.mailer
-            - %edgar_ez_site_builder.sysadminemail%
+            - @smile_ez_site_builder.mailer
+            - %smile_ez_site_builder.sysadminemail%
             - %kernel.root_dir%
 
-    edgar_ez_site_builder.model.task.service:
-        class: %edgar_ez_site_builder.model.task.service.class%
+    smile_ez_site_builder.model.task.service:
+        class: %smile_ez_site_builder.model.task.service.class%
         arguments:
             - @filesystem
             - @kernel
-            - @edgar_ez_site_builder.model.service
+            - @smile_ez_site_builder.model.service
             - @ezpublish.api.service.location
             - @ezpublish.api.service.content
             - @ezpublish.api.service.language
             - %kernel.root_dir%
 
-    edgar_ez_site_builder.site.task.service:
-        class: %edgar_ez_site_builder.site.task.service.class%
+    smile_ez_site_builder.site.task.service:
+        class: %smile_ez_site_builder.site.task.service.class%
         arguments:
             - @filesystem
             - @kernel
             - @ezpublish.api.service.location
             - @ezpublish.api.service.content
             - @ezpublish.api.service.user
-            - @edgar_ez_tools.role.service
-            - @edgar_ez_site_builder.site.service
+            - @smile_ez_tools.role.service
+            - @smile_ez_site_builder.site.service
             - @ezpublish.api.service.role
             - %kernel.root_dir%
         calls:
             - [setAnonymousUserID, [$anonymous_user_id;ezsettings$]]
 
-    edgar_ez_site_builder.user.task.service:
-        class: %edgar_ez_site_builder.user.task.service.class%
+    smile_ez_site_builder.user.task.service:
+        class: %smile_ez_site_builder.user.task.service.class%
         arguments:
-            - @edgar_ez_site_builder.customer.service
+            - @smile_ez_site_builder.customer.service
             - @ezpublish.api.service.user
             - @ezpublish.api.service.location
             - @ezpublish.api.service.language
-            - @edgar_ez_site_builder.mailer
-            - %edgar_ez_site_builder.sysadminemail%
+            - @smile_ez_site_builder.mailer
+            - %smile_ez_site_builder.sysadminemail%
 
-    edgar_ez_site_builder.mailer:
-        class: %edgar_ez_site_builder.mailer.class%
+    smile_ez_site_builder.mailer:
+        class: %smile_ez_site_builder.mailer.class%
         arguments:
             - @swiftmailer.mailer
 
     # Form validators
-    edgar_ez_site_builder.validator.modelname:
-        class: %edgar_ez_site_builder.validator.modelname.class%
+    smile_ez_site_builder.validator.modelname:
+        class: %smile_ez_site_builder.validator.modelname.class%
         tags:
-            - { name: validator.constraint_validator, alias: edgar_ez_site_builder.validator.modelname }
+            - { name: validator.constraint_validator, alias: smile_ez_site_builder.validator.modelname }
 
-    edgar_ez_site_builder.validator.customername:
-        class: %edgar_ez_site_builder.validator.customername.class%
+    smile_ez_site_builder.validator.customername:
+        class: %smile_ez_site_builder.validator.customername.class%
         tags:
-            - { name: validator.constraint_validator, alias: edgar_ez_site_builder.validator.customername }
+            - { name: validator.constraint_validator, alias: smile_ez_site_builder.validator.customername }
 
-    edgar_ez_site_builder.validator.host:
-        class: %edgar_ez_site_builder.validator.host.class%
+    smile_ez_site_builder.validator.host:
+        class: %smile_ez_site_builder.validator.host.class%
         tags:
-            - { name: validator.constraint_validator, alias: edgar_ez_site_builder.validator.host }
+            - { name: validator.constraint_validator, alias: smile_ez_site_builder.validator.host }
 
-    edgar_ez_site_builder.validator.hostsuffix:
-        class: %edgar_ez_site_builder.validator.hostsuffix.class%
+    smile_ez_site_builder.validator.hostsuffix:
+        class: %smile_ez_site_builder.validator.hostsuffix.class%
         tags:
-            - { name: validator.constraint_validator, alias: edgar_ez_site_builder.validator.hostsuffix }
+            - { name: validator.constraint_validator, alias: smile_ez_site_builder.validator.hostsuffix }
 
-    edgar_ez_site_builder.validator.locationid:
-        class: %edgar_ez_site_builder.validator.locationid.class%
+    smile_ez_site_builder.validator.locationid:
+        class: %smile_ez_site_builder.validator.locationid.class%
         tags:
-            - { name: validator.constraint_validator, alias: edgar_ez_site_builder.validator.locationid }
+            - { name: validator.constraint_validator, alias: smile_ez_site_builder.validator.locationid }
 
-    edgar_ez_site_builder.validator.sitename:
-        class: %edgar_ez_site_builder.validator.sitename.class%
+    smile_ez_site_builder.validator.sitename:
+        class: %smile_ez_site_builder.validator.sitename.class%
         tags:
-            - { name: validator.constraint_validator, alias: edgar_ez_site_builder.validator.sitename }
+            - { name: validator.constraint_validator, alias: smile_ez_site_builder.validator.sitename }
 
-    edgar_ez_site_builder.validator.useremail:
-        class: %edgar_ez_site_builder.validator.useremail.class%
+    smile_ez_site_builder.validator.useremail:
+        class: %smile_ez_site_builder.validator.useremail.class%
         tags:
-            - { name: validator.constraint_validator, alias: edgar_ez_site_builder.validator.useremail }
+            - { name: validator.constraint_validator, alias: smile_ez_site_builder.validator.useremail }
 
-    edgar_ez_site_builder.validator.username:
-        class: %edgar_ez_site_builder.validator.username.class%
+    smile_ez_site_builder.validator.username:
+        class: %smile_ez_site_builder.validator.username.class%
         tags:
-            - { name: validator.constraint_validator, alias: edgar_ez_site_builder.validator.username }
+            - { name: validator.constraint_validator, alias: smile_ez_site_builder.validator.username }
 
-    edgar_ez_site_builder.validator.vendorname:
-        class: %edgar_ez_site_builder.validator.vendorname.class%
+    smile_ez_site_builder.validator.vendorname:
+        class: %smile_ez_site_builder.validator.vendorname.class%
         tags:
-            - { name: validator.constraint_validator, alias: edgar_ez_site_builder.validator.vendorname }
+            - { name: validator.constraint_validator, alias: smile_ez_site_builder.validator.vendorname }
 
     # Form action dispatchers
-    edgar_ez_site_builder.action_dispatcher.install:
-        class: %edgar_ez_site_builder.action_dispatcher.install.class%
+    smile_ez_site_builder.action_dispatcher.install:
+        class: %smile_ez_site_builder.action_dispatcher.install.class%
         parent: ezrepoforms.action_dispatcher.base
 
-    edgar_ez_site_builder.action_dispatcher.customer:
-        class: %edgar_ez_site_builder.action_dispatcher.customer.class%
+    smile_ez_site_builder.action_dispatcher.customer:
+        class: %smile_ez_site_builder.action_dispatcher.customer.class%
         parent: ezrepoforms.action_dispatcher.base
 
-    edgar_ez_site_builder.action_dispatcher.model:
-        class: %edgar_ez_site_builder.action_dispatcher.model.class%
+    smile_ez_site_builder.action_dispatcher.model:
+        class: %smile_ez_site_builder.action_dispatcher.model.class%
         parent: ezrepoforms.action_dispatcher.base
 
-    edgar_ez_site_builder.action_dispatcher.modelactivate:
-        class: %edgar_ez_site_builder.action_dispatcher.modelactivate.class%
+    smile_ez_site_builder.action_dispatcher.modelactivate:
+        class: %smile_ez_site_builder.action_dispatcher.modelactivate.class%
         parent: ezrepoforms.action_dispatcher.base
 
-    edgar_ez_site_builder.action_dispatcher.site:
-        class: %edgar_ez_site_builder.action_dispatcher.site.class%
+    smile_ez_site_builder.action_dispatcher.site:
+        class: %smile_ez_site_builder.action_dispatcher.site.class%
         parent: ezrepoforms.action_dispatcher.base
 
-    edgar_ez_site_builder.action_dispatcher.siteactivate:
-        class: %edgar_ez_site_builder.action_dispatcher.siteactivate.class%
+    smile_ez_site_builder.action_dispatcher.siteactivate:
+        class: %smile_ez_site_builder.action_dispatcher.siteactivate.class%
         parent: ezrepoforms.action_dispatcher.base
 
-    edgar_ez_site_builder.action_dispatcher.user:
-        class: %edgar_ez_site_builder.action_dispatcher.user.class%
+    smile_ez_site_builder.action_dispatcher.user:
+        class: %smile_ez_site_builder.action_dispatcher.user.class%
         parent: ezrepoforms.action_dispatcher.base
 
     # controllers
-    edgar_ez_site_builder.controller.sb:
-        class: %edgar_ez_site_builder.controller.sb.class%
+    smile_ez_site_builder.controller.sb:
+        class: %smile_ez_site_builder.controller.sb.class%
         arguments:
             - @ezpublish.api.service.location
             - @ezpublish.api.service.search
             - @ezpublish.api.service.language
-            - @edgar_ez_site_builder.install.service
-            - %edgar_ez_site_builder.tabs%
+            - @smile_ez_site_builder.install.service
+            - %smile_ez_site_builder.tabs%
         parent: ezsystems.platformui.controller.base
 
-    edgar_ez_site_builder.controller.sb.install:
-        class: %edgar_ez_site_builder.controller.sb.install.class%
+    smile_ez_site_builder.controller.sb.install:
+        class: %smile_ez_site_builder.controller.sb.install.class%
         arguments:
-            - @edgar_ez_site_builder.install.service
-            - @edgar_ez_site_builder.action_dispatcher.install
-            - %edgar_ez_site_builder.tabs%
-            - @edgarezsb.security.service
+            - @smile_ez_site_builder.install.service
+            - @smile_ez_site_builder.action_dispatcher.install
+            - %smile_ez_site_builder.tabs%
+            - @smileezsb.security.service
         parent: ezsystems.platformui.controller.base
 
-    edgar_ez_site_builder.controller.sb.dashboard:
-        class: %edgar_ez_site_builder.controller.sb.dashboard.class%
+    smile_ez_site_builder.controller.sb.dashboard:
+        class: %smile_ez_site_builder.controller.sb.dashboard.class%
         arguments:
             - @doctrine
         parent: ezsystems.platformui.controller.base
 
-    edgar_ez_site_builder.controller.sb.customer:
-        class: %edgar_ez_site_builder.controller.sb.customer.class%
+    smile_ez_site_builder.controller.sb.customer:
+        class: %smile_ez_site_builder.controller.sb.customer.class%
         arguments:
-            - @edgar_ez_site_builder.action_dispatcher.customer
-            - %edgar_ez_site_builder.tabs%
-            - @edgarezsb.security.service
+            - @smile_ez_site_builder.action_dispatcher.customer
+            - %smile_ez_site_builder.tabs%
+            - @smileezsb.security.service
         parent: ezsystems.platformui.controller.base
 
-    edgar_ez_site_builder.controller.sb.model:
-        class: %edgar_ez_site_builder.controller.sb.model.class%
+    smile_ez_site_builder.controller.sb.model:
+        class: %smile_ez_site_builder.controller.sb.model.class%
         arguments:
-            - @edgar_ez_site_builder.action_dispatcher.model
-            - @edgar_ez_site_builder.action_dispatcher.modelactivate
-            - %edgar_ez_site_builder.tabs%
-            - @edgarezsb.security.service
+            - @smile_ez_site_builder.action_dispatcher.model
+            - @smile_ez_site_builder.action_dispatcher.modelactivate
+            - %smile_ez_site_builder.tabs%
+            - @smileezsb.security.service
             - @ezpublish.api.service.search
         parent: ezsystems.platformui.controller.base
 
-    edgar_ez_site_builder.controller.sb.site:
-        class: %edgar_ez_site_builder.controller.sb.site.class%
+    smile_ez_site_builder.controller.sb.site:
+        class: %smile_ez_site_builder.controller.sb.site.class%
         arguments:
             - @ezpublish.api.service.location
             - @ezpublish.api.service.search
-            - @edgar_ez_site_builder.action_dispatcher.site
-            - @edgar_ez_site_builder.action_dispatcher.siteactivate
-            - %edgar_ez_site_builder.tabs%
-            - @edgarezsb.security.service
+            - @smile_ez_site_builder.action_dispatcher.site
+            - @smile_ez_site_builder.action_dispatcher.siteactivate
+            - %smile_ez_site_builder.tabs%
+            - @smileezsb.security.service
         parent: ezsystems.platformui.controller.base
 
-    edgar_ez_site_builder.controller.sb.user:
-        class: %edgar_ez_site_builder.controller.sb.user.class%
+    smile_ez_site_builder.controller.sb.user:
+        class: %smile_ez_site_builder.controller.sb.user.class%
         arguments:
-            - @edgar_ez_site_builder.action_dispatcher.user
-            - %edgar_ez_site_builder.tabs%
-            - @edgarezsb.security.service
+            - @smile_ez_site_builder.action_dispatcher.user
+            - %smile_ez_site_builder.tabs%
+            - @smileezsb.security.service
         parent: ezsystems.platformui.controller.base
 
     # security service
-    edgarezsb.security.service:
-        class: %edgarezsb.security.service.class%
+    smileezsb.security.service:
+        class: %smileezsb.security.service.class%
         arguments:
             - @security.token_storage
             - @security.authorization_checker
             - @ezpublish.api.service.role
 
     # twig extensions
-    edgarezsb.security.twig.extension:
-        class: %edgarezsb.security.twig.extension.class%
+    smileezsb.security.twig.extension:
+        class: %smileezsb.security.twig.extension.class%
         arguments:
-            - @edgarezsb.security.service
+            - @smileezsb.security.service
         tags:
             - { name: twig.extension }

@@ -1,10 +1,10 @@
 <?php
 
-namespace EdgarEz\SiteBuilderBundle\Controller;
+namespace Smile\EzSiteBuilderBundle\Controller;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use EdgarEz\SiteBuilderBundle\Command\TaskCommand;
-use EdgarEz\SiteBuilderBundle\Entity\SiteBuilderTask;
+use Smile\EzSiteBuilderBundle\Command\TaskCommand;
+use Smile\EzSiteBuilderBundle\Entity\SiteBuilderTask;
 use eZ\Publish\API\Repository\Values\ValueObject;
 use eZ\Publish\Core\MVC\Symfony\Security\User;
 use EzSystems\PlatformUIBundle\Controller\Controller;

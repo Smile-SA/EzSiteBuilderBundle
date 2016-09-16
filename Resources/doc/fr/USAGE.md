@@ -7,14 +7,14 @@
 ### mode console
 
 ```console
-php app/console edgarez:sitebuilder:model:generate
+php app/console smileez:sitebuilder:model:generate
 ```
 
 Le mode interactif de cette installation vous demande les informations suivantes :
 
 * nom du modèle
   * uniquement des lettres, première lettre en majuscule
-  
+
 A l'issue de ces étapes, il vous est demandé si vous souhaitez mettre automatiquement à jour le fichier de Kernel (app/AppKernel.php)
 Si vous refusez cette mise à jour automatique, modifiez le fichier app/AppKernel.php comme suit :
 
@@ -40,13 +40,13 @@ Notes :
 * cet utilisateur doit également pouvoir vider les cache et écrire dans les logs
 
 Pour que le nouveau model soit accessible aux utilisateurs dont le rôle est creator de site, vous devez exécuter la commande suivante :
- 
+
 ```console
-php app/console edgarez:sitebuilder:model:policy
+php app/console smileez:sitebuilder:model:policy
 ```
- 
+
 Le mode interactif de cette installation vous demande les informations suivantes :
- 
+
 * nom du modèle
   * uniquement des lettres, première lettre en majuscule
 
@@ -66,7 +66,7 @@ Après validation du formulaire, vous êtes redirigé sur l'onglet Dashboard ré
 ### mode console
 
 ```console
-php app/console edgarez:sitebuilder:customer:generate
+php app/console smileez:sitebuilder:customer:generate
 ```
 
 Le mode interactif de cette installation vous demande les informations suivantes :
@@ -76,7 +76,7 @@ Le mode interactif de cette installation vous demande les informations suivantes
 * Prénom du premier utilisateur créateur
 * Nom du premier utilisateur créateur
 * Adresse mail du premier utilisateur créateur
-  
+
 A l'issue de ces étapes, il vous est demandé si vous souhaitez mettre automatiquement à jour le fichier de Kernel (app/AppKernel.php)
 Si vous refusez cette mise à jour automatique, modifiez le fichier app/AppKernel.php comme suit :
 
@@ -121,7 +121,7 @@ Après validation du formulaire, vous êtes redirigé sur l'onglet Dashboard ré
 ### mode console
 
 ```console
-php app/console edgarez:sitebuilder:site:generate
+php app/console smileez:sitebuilder:site:generate
 ```
 
 Le mode interactif de cette installation vous demande les informations suivantes :
@@ -135,10 +135,10 @@ Le mode interactif de cette installation vous demande les informations suivantes
 * host pour le siteaccess
 * voulez-vous une configuration map/uri
   * suffix pour le map/uri
-  
+
 A l'issue de ces étapes, il ne vous sera pas demandé si vous souhaitez mettre automatiquement à jour le fichier de Kernel (app/AppKernel.php)
 Lors de l'[installation et configuartion des pré-requis](INSTALL.md), vous avez modifié le fichier app/AppKernel.php pour prendre en charge une variable d'environnement : SITEBUILDER_ENV
- 
+
 De ce fait, après initialisation de votre site, dans la configuration de votre serveur web, vous devez définir cette variable d'environnement, exemple pour une configuration Aapache :
 
 ```apache
@@ -147,8 +147,8 @@ De ce fait, après initialisation de votre site, dans la configuration de votre 
     DocumentRoot ...
     DirectoryIndex app.php
 
-    ... 
-    
+    ...
+
     SetEnvIf Request_URI ".*" SYMFONY_ENV=dev
 
     # Injection de la variable d'environnement pour votre site
@@ -169,13 +169,13 @@ Notes :
 * cet utilisateur doit également pouvoir vider les cache et écrire dans les logs
 
 Pour que le nouveau siteaccess soit accessible aux utilisateurs dont le rôle est creator ou éditeur du site auquel appartien le client, vous devez exécuter la commande suivante :
- 
+
 ```console
-php app/console edgarez:sitebuilder:site:policy
+php app/console smileez:sitebuilder:site:policy
 ```
- 
+
 Le mode interactif de cette installation vous demande les informations suivantes :
- 
+
 * nom du client
   * uniquement des lettres, première lettre en majuscule
 * nom du site
