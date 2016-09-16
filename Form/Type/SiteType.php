@@ -4,16 +4,10 @@ namespace Smile\EzSiteBuilderBundle\Form\Type;
 
 use Smile\EzSiteBuilderBundle\Form\Validator\Constraint\HostConstraint;
 use Smile\EzSiteBuilderBundle\Form\Validator\Constraint\HostSuffixConstraint;
-use Smile\EzSiteBuilderBundle\Form\Validator\Constraint\SiteNameConstraint;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\SearchService;
-use eZ\Publish\API\Repository\Values\Content\Query;
-use eZ\Publish\API\Repository\Values\Content\Search\SearchResult;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;

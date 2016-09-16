@@ -3,18 +3,15 @@
 namespace Smile\EzSiteBuilderBundle\Controller;
 
 use Smile\EzSiteBuilderBundle\Data\Mapper\SiteActivateMapper;
-use Smile\EzSiteBuilderBundle\Data\Mapper\SiteMapper;
 use Smile\EzSiteBuilderBundle\Data\Site\SiteActivateData;
 use Smile\EzSiteBuilderBundle\Data\Site\SiteData;
 use Smile\EzSiteBuilderBundle\Entity\SiteBuilderTask;
 use Smile\EzSiteBuilderBundle\Form\ActionDispatcher\SiteActivateDispatcher;
 use Smile\EzSiteBuilderBundle\Form\ActionDispatcher\SiteDispatcher;
 use Smile\EzSiteBuilderBundle\Form\Type\SiteActivateType;
-use Smile\EzSiteBuilderBundle\Form\Type\SiteType;
 use Smile\EzSiteBuilderBundle\Generator\CustomerGenerator;
 use Smile\EzSiteBuilderBundle\Generator\ProjectGenerator;
 use Smile\EzSiteBuilderBundle\Service\SecurityService;
-use Smile\EzSiteBuilderBundle\Values\Content\Site;
 use Smile\EzSiteBuilderBundle\Values\Content\SiteActivate;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\SearchService;
