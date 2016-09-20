@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2016-09-15T16:38:33Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2016-09-20T13:56:06Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -9,37 +9,37 @@
       <trans-unit id="817b79b0af2db11da9523bd5738397ebf823132b" resname="Creator">
         <source>Creator</source>
         <target>Creator</target>
-        <jms:reference-file line="36">/../src/EdgarEz/SiteBuilderBundle/Form/Type/UserType.php</jms:reference-file>
+        <jms:reference-file line="36">/../src/Smile/EzSiteBuilderBundle/Form/Type/UserType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c7e9fb2ea6c3b8c3ce97645eb902c348d859f36d" resname="Editor">
         <source>Editor</source>
         <target>Editor</target>
-        <jms:reference-file line="36">/../src/EdgarEz/SiteBuilderBundle/Form/Type/UserType.php</jms:reference-file>
+        <jms:reference-file line="36">/../src/Smile/EzSiteBuilderBundle/Form/Type/UserType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="46e79dbac716a7e5fa9cb67cbe0cb3b4dcfb2564" resname="form.user.useremail.label">
         <source>form.user.useremail.label</source>
         <target>User email</target>
-        <jms:reference-file line="50">/../src/EdgarEz/SiteBuilderBundle/Form/Type/UserType.php</jms:reference-file>
+        <jms:reference-file line="50">/../src/Smile/EzSiteBuilderBundle/Form/Type/UserType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="830e609ac6e3adf20f3bc1a02b82e2421a72c426" resname="form.user.userfirstname.label">
         <source>form.user.userfirstname.label</source>
         <target>User first name</target>
-        <jms:reference-file line="40">/../src/EdgarEz/SiteBuilderBundle/Form/Type/UserType.php</jms:reference-file>
+        <jms:reference-file line="40">/../src/Smile/EzSiteBuilderBundle/Form/Type/UserType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="067aff98ba80527aefadcd0baf4f91ba14d1a7da" resname="form.user.userlastname.label">
         <source>form.user.userlastname.label</source>
         <target>User last name</target>
-        <jms:reference-file line="45">/../src/EdgarEz/SiteBuilderBundle/Form/Type/UserType.php</jms:reference-file>
+        <jms:reference-file line="45">/../src/Smile/EzSiteBuilderBundle/Form/Type/UserType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2edf38b43c18c176d0b5314bf383186a3f4c2b3c" resname="form.user.usertype.label">
         <source>form.user.usertype.label</source>
         <target>User type</target>
-        <jms:reference-file line="33">/../src/EdgarEz/SiteBuilderBundle/Form/Type/UserType.php</jms:reference-file>
+        <jms:reference-file line="33">/../src/Smile/EzSiteBuilderBundle/Form/Type/UserType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d39697e8aa4db4dd1ec5ce0d8fbfdb77c825d9e5" resname="user.button">
         <source>user.button</source>
         <target>Generate</target>
-        <jms:reference-file line="54">/../src/EdgarEz/SiteBuilderBundle/Form/Type/UserType.php</jms:reference-file>
+        <jms:reference-file line="54">/../src/Smile/EzSiteBuilderBundle/Form/Type/UserType.php</jms:reference-file>
       </trans-unit>
     </body>
   </file>
