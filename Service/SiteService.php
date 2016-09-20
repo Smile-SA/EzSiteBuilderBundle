@@ -167,13 +167,17 @@ class SiteService
      *
      * @param \eZ\Publish\API\Repository\Values\User\Role $roleCreator eZ Role for user creator
      * @param \eZ\Publish\API\Repository\Values\User\Role $roleEditor eZ Role for user editor
-     * @param string $siteaccessName siteaccess name
+     * @param array|string $siteaccessName siteaccess name
      */
     public function addSiteaccessLimitation(
         \eZ\Publish\API\Repository\Values\User\Role $roleCreator,
         \eZ\Publish\API\Repository\Values\User\Role $roleEditor,
-        $siteaccessName
+        $siteaccessNames
     ) {
+        if (!is_array($siteaccessNames)) {
+            $siteaccessNames = array($siteaccessNames);
+        }
+
         $siteaccess = array();
         $policies = $roleCreator->getPolicies();
         foreach ($policies as $policy) {
@@ -187,7 +191,10 @@ class SiteService
                                 $siteaccess[] = $s;
                             }
                         }
-                        $siteaccess[] = sprintf('%u', crc32($siteaccessName));
+
+                        foreach ($siteaccessNames as $siteaccessName) {
+                            $siteaccess[] = sprintf('%u', crc32($siteaccessName));
+                        }
                     }
                 }
             }

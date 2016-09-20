@@ -5,18 +5,26 @@ siteaccess:
         smileezsb_models_{{ siteaccess_model }}: [{{ siteaccess }}]
         smileezsb_customer_{{ customer }}: [{{ siteaccess }}]
     match:
+        Compound\LogicalAnd:
+
         {% for site in sites %}
 
-        Compound\LogicalAnd:
             {{ site.siteaccess }}:
                 matchers:
+
+                    {% if site.suffix != '' %}
+
                     Map\URI:
-                        {% if site.suffix != '' %}{{ site.suffix }}{% else %}{{ site.siteaccess }}{% endif %}: true
+                        {{ site.suffix }}: true
+
+                    {% endif %}
+
                     Map\Host:
                         {{ site.host }}: true
                 match: {{ site.siteaccess }}
 
         {% endfor %}
+
 {% endblock %}
 
 system:

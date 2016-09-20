@@ -91,8 +91,11 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
             Validators::validateLocationID($parameters['customerContentLocationID']);
             Validators::validateLocationID($parameters['customerMediaLocationID']);
             Validators::validateSiteName($parameters['siteName']);
-            // Validators::validateHost($parameters['host']);
-            // Validators::validateSiteaccessSuffix($parameters['suffix']);
+
+            foreach ($parameters['sites'] as $site) {
+                Validators::validateHost($site['host']);
+                Validators::validateSiteaccessSuffix($site['suffix']);
+            }
 
             $model = explode('-', $parameters['model']);
             if (!is_array($model) || count($model) != 2) {
@@ -180,15 +183,7 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                         $this->kernelRootDir . '/../src'
                     );
 
-                    $application = new Application($this->kernel);
-                    $application->setAutoExit(false);
-
-                    $input = new ArrayInput(array(
-                        'command' => 'cache:clear',
-                        '--env' => $this->kernel->getEnvironment(),
-                    ));
-                    $output = new BufferedOutput();
-                    $application->run($input, $output);
+                    $this->cacheClear($this->kernel);
                 } catch (\RuntimeException $e) {
                     $this->message = $e->getMessage();
                     return false;
@@ -223,13 +218,16 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                     $extensionAlias = 'smileez_sb.' . strtolower($basename);
                     $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
 
+                    $siteaccessNames = array();
                     foreach ($parameters['sites'] as $languageCode => $site) {
-                        $siteaccessName = strtolower(
+                        $siteaccessNames[] = strtolower(
                             $vendorName . '_' . $parameters['customerName'] . '_' . $parameters['siteName'] . '_' .
                             implode(explode('-', $languageCode))
                         );
-                        $this->siteService->addSiteaccessLimitation($roleCreator, $roleEditor, $siteaccessName);
                     }
+
+                    $this->siteService->addSiteaccessLimitation($roleCreator, $roleEditor, $siteaccessNames);
+                    $this->cacheClear($this->kernel);
                 } catch (\RuntimeException $e) {
                     $this->message = $e->getMessage();
                     return false;
