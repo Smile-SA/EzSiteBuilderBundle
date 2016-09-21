@@ -4,6 +4,7 @@ siteaccess:
     groups:
         smileezsb_models_{{ siteaccess_model }}: [{{ siteaccess }}]
         smileezsb_customer_{{ customer }}: [{{ siteaccess }}]
+        smileezsb_customer_{{ customer }}_{{ site_name }}: [{{ siteaccess }}]
     match:
         Compound\LogicalAnd:
 

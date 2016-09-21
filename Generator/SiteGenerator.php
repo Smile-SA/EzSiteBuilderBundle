@@ -121,7 +121,8 @@ class SiteGenerator extends Generator
             'siteaccess_model' => strtolower($vendorName . '_' . $modelName),
             'customer' => strtolower($customerName),
             'sites' => $sites,
-            'siteaccess' => $siteaccess
+            'siteaccess' => $siteaccess,
+            'site_name' => strtolower($siteName)
         );
 
         $this->setSkeletonDirs(array($this->kernel->locateResource('@SmileEzSiteBuilderBundle/Resources/skeleton')));

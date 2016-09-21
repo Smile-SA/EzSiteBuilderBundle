@@ -248,13 +248,13 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                     $site = $this->locationService->loadLocation($parameters['siteID']);
                     $parent = $this->locationService->loadLocation($site->parentLocationId);
 
-                    $basename = ProjectGenerator::MAIN;
-                    $extensionAlias = 'smileez_sb.' . strtolower($basename);
-                    $vendorName = $container->getParameter($extensionAlias . '.default.vendor_name');
+                    $siteaccessGroups = $container->getParameter('ezpublish.siteaccess.groups');
+                    $siteaccessGroupName = strtolower('smileezsb_customer_' . $parent->contentInfo->name . '_' . $site->contentInfo->name);
+                    $siteaccessGroup = array();
 
-                    $siteaccessName = strtolower(
-                        $vendorName . '_' . $parent->contentInfo->name . '_' . $site->contentInfo->name
-                    );
+                    if (isset($siteaccessGroups[$siteaccessGroupName])) {
+                        $siteaccessGroup = $siteaccessGroups[$siteaccessGroupName];
+                    }
 
                     $contentInfo = $site->getContentInfo();
                     $contentDraft = $this->contentService->createContentDraft($contentInfo);
@@ -284,11 +284,15 @@ class SiteTaskService extends BaseTaskService implements TaskInterface
                                             $siteaccess[] = $s;
                                         }
                                     }
-                                    $siteaccess[] = sprintf('%u', crc32($siteaccessName));
+
+                                    foreach ($siteaccessGroup as $siteaccessName) {
+                                        $siteaccess[] = sprintf('%u', crc32($siteaccessName));
+                                    }
                                 }
                             }
                             $role = $this->roleService->loadRole($policy->roleId);
                             $this->role->addSiteaccessLimitation($role, $siteaccess);
+                            break;
                         }
                     }
                 } catch (\RuntimeException $e) {
