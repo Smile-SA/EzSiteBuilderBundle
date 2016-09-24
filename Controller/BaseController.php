@@ -11,9 +11,19 @@ use EzSystems\PlatformUIBundle\Controller\Controller;
 use EzSystems\RepositoryForms\Form\ActionDispatcher\ActionDispatcherInterface;
 use Symfony\Component\Form\Form;
 
+/**
+ * Class BaseController
+ * @package Smile\EzSiteBuilderBundle\Controller
+ */
 abstract class BaseController extends Controller
 {
-    protected function submitFuturTask($action, $minutes = 1)
+    /**
+     * Register task to be executed after x minutes
+     *
+     * @param array $action action and action parameters
+     * @param int $minutes set action date time delay execution
+     */
+    protected function submitFuturTask(array $action, $minutes = 1)
     {
         $minutes = ($minutes > 1) ? '+' . $minutes . ' minutes' : '+' . $minutes . ' minutes';
         $task = new SiteBuilderTask();
@@ -22,6 +32,13 @@ abstract class BaseController extends Controller
         $this->submitTask($task, $action, $postedAt);
     }
 
+    /**
+     * Register task to be executed
+     *
+     * @param SiteBuilderTask $task task registrar
+     * @param array $action action and action parameters
+     * @param \DateTime|null $postedAt set action date time execution
+     */
     protected function submitTask(SiteBuilderTask $task, array $action, \DateTime $postedAt = null)
     {
         /** @var Registry $dcotrineRegistry */
@@ -46,6 +63,12 @@ abstract class BaseController extends Controller
         }
     }
 
+    /**
+     * Notify interface form action error
+     *
+     * @param Form $form form
+     * @param $formID form identifier
+     */
     protected function getErrors(Form $form, $formID)
     {
         foreach ($form->getErrors(true) as $error) {
@@ -58,6 +81,14 @@ abstract class BaseController extends Controller
         }
     }
 
+    /**
+     * Dispatch form action
+     *
+     * @param ActionDispatcherInterface $actionDispatcher form actionDispatcher
+     * @param Form $form form
+     * @param ValueObject $data form datas
+     * @param array $options form options
+     */
     protected function dispatchFormAction(
         ActionDispatcherInterface $actionDispatcher,
         Form $form,
@@ -72,6 +103,11 @@ abstract class BaseController extends Controller
         );
     }
 
+    /**
+     * Register cache:clear task to be executed
+     *
+     * @param int $minutes set date time delay execution
+     */
     protected function initCacheTask($minutes = 1)
     {
         $action = array(

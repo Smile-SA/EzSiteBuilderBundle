@@ -12,6 +12,10 @@ use Smile\EzSiteBuilderBundle\Values\Content\Customer;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class CustomerController
+ * @package Smile\EzSiteBuilderBundle\Controller
+ */
 class CustomerController extends BaseController
 {
     /** @var CustomerDispatcher $actionDispatcher */
@@ -25,6 +29,13 @@ class CustomerController extends BaseController
     /** @var SecurityService $securityService */
     protected $securityService;
 
+    /**
+     * CustomerController constructor.
+     *
+     * @param CustomerDispatcher $actionDispatcher
+     * @param array $tabItems
+     * @param SecurityService $securityService
+     */
     public function __construct(
         CustomerDispatcher $actionDispatcher,
         $tabItems,
@@ -35,6 +46,12 @@ class CustomerController extends BaseController
         $this->securityService = $securityService;
     }
 
+    /**
+     * Generate new customer
+     *
+     * @param Request $request
+     * @return \EzSystems\PlatformUIBundle\Http\FormProcessingDoneResponse|null|\Symfony\Component\HttpFoundation\Response
+     */
     public function generateAction(Request $request)
     {
         $actionUrl = $this->generateUrl('smileezsb_sb', ['tabItem' => 'dashboard']);
@@ -74,6 +91,12 @@ class CustomerController extends BaseController
         ]);
     }
 
+    /**
+     * Construct customer generation form
+     *
+     * @param Request $request
+     * @return Form
+     */
     protected function getForm(Request $request)
     {
         $customer = new Customer([
@@ -87,6 +110,11 @@ class CustomerController extends BaseController
         return $this->createForm(new CustomerType(), $this->data);
     }
 
+    /**
+     * Register customer generation task
+     *
+     * @param Form $form
+     */
     protected function initTask(Form $form)
     {
         /** @var CustomerData $data */
