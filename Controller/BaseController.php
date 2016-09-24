@@ -13,11 +13,12 @@ use Symfony\Component\Form\Form;
 
 abstract class BaseController extends Controller
 {
-    protected function submitFuturTask($action)
+    protected function submitFuturTask($action, $minutes = 1)
     {
+        $minutes = ($minutes > 1) ? '+' . $minutes . ' minutes' : '+' . $minutes . ' minutes';
         $task = new SiteBuilderTask();
         $postedAt = new \DateTime();
-        $postedAt->modify('+5 minutes');
+        $postedAt->modify($minutes);
         $this->submitTask($task, $action, $postedAt);
     }
 
@@ -69,5 +70,16 @@ abstract class BaseController extends Controller
             $form->getClickedButton() ? $form->getClickedButton()->getName() : null,
             $options
         );
+    }
+
+    protected function initCacheTask($minutes = 1)
+    {
+        $action = array(
+            'service'    => 'cache',
+            'command'    => 'clear',
+            'parameters' => array()
+        );
+
+        $this->submitFuturTask($action, $minutes);
     }
 }

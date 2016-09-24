@@ -9,6 +9,7 @@ parameters:
     smile_ez_site_builder.model.task.service.class: Smile\EzSiteBuilderBundle\Service\Task\ModelTaskService
     smile_ez_site_builder.site.task.service.class: Smile\EzSiteBuilderBundle\Service\Task\SiteTaskService
     smile_ez_site_builder.user.task.service.class: Smile\EzSiteBuilderBundle\Service\Task\UserTaskService
+    smile_ez_site_builder.cache.task.service.class: Smile\EzSiteBuilderBundle\Service\Task\CacheTaskService
 
     smile_ez_site_builder.mailer.class: Smile\EzSiteBuilderBundle\Mail\Sender
 
@@ -148,6 +149,13 @@ services:
             - @smile_ez_site_builder.mailer
             - %smile_ez_site_builder.sysadminemail%
 
+    smile_ez_site_builder.cache.task.service:
+        class: %smile_ez_site_builder.cache.task.service.class%
+        arguments:
+            - @smileezsb.cache.clear
+            - @kernel
+
+    # tools services
     smile_ez_site_builder.mailer:
         class: %smile_ez_site_builder.mailer.class%
         arguments:
@@ -306,3 +314,8 @@ services:
             - @smileezsb.security.service
         tags:
             - { name: twig.extension }
+
+    smileezsb.cache.clear:
+        class: Symfony\Bundle\FrameworkBundle\Command\CacheClearCommand
+        calls:
+            - [setContainer, ["@service_container"] ]

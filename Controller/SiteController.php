@@ -73,29 +73,10 @@ class SiteController extends BaseController
         $sites = $request->request->get('smileezsb_forms_site');
 
         $this->initTask($site, $sites);
-        $this->initTask($site, $sites, 'policy', true);
+        $this->initCacheTask();
+        $this->initTask($site, $sites, 'policy', true, 2);
+        $this->initCacheTask(3);
         return $this->redirectAfterFormPost($actionUrl);
-    }
-
-    public function listAction()
-    {
-        /** @var SearchResult $datas */
-        $datas = $this->getSites();
-
-        $sites = array();
-        if ($datas->totalCount) {
-            foreach ($datas->searchHits as $data) {
-                $sites[] = array(
-                    'data' => $data,
-                    'form' => $this->getActivateForm($data->valueObject->contentInfo->mainLocationId)->createView()
-                );
-            }
-        }
-
-        return $this->render('SmileEzSiteBuilderBundle:sb:tab/site/list.html.twig', [
-            'totalCount' => $datas->totalCount,
-            'datas' => $sites
-        ]);
     }
 
     public function activateAction(Request $request)
@@ -117,6 +98,7 @@ class SiteController extends BaseController
             }
 
             $this->initActivateTask($form);
+            $this->initCacheTask();
             return $this->redirectAfterFormPost($actionUrl);
         }
 
@@ -129,6 +111,27 @@ class SiteController extends BaseController
             'tab_item_selected' => 'siteactivate',
             'params' => array(),
             'hasErrors' => true
+        ]);
+    }
+
+    public function listAction()
+    {
+        /** @var SearchResult $datas */
+        $datas = $this->getSites();
+
+        $sites = array();
+        if ($datas->totalCount) {
+            foreach ($datas->searchHits as $data) {
+                $sites[] = array(
+                    'data' => $data,
+                    'form' => $this->getActivateForm($data->valueObject->contentInfo->mainLocationId)->createView()
+                );
+            }
+        }
+
+        return $this->render('SmileEzSiteBuilderBundle:sb:tab/site/list.html.twig', [
+            'totalCount' => $datas->totalCount,
+            'datas' => $sites
         ]);
     }
 
@@ -180,7 +183,7 @@ class SiteController extends BaseController
         return $this->createForm(new SiteActivateType($siteID), $this->dataActivate);
     }
 
-    protected function initTask(array $site, array $sites, $type = 'generate', $futur = false)
+    protected function initTask(array $site, array $sites, $type = 'generate', $futur = false, $minutes = 1)
     {
         $action = array(
             'service'    => 'site',
@@ -206,7 +209,7 @@ class SiteController extends BaseController
         }
 
         if ($futur) {
-            $this->submitFuturTask($action);
+            $this->submitFuturTask($action, $minutes);
         } else {
             $task = new SiteBuilderTask();
             $this->submitTask($task, $action);

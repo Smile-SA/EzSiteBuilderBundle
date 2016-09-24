@@ -57,6 +57,7 @@ class UserController extends BaseController
             }
 
             $this->initTask($form);
+            $this->initCacheTask();
 
             return $this->redirectAfterFormPost($actionUrl);
         }

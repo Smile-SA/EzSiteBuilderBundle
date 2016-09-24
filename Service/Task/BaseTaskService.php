@@ -3,10 +3,6 @@
 namespace Smile\EzSiteBuilderBundle\Service\Task;
 
 use Sensio\Bundle\GeneratorBundle\Manipulator\KernelManipulator;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
@@ -53,19 +49,6 @@ abstract class BaseTaskService
         }
     }
 
-    protected function cacheClear(Kernel $kernel)
-    {
-        $application = new Application($this->kernel);
-        $application->setAutoExit(false);
-
-        $input = new ArrayInput(array(
-            'command' => 'cache:clear',
-            '--env' => $kernel->getEnvironment(),
-        ));
-        $output = new BufferedOutput();
-        $application->run($input, $output);
-    }
-
     /**
      * Return task logs
      *
@@ -74,5 +57,9 @@ abstract class BaseTaskService
     public function getMessage()
     {
         return $this->message;
+    }
+
+    public function validateParameters($parameters)
+    {
     }
 }

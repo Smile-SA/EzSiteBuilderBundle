@@ -47,7 +47,7 @@ class ModelController extends BaseController
         ModelActivateDispatcher $activateActionDispatcher,
         $tabItems,
         SecurityService $securityService,
-    SearchService $searchService
+        SearchService $searchService
     ) {
         $this->actionDispatcher = $actionDispatcher;
         $this->activateActionDispatcher = $activateActionDispatcher;
@@ -75,7 +75,9 @@ class ModelController extends BaseController
             }
 
             $this->initTask($form);
-            $this->initPolicyTask($form);
+            $this->initCacheTask();
+            $this->initPolicyTask($form, 2);
+            $this->initCacheTask(3);
             return $this->redirectAfterFormPost($actionUrl);
         }
 
@@ -110,6 +112,7 @@ class ModelController extends BaseController
             }
 
             $this->initActivateTask($form);
+            $this->initCacheTask();
             return $this->redirectAfterFormPost($actionUrl);
         }
 
@@ -179,7 +182,7 @@ class ModelController extends BaseController
         $this->submitTask($task, $action);
     }
 
-    protected function initPolicyTask(Form $form)
+    protected function initPolicyTask(Form $form, $minutes = 1)
     {
         /** @var ModelData $data */
         $data = $form->getData();
@@ -192,7 +195,7 @@ class ModelController extends BaseController
             )
         );
 
-        $this->submitFuturTask($action);
+        $this->submitFuturTask($action, $minutes);
     }
 
     public function listAction()
