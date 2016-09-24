@@ -168,8 +168,6 @@ class SbController extends Controller
                 'suffix' => '',
             ]);
 
-            // $listSites[$language->name] = $site;
-
             $data = (new SiteMapper())->mapToFormData($site);
             $listSites[$language->name] = $this->createForm(
                 new SiteType($language->languageCode),
