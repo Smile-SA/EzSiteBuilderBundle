@@ -198,7 +198,6 @@ class SbController extends Controller
         ]);
         /** @var SitesData $data */
         $data = (new SitesMapper())->mapToFormData($sites);
-        // $data->setSites($sites);
 
         $params['sites'] = $this->createForm(
             new SitesType(
