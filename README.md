@@ -25,6 +25,11 @@ English : coming soon
 >
 > we will not provide update script until stable release
 
+### 1.0.10 -> 1.0.11
+
+* add cache clear task command when manipulating bundles, new content types, copy subtree ...
+* add assets install task when generating new bundle
+
 ### 1.0.9 -> 1.0.10
 
 * it's no more possible to choose language when installing sitebuilder : we use main language
