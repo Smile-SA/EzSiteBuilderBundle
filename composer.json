@@ -8,6 +8,7 @@
       "homepage": "http://www.smile.fr/"
     }
   ],
+  "minimum-stability": "dev",
   "require": {
     "php": ">=5.3.0",
     "doctrine/orm": "^2.5",
