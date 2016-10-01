@@ -11,6 +11,7 @@ use Smile\EzSiteBuilderBundle\Form\ActionDispatcher\ModelActivateDispatcher;
 use Smile\EzSiteBuilderBundle\Form\ActionDispatcher\ModelDispatcher;
 use Smile\EzSiteBuilderBundle\Form\Type\ModelActivateType;
 use Smile\EzSiteBuilderBundle\Form\Type\ModelType;
+use Smile\EzSiteBuilderBundle\Generator\ProjectGenerator;
 use Smile\EzSiteBuilderBundle\Service\SecurityService;
 use Smile\EzSiteBuilderBundle\Values\Content\Model;
 use Smile\EzSiteBuilderBundle\Values\Content\ModelActivate;
@@ -75,9 +76,10 @@ class ModelController extends BaseController
             }
 
             $this->initTask($form);
-            $this->initCacheTask();
-            $this->initPolicyTask($form, 2);
-            $this->initCacheTask(3);
+            $this->initAssetsTask($form);
+            $this->initCacheTask(2);
+            $this->initPolicyTask($form, 3);
+            $this->initCacheTask(4);
             return $this->redirectAfterFormPost($actionUrl);
         }
 
@@ -163,6 +165,33 @@ class ModelController extends BaseController
 
         $task = new SiteBuilderTask();
         $this->submitTask($task, $action);
+    }
+
+    protected function initAssetsTask(Form $form, $minutes = 1)
+    {
+        /** @var ModelData $data */
+        $data = $form->getData();
+
+        $basename = ProjectGenerator::MAIN;
+        $extensionAlias = 'smileez_sb.' . strtolower($basename);
+        $vendorName = $this->container->getParameter($extensionAlias . '.default.vendor_name');
+
+        $bundlePath = $vendorName . '\\' . ProjectGenerator::MODELS . '\\' .
+            $data->modelName . 'Bundle';
+
+        $bundleName = $vendorName . ProjectGenerator::MODELS .
+            $data->modelName . 'Bundle';
+
+        $action = array(
+            'service'    => 'assets',
+            'command'    => 'install',
+            'parameters' => array(
+                'bundlePath' => $bundlePath,
+                'bundleName' => $bundleName
+            )
+        );
+
+        $this->submitFuturTask($action, $minutes);
     }
 
     protected function initActivateTask(Form $form)

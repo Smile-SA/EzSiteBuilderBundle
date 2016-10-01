@@ -73,9 +73,10 @@ class SiteController extends BaseController
         $sites = $request->request->get('smileezsb_forms_site');
 
         $this->initTask($site, $sites);
-        $this->initCacheTask();
-        $this->initTask($site, $sites, 'policy', true, 2);
-        $this->initCacheTask(3);
+        $this->initAssetsTask($site);
+        $this->initCacheTask(2);
+        $this->initTask($site, $sites, 'policy', true, 3);
+        $this->initCacheTask(4);
         return $this->redirectAfterFormPost($actionUrl);
     }
 
@@ -214,6 +215,31 @@ class SiteController extends BaseController
             $task = new SiteBuilderTask();
             $this->submitTask($task, $action);
         }
+    }
+
+    protected function initAssetsTask(array $site, $minutes = 1)
+    {
+        $basename = ProjectGenerator::MAIN;
+        $extensionAlias = 'smileez_sb.' . strtolower($basename);
+        $vendorName = $this->container->getParameter($extensionAlias . '.default.vendor_name');
+
+        $bundlePath = $vendorName . '\\' . ProjectGenerator::CUSTOMERS . '\\' .
+            $site['customerName'] . '\\' . CustomerGenerator::SITES . '\\' .
+            $site['siteName'] . 'Bundle';
+
+        $bundleName = $vendorName . ProjectGenerator::CUSTOMERS .
+            $site['customerName'] . CustomerGenerator::SITES . $site['siteName'] . 'Bundle';
+
+        $action = array(
+            'service'    => 'assets',
+            'command'    => 'install',
+            'parameters' => array(
+                'bundlePath' => $bundlePath,
+                'bundleName' => $bundleName,
+            )
+        );
+
+        $this->submitFuturTask($action, $minutes);
     }
 
     protected function getCustomerName()

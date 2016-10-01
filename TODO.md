@@ -2,17 +2,13 @@
 
 ## Global
 
-* fix cache after generating bundles in prod environment
+* validate assets usage in dev and prod environment for multiple siteaccess
 * translate user guide
 * update user guide
 
-## eZPlatform  SiteBuilder interface
-
-* fix map/uri matcher
-* validate vhost setenv for multiple sites with same ServerNAme (using RewriteCond)
-* fix assetic install for site bundle (they are activated only with environment variable, so never handled by assetic)
-* fix site/policy task for multiple siteaccess language for one site
-* fix site/activate task for multiple siteaccess language for one site
+* create new content type group for each models
+* update */read,create,edit,delete for customers rôles limiting access to secific models content types
+* add tools to export/import new model (content types, content/media structure, bundle), same for new site ...
 
 
 

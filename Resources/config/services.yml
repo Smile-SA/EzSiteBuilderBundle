@@ -10,6 +10,7 @@ parameters:
     smile_ez_site_builder.site.task.service.class: Smile\EzSiteBuilderBundle\Service\Task\SiteTaskService
     smile_ez_site_builder.user.task.service.class: Smile\EzSiteBuilderBundle\Service\Task\UserTaskService
     smile_ez_site_builder.cache.task.service.class: Smile\EzSiteBuilderBundle\Service\Task\CacheTaskService
+    smile_ez_site_builder.assets.task.service.class: Smile\EzSiteBuilderBundle\Service\Task\AssetsTaskService
 
     smile_ez_site_builder.mailer.class: Smile\EzSiteBuilderBundle\Mail\Sender
 
@@ -154,6 +155,12 @@ services:
         arguments:
             - @smileezsb.cache.clear
             - @kernel
+
+    smile_ez_site_builder.assets.task.service:
+        class: %smile_ez_site_builder.assets.task.service.class%
+        arguments:
+            - @kernel
+            - @filesystem
 
     # tools services
     smile_ez_site_builder.mailer:
