@@ -1,5 +1,15 @@
 # TODO
 
+## Installation
+
+* add sysadmin email entry to install form and command
+
+## Tasks
+
+* send mail to user when task on error
+* send mail to sysadmin when generating new siteaccess : mail with web conf definition for new siteaccess
+* send mail to end-uesr creator when new siteaccess generated
+
 ## Global
 
 * validate assets usage in dev and prod environment for multiple siteaccess
