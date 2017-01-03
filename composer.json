@@ -1,5 +1,6 @@
 {
   "name": "smile/ez-sitebuilder-bundle",
+  "type": "ezplatform-bundle",
   "description": "SiteBuilder for eZ Platform 6.x",
   "license": ["MIT"],
   "authors": [
@@ -11,9 +12,9 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "php": ">=5.3.0",
-    "doctrine/orm": "^2.5",
-    "jms/translation-bundle": "^1.3",
+    "php": "~5.6|~7.0",
+    "ezsystems/ezplatform": "^1.7",
+    "doctrine/orm": "^2.4",
     "smile/ez-tools-bundle": "dev-master"
   },
   "autoload": {
