@@ -10,7 +10,7 @@ Ce guide d'installation et de configuration vous permet de préparer votre envir
 ### Bundle et pré-requis
 
 ```console
-composer require smileez/sitebuilderbundle
+composer require smile/ez-sitebuilder-bundle
 ```
 
 ### Ajout dépendance bundles
@@ -24,9 +24,10 @@ class AppKernel extends Kernel
     {
         $bundles = array(
             ...
-            new JMS\TranslationBundle\JMSTranslationBundle(),
+            new Smile\CronBundle\SmileCronBundle(),
+            new Smile\EzUICronBundle\SmileEzUICronBundle(),
             new Smile\EzToolsBundle\SmileEzToolsBundle(),
-            new Smile\EzSiteBuilderBundle\SmileEzSiteBuilderBundle()
+            new Smile\EzSiteBuilderBundle\SmileEzSiteBuilderBundle(),
 ```
 
 ### Ajout paramètres par défaut
@@ -62,6 +63,9 @@ php app/console doctrine:schema:update --force
 Ajouter dans la configuration globale app/config/routing.yml
 
 ```yaml
+smileezcron_platform:
+    resource: '@SmileEzUICronBundle/Resources/config/routing.yml'
+
 smileezsb_platform:
     resource: '@SmileEzSiteBuilderBundle/Resources/config/routing.yml'
 ```
@@ -200,5 +204,5 @@ ENV=dev
 # Chemin du client PHP
 PHP=/usr/bin/php
 
-*/2 * * * * su - $APACHEUSER -c "cd $EZPUBLISHROOT && $PHP app/console --env=$ENV smileez:sitebuilder:task" > /tmp/smileezsb_tasks.log
+* * * * * su - $APACHEUSER -c "cd $EZPUBLISHROOT && $PHP app/console --env=$ENV smileez:crons:run" > /tmp/smileezsb_tasks.log
 ```

@@ -9,13 +9,12 @@
       "homepage": "http://www.smile.fr/"
     }
   ],
-  "minimum-stability": "dev",
-  "prefer-stable": true,
   "require": {
     "php": "~5.6|~7.0",
     "ezsystems/ezplatform": "^1.7",
     "doctrine/orm": "^2.4",
-    "smile/ez-tools-bundle": "dev-master"
+    "smile/ez-tools-bundle": "^1.0",
+    "smile/ez-uicron-bundle": "^1.0"
   },
   "autoload": {
     "psr-0": { "Smile\\EzSiteBuilderBundle": "" }
