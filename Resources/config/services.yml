@@ -44,6 +44,8 @@ parameters:
     smileezsb.security.service.class: Smile\EzSiteBuilderBundle\Service\SecurityService
     smileezsb.security.twig.extension.class: Smile\EzSiteBuilderBundle\Twig\Extension\SecurityExtension
 
+    smileezsb.command.task.class: Smile\EzSiteBuilderBundle\Command\TaskCommand
+
 services:
     smile_ez_site_builder.install.service:
         class: %smile_ez_site_builder.install.service.class%
@@ -326,3 +328,8 @@ services:
         class: Symfony\Bundle\FrameworkBundle\Command\CacheClearCommand
         calls:
             - [setContainer, ["@service_container"] ]
+
+    smileezsb.command.task:
+        class: %smileezsb.command.task.class%
+        tags:
+            - { name: smile.cron, alias: sbtask, priority: 100 }

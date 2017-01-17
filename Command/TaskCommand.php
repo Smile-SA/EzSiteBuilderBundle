@@ -2,10 +2,10 @@
 
 namespace Smile\EzSiteBuilderBundle\Command;
 
+use Smile\CronBundle\Cron\CronAbstract;
 use Smile\EzSiteBuilderBundle\Entity\SiteBuilderTask;
 use Smile\EzSiteBuilderBundle\Service\Task\TaskInterface;
 use eZ\Publish\API\Repository\Repository;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -14,7 +14,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
  * Class TaskCommand
  * @package Smile\EzSiteBuilderBundle\Command
  */
-class TaskCommand extends ContainerAwareCommand
+class TaskCommand extends CronAbstract
 {
     const STATUS_SUBMITTED = 0;
     const STATUS_OK = 1;
